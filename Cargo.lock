@@ -990,7 +990,7 @@ dependencies = [
 
 [[package]]
 name = "cq_free_server"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "opener",
  "reqwest",
