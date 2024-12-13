@@ -1,4 +1,5 @@
-component ColorButton inherits Rectangle {
+import { VerticalBox, HorizontalBox } from "std-widgets.slint";
+export component ColorButton inherits Rectangle {
     in-out property text <=> txt.text;
     in-out property <brush> pressed-color: #6b8282;
     in-out property <brush> normal-color: #6c616c;
@@ -7,22 +8,114 @@ component ColorButton inherits Rectangle {
     border-radius: root.height / 2;
     border-width: 1px;
     border-color: root.background.darker(25%);
-    background: touch.pressed ? pressed-color : touch.has-hover ? hover-color :  normal-color;
+    background: touch.pressed ? pressed-color : touch.has-hover ? hover-color : normal-color;
     height: txt.preferred-height * 1.33;
     min-width: txt.preferred-width + 20px;
     txt := Text {
-        x: (parent.width - self.width)/2 + (touch.pressed ? 2px : 0);
-        y: (parent.height - self.height)/2 + (touch.pressed ? 1px : 0);
+        x: (parent.width - self.width) / 2 + (touch.pressed ? 2px : 0);
+        y: (parent.height - self.height) / 2 + (touch.pressed ? 1px : 0);
         color: touch.pressed ? #fff : #eee;
     }
+
     touch := TouchArea { }
 }
+
+export component ImageButton inherits Rectangle {
+    in-out property <image> pressed-image;
+    in-out property <image> hover-image;
+    in-out property <image> normal-image;
+    callback clicked_down();
+    callback clicked_up();
+    callback on_hover();
+    Image {
+        width: parent.width;
+        height: parent.height;
+        source: touch.pressed ? pressed-image : touch.has-hover ? hover-image : normal-image;
+    }
+
+    touch := TouchArea {
+        pointer-event(e) => {
+            if (e.button == PointerEventButton.left) {
+                if (e.kind == PointerEventKind.down) {
+                    clicked_down();
+                } else if (e.kind == PointerEventKind.up) {
+                    clicked_up();
+                }
+            }
+            if (e.kind == PointerEventKind.move) {
+                on_hover();
+            }
+        }
+    }
+}
+
+export enum IconPosition {
+    left, right, top, bottom
+}
+
+export component IconButton inherits Rectangle {
+    in-out property text <=> txt.text;
+    in-out property <image> icon;
+    in-out property <IconPosition> icon-position: IconPosition.left;
+    in-out property <brush> pressed-color: #6b8282;
+    in-out property <brush> normal-color: #6c616c;
+    in-out property <brush> hover-color: #456;
+    callback clicked <=> touch.clicked;
+    border-radius: 5px;
+    min-width: txt.preferred-width + 20px;
+    height: txt.preferred-height * 1.33;
+    border-width: 1px;
+    border-color: root.background.darker(25%);
+    background: touch.pressed ? pressed-color : touch.has-hover ? hover-color : normal-color;
+    VerticalBox {
+        padding: 0px;
+        alignment: center;
+        if icon-position == IconPosition.top: Image {
+            height: parent.height / 2;
+            source: icon;
+        }
+        HorizontalBox {
+            alignment: center;
+            if icon-position == IconPosition.left: Image {
+                source: icon;
+            }
+            txt := Text {
+                vertical-alignment: center;
+                horizontal-alignment: center;
+                color: touch.pressed ? #fff : #eee;
+            }
+            if icon-position == IconPosition.right: Image {
+                source: icon;
+            }
+        }
+        if icon-position == IconPosition.bottom: Image {
+            height: parent.height / 2;
+            source: icon;
+        }
+    }
+
+    touch := TouchArea { }
+}
+
+
 
 export component Recipe inherits Window {
     VerticalLayout {
         alignment: start;
         ColorButton {
             text: "Button";
+        }
+        ImageButton {
+            pressed-image: @image-url("../../assets/images/test_button/按钮_pressed.png");
+            hover-image: @image-url("../../assets/images/test_button/按钮_active.png");
+            normal-image: @image-url("../../assets/images/test_button/按钮_normal.png");
+            width: 200px;
+        }
+        IconButton {
+            height: 80px;
+            text: "IconButton";
+            icon: @image-url("../../assets/images/test_button/按钮_normal.png");
+            icon-position: IconPosition.right;
         }
     }
 }
