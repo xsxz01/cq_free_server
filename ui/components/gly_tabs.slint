@@ -5,7 +5,7 @@ export component Recipe inherits Window {
     in-out property <int> active-tab;
     VerticalLayout {
         tab_bar := HorizontalLayout {
-            spacing: 3px;
+            spacing: 0px;
             Button {
                 text: "Red";
                 clicked => { root.active-tab = 0; }
