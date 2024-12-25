@@ -1,6 +1,5 @@
 // Prevent console window in addition to Slint window in Windows release builds when, e.g., starting the app via file manager. Ignored on other platforms.
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
-#![feature(async_closure)]
 use std::error::Error;
 
 use cq_free_server::bhbbk::get_bhbbk_data;

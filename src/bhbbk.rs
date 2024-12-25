@@ -1,25 +1,6 @@
 use serde::Deserialize;
 
-/**
- * {
-            "_id": "66c72cffe03c4fdd1c23dc9b",
-            "bbkName": "独家九龙抬棺专属神器无限刀单职业版-带假人-自动回收-ESP插件",
-            "bbkLineHeight": "#606266",
-            "bbkFontWeight": "normal",
-            "bbkShowWeb": "http://sf302.cn:88/24/465/",
-            "bbkScreenshots": "http://www.bhbbk.com/show.html?uniqueid=e1bcda54-588e-43b6-9ae8-d5b1833561c2",
-            "bbkUpdated": "2024-08-23",
-            "bbkEngine": "GOM",
-            "bbkType": "单职业",
-            "bbkHots": "hot",
-            "bbkBuyLink": "https://fk.54688.cn/details/87A5C54506DEA86C|http://mi.gooyun.top/product/AF30E20AFFA8D21C",
-            "bbSize": "202.88",
-            "bdSize": "6.35",
-            "editTime": "20240823202022",
-            "uniqueid": "e1bcda54-588e-43b6-9ae8-d5b1833561c2",
-            "__v": 0
-        }
- */
+const BASE_API: &str = "http://111.170.149.130:3000/bbkApi";
 
 #[derive(Debug, Deserialize, Clone)]
 #[serde(rename_all(deserialize = "camelCase"))]
@@ -55,8 +36,14 @@ pub struct BhbbkResponse {
     pub data: Vec<BhbbkItem>,
 }
 
-pub async fn get_bhbbk_data(page: u32, size: u32) -> Result<BhbbkResponse, Box<dyn std::error::Error>> {
-    let request_url = format!("http://115.231.220.202:3000/bbkApi/bbkdata?currentPage={}&pagesize={}&search=", page, size);
+pub async fn get_bhbbk_data(
+    page: u32,
+    size: u32,
+) -> Result<BhbbkResponse, Box<dyn std::error::Error>> {
+    let request_url = format!(
+        "{}/bbkdata?currentPage={}&pagesize={}&search=",
+        BASE_API, page, size
+    );
     let client = reqwest::Client::new();
     let resp = client.get(request_url).send().await?;
     let response_text = resp.text().await?;

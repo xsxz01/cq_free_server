@@ -1,4 +1,4 @@
-import { Button, VerticalBox, StandardTableView, HorizontalBox, LineEdit } from "std-widgets.slint";
+import { Button, VerticalBox, StandardTableView, HorizontalBox, LineEdit, ComboBox, CheckBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
     width: 800px;
@@ -14,6 +14,7 @@ export component AppWindow inherits Window {
     callback getCqServerList();
     callback selectCqServer();
     callback parseInt(string) -> int;
+    // 右键菜单
     rightMenu := PopupWindow {
         width: 200px;
         height: 200px;
@@ -27,18 +28,22 @@ export component AppWindow inherits Window {
                 Button {
                     text: "刷新";
                 }
+
                 Button {
                     text: "下一页";
                 }
+
                 Button {
                     text: "上一页";
                 }
+
                 Button {
                     text: "复制";
                 }
             }
         }
     }
+    // 弹出窗口
     alertWnd := PopupWindow {
         width: 400px;
         height: 300px;
@@ -57,6 +62,7 @@ export component AppWindow inherits Window {
                         text: root.message;
                     }
                 }
+
                 Button {
                     text: "确定";
                     height: 50px;
@@ -67,11 +73,14 @@ export component AppWindow inherits Window {
             }
         }
     }
+
     VerticalBox {
-        Button {
-            text: "获取版本列表";
-            clicked => {
-                root.getCqServerList();
+        HorizontalLayout {
+            Button {
+                text: "刷新";
+                clicked => {
+                    root.getCqServerList();
+                }
             }
         }
         StandardTableView {
@@ -79,8 +88,8 @@ export component AppWindow inherits Window {
                 root.current-row = e;
                 root.selectCqServer();
             }
-            row-pointer-event(index,event,point) => {
-                if(event.kind == PointerEventKind.down && event.button == PointerEventButton.right){
+            row-pointer-event(index, event, point) => {
+                if (event.kind == PointerEventKind.down && event.button == PointerEventButton.right) {
                     root.pointer = point;
                     rightMenu.show();
                 }
@@ -88,77 +97,75 @@ export component AppWindow inherits Window {
             width: 800px;
             height: 500px;
             columns: [
-                {
-                    title: "标签"
-                },{
-                    title: "配套网站"
-                },{
-                    title: "版本名称"
-                },{
-                    title: "版本类型"
-                },{
-                    title: "引擎类型"
-                },{
-                    title: "更新日期"
-                },{
-                    title: "游戏截图"
-                },{
-                    title: "自助购买"
-                }
+                { title: "标签" },
+                { title: "配套网站" },
+                { title: "版本名称" },
+                { title: "版本类型" },
+                { title: "引擎类型" },
+                { title: "更新日期" },
+                { title: "游戏截图" },
+                { title: "自助购买" }
             ];
             rows: root.cqServerList;
         }
+
         HorizontalBox {
             Text {
                 text: "版本总数: \{root.counter}";
                 vertical-alignment: TextVerticalAlignment.center;
             }
+
             Text {
                 text: "当前页数: \{root.current-page}";
                 vertical-alignment: TextVerticalAlignment.center;
             }
+
             Text {
                 text: "总页数: \{root.total-page}";
                 vertical-alignment: TextVerticalAlignment.center;
             }
+
             Button {
                 text: "上一页";
                 clicked => {
-                    if(root.current-page == 1) {
+                    if (root.current-page == 1) {
                         root.message = "已经是第一页了";
                         alertWnd.show();
-                    }else {
+                    } else {
                         root.current-page -= 1;
                         root.getCqServerList();
                     }
                 }
             }
+
             Button {
                 text: "下一页";
                 clicked => {
-                    if(root.current-page == root.total-page) {
+                    if (root.current-page == root.total-page) {
                         root.message = "已经是最后一页了";
                         alertWnd.show();
-                    }else {
+                    } else {
                         root.current-page += 1;
                         root.getCqServerList();
                     }
                 }
             }
+
             page_num := LineEdit {
                 width: 50px;
                 height: 30px;
                 text: "1";
             }
+
             Button {
                 text: "跳转";
                 clicked => {
-                    if(root.parseInt(page_num.text) > root.total-page) {
+                    if (root.parseInt(page_num.text) > root.total-page) {
                         root.message = "超过最大页数";
                         alertWnd.show();
                         return;
                     }
-                    if(root.parseInt(page_num.text) < 1) {
+                    if (root.parseInt(page_num.text) < 1) {
                         root.message = "页数不能小于1";
                         alertWnd.show();
                         return;
