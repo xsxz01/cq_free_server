@@ -10,7 +10,6 @@ slint::include_modules!();
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let ui = AppWindow::new()?;
-
     // get bhbbk data
     ui.on_getCqServerList({
         let ui_handle = ui.as_weak();
@@ -63,6 +62,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
     ui.on_parseInt(|x| {
         x.parse::<i32>().unwrap_or_default()
     });
+
+    Logic::get(&ui).on_onInit({
+        let ui_handle = ui.as_weak();
+        move || {
+            let ui = ui_handle.unwrap();
+            ui.set_counter(1);
+            ui.invoke_getCqServerList();
+        }
+    });
+
+    Logic::get(&ui).invoke_onInit();
 
     ui.run()?;
 

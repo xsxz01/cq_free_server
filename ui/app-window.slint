@@ -1,5 +1,9 @@
 import { Button, VerticalBox, StandardTableView, HorizontalBox, LineEdit, ComboBox, CheckBox } from "std-widgets.slint";
 
+export global Logic {
+    pure callback onInit();
+}
+
 export component AppWindow inherits Window {
     width: 800px;
     height: 600px;
@@ -75,14 +79,6 @@ export component AppWindow inherits Window {
     }
 
     VerticalBox {
-        HorizontalLayout {
-            Button {
-                text: "刷新";
-                clicked => {
-                    root.getCqServerList();
-                }
-            }
-        }
         StandardTableView {
             current-row-changed(e) => {
                 root.current-row = e;
@@ -95,7 +91,6 @@ export component AppWindow inherits Window {
                 }
             }
             width: 800px;
-            height: 500px;
             columns: [
                 { title: "标签" },
                 { title: "配套网站" },
