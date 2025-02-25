@@ -1,46 +1,37 @@
 {
-  "hash": "6c5546b4",
-  "configHash": "9e7662d6",
+  "hash": "16670a80",
+  "configHash": "aa30dcc9",
   "lockfileHash": "09ffd3ab",
-  "browserHash": "b03db278",
+  "browserHash": "c9da198d",
   "optimized": {
-    "@angular/common": {
-      "src": "../../../../../../node_modules/.pnpm/@angular+common@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0__rxjs@7.8.2/node_modules/@angular/common/fesm2022/common.mjs",
-      "file": "@angular_common.js",
-      "fileHash": "4f0dd085",
-      "needsInterop": false
-    },
     "@angular/core": {
       "src": "../../../../../../node_modules/.pnpm/@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0/node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "5fae6e68",
+      "fileHash": "52b9e741",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/.pnpm/@angular+platform-browser@19.1.7_@angular+animations@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_z_efioondw3vqcx4i57auqxzxtnm/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "4e924372",
+      "fileHash": "22ac2905",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/.pnpm/@angular+router@19.1.7_@angular+common@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0__pohf5ohyqi2cjiuyreo67c4j4a/node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "1e7a4c29",
+      "fileHash": "2f3f25c3",
       "needsInterop": false
     },
     "@tauri-apps/api/core": {
       "src": "../../../../../../node_modules/.pnpm/@tauri-apps+api@2.2.0/node_modules/@tauri-apps/api/core.js",
       "file": "@tauri-apps_api_core.js",
-      "fileHash": "aeab0130",
+      "fileHash": "e187e9c2",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-JJUB54G5": {
-      "file": "chunk-JJUB54G5.js"
-    },
-    "chunk-C4BKDDBH": {
-      "file": "chunk-C4BKDDBH.js"
+    "chunk-BKUWVLVC": {
+      "file": "chunk-BKUWVLVC.js"
     },
     "chunk-DN6ORXPI": {
       "file": "chunk-DN6ORXPI.js"
