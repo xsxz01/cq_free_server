@@ -5,8 +5,9 @@ import { ExploreComponent } from "./pages/explore/explore.component";
 import { LocalComponent } from "./pages/local/local.component";
 import { LaunchersComponent } from "./pages/launchers/launchers.component";
 import { ToolsComponent } from "./pages/tools/tools.component";
+import { ServerListComponent } from './pages/server-list/server-list.component';
 
-export const routes: Routes = [
+const routes: Routes = [
   {
     path: "dashboard",
     component: DashboardComponent,
@@ -42,4 +43,11 @@ export const routes: Routes = [
     component: ToolsComponent,
     title: "常用工具" 
   },
+  { 
+    path: 'server-list',
+    title: '开服列表',
+    component: ServerListComponent 
+  },
 ];
+
+export { routes };

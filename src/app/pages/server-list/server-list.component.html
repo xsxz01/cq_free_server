@@ -1,0 +1,52 @@
+<div class="container-fluid py-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0"><i class="bi bi-server me-2"></i>最新开服列表</h3>
+    </div>
+    
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>服务器名</th>
+              <th>官网</th>
+              <th>开放时间</th>
+              <th>地区线路</th>
+              <th>版本介绍</th>
+              <th>客服QQ</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let server of serverList" [attr.data-priority]="server.priority">
+              <td class="fw-bold text-danger">{{server.name}}</td>
+              <td>
+                <a [href]="server.website" target="_blank" class="text-decoration-none">
+                  {{server.website | shortUrl}}
+                </a>
+              </td>
+              <td>
+                <i class="bi bi-clock-history me-2"></i>
+                {{server.openTime | date: 'yyyy-MM-dd HH:mm'}}
+              </td>
+              <td>
+                <span class="badge bg-success">{{server.region}}</span>
+              </td>
+              <td class="text-truncate" style="max-width: 200px;">{{server.version}}</td>
+              <td>
+                <button class="btn btn-sm btn-outline-dark">
+                  <i class="bi bi-qq me-1"></i>{{server.qq}}
+                </button>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary me-2">进入官网</button>
+                <button class="btn btn-sm btn-warning">联系客服</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

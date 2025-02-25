@@ -39,10 +39,15 @@ export class SidebarMenuComponent implements OnInit {
       icon: 'bi-speedometer2', 
       link: '/dashboard',
     },
+    // { 
+    //   title: '数据管理', 
+    //   icon: 'bi-database', 
+    //   link: '/data',
+    // },
     { 
-      title: '数据管理', 
-      icon: 'bi-database', 
-      link: '/data',
+      title: '开服列表',
+      icon: 'bi-server',
+      link: '/server-list'
     },
     { 
       title: '探索版本',
@@ -63,9 +68,9 @@ export class SidebarMenuComponent implements OnInit {
       title: '常用工具',
       icon: 'bi-tools',
       link: '/tools'
-    }
+    },
+    // 新增开服列表菜单项
   ];
-
   // 新增菜单激活状态处理
   setActiveMenuItem(id: string) {
     this.activeMenuItemId = id;
