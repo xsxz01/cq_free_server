@@ -14,7 +14,6 @@ pub fn run() {
         .setup(|app| {
             let window = app.get_webview_window("main").unwrap();
             window.set_decorations(false).unwrap();
-            window.set_always_on_top(true).unwrap();
             Ok(())
         })
         .on_window_event(|_window, e| {
