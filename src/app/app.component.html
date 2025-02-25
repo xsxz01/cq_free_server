@@ -1,12 +1,12 @@
 <div class="d-flex flex-column min-vh-100">
   <!-- 头部 -->
-  <app-header></app-header>
+  <app-header [windowTitle]="title"/>
   <div class="row g-0 flex-grow-1 min-h-0 h-100">
     <!-- 动态绑定列宽 -->
     <div [class.col-md-2]="sidebarService.isOpen$ | async" 
          [class.col-auto]="!(sidebarService.isOpen$ | async)"
          class="bg-white border-end transition-all d-flex flex-column"
-         style="min-width: 64px; max-width: 240px;">  <!-- 添加最小宽度限制 -->
+         style="min-width: 64px; max-width: 240px;">
     <app-sidebar-menu></app-sidebar-menu>
     </div>
     
@@ -14,7 +14,7 @@
     <main [class.col-md-9]="sidebarService.isOpen$ | async"
           [class.col-md-11]="!(sidebarService.isOpen$ | async)"
           class="p-4 bg-gray-50 overflow-hidden d-flex flex-column min-h-0">
-      <div class="flex-grow-1 overflow-auto min-h-0 h-100 route-container">  <!-- 新增容器 -->
+      <div class="flex-grow-1 overflow-auto min-h-0 h-100 route-container">
         <div class="route-transition">
           <router-outlet></router-outlet>
         </div>

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { SidebarService } from '../../service/sidebar.service';
 import { AsyncPipe } from '@angular/common';
 import { getCurrentWindow, LogicalPosition, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
@@ -11,14 +11,12 @@ import { getCurrentWindow, LogicalPosition, PhysicalPosition, PhysicalSize } fro
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
+  // 窗口标题
+  windowTitle = input<string>("我的应用");
   // 保存当前窗口大小
   private windowSize: PhysicalSize | null = null;
   // 保存窗口是否最大化
   private isMaximized = signal(false);
-  // 窗口是否处于拖拽状态
-  private isDragging = false;
-  // 记录拖拽开始的位置
-  private dragStartPosition = { x: 0, y: 0 };
 
   constructor(public sidebarService: SidebarService) {
     getCurrentWindow().outerSize().then((size) => {

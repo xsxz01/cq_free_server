@@ -3,8 +3,6 @@ import { RouterModule } from "@angular/router";
 // 导入header和sidebar-menu
 import { HeaderComponent } from "./components/header/header.component";
 import { SidebarMenuComponent } from "./components/sidebar-menu/sidebar-menu.component";
-
-import { invoke } from "@tauri-apps/api/core";
 // 导入Bootstrap的CSS和JS文件
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { SidebarService } from "./service/sidebar.service";
@@ -19,5 +17,7 @@ import { AsyncPipe } from "@angular/common";
   providers: [SidebarService],
 })
 export class AppComponent {
+  // 应用标题
+  title = "传奇版本库";
   constructor(public sidebarService: SidebarService) {}
 }
