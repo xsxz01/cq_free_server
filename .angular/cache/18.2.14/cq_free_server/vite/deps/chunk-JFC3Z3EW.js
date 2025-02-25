@@ -8,7 +8,7 @@ import {
   isPlatformServer,
   parseCookieValue,
   setRootDomAdapter
-} from "./chunk-GCKZZDS4.js";
+} from "./chunk-OTL5KBH6.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   APP_ID,
@@ -43,6 +43,7 @@ import {
   Version,
   ViewEncapsulation$1,
   XSS_SECURITY_URL,
+  ZONELESS_ENABLED,
   _global,
   _sanitizeHtml,
   _sanitizeUrl,
@@ -76,11 +77,13 @@ import {
   unwrapSafeValue,
   whenStable,
   withDomHydration,
+  withEventReplay,
+  withI18nSupport,
   ɵɵdefineInjectable,
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-RRE4C3TQ.js";
+} from "./chunk-X3UYTZMZ.js";
 import {
   __async,
   __objRest,
@@ -88,7 +91,7 @@ import {
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
 
-// node_modules/.pnpm/@angular+common@17.3.12_@angular+core@17.3.12_rxjs@7.8.2_zone.js@0.14.10__rxjs@7.8.2/node_modules/@angular/common/fesm2022/http.mjs
+// node_modules/.pnpm/@angular+common@18.2.13_@angular+core@18.2.13_rxjs@7.8.2_zone.js@0.14.10__rxjs@7.8.2/node_modules/@angular/common/fesm2022/http.mjs
 var HttpHandler = class {
 };
 var HttpBackend = class {
@@ -787,7 +790,7 @@ var HttpResponseBase = class {
    * The single parameter accepted is an initialization hash. Any properties
    * of the response passed there will override the default values.
    */
-  constructor(init, defaultStatus = HttpStatusCode.Ok, defaultStatusText = "OK") {
+  constructor(init, defaultStatus = 200, defaultStatusText = "OK") {
     this.headers = init.headers || new HttpHeaders();
     this.status = init.status !== void 0 ? init.status : defaultStatus;
     this.statusText = init.statusText || defaultStatusText;
@@ -848,6 +851,8 @@ var HttpErrorResponse = class extends HttpResponseBase {
     this.error = init.error || null;
   }
 };
+var HTTP_STATUS_CODE_OK = 200;
+var HTTP_STATUS_CODE_NO_CONTENT = 204;
 var HttpStatusCode;
 (function(HttpStatusCode2) {
   HttpStatusCode2[HttpStatusCode2["Continue"] = 100] = "Continue";
@@ -1120,8 +1125,8 @@ var HttpClient = class _HttpClient {
     return this.request("PUT", url, addBody(options, body));
   }
   static {
-    this.ɵfac = function HttpClient_Factory(t) {
-      return new (t || _HttpClient)(ɵɵinject(HttpHandler));
+    this.ɵfac = function HttpClient_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpClient)(ɵɵinject(HttpHandler));
     };
   }
   static {
@@ -1151,7 +1156,7 @@ var FetchBackend = class _FetchBackend {
   constructor() {
     this.fetchImpl = inject(FetchFactory, {
       optional: true
-    })?.fetch ?? fetch.bind(globalThis);
+    })?.fetch ?? ((...args) => globalThis.fetch(...args));
     this.ngZone = inject(NgZone);
   }
   handle(request) {
@@ -1168,9 +1173,9 @@ var FetchBackend = class _FetchBackend {
       const init = this.createRequestInit(request);
       let response;
       try {
-        const fetchPromise = this.fetchImpl(request.urlWithParams, __spreadValues({
+        const fetchPromise = this.ngZone.runOutsideAngular(() => this.fetchImpl(request.urlWithParams, __spreadValues({
           signal
-        }, init));
+        }, init)));
         silenceSuperfluousUnhandledPromiseRejection(fetchPromise);
         observer.next({
           type: HttpEventType.Sent
@@ -1248,7 +1253,7 @@ var FetchBackend = class _FetchBackend {
         }
       }
       if (status === 0) {
-        status = body ? HttpStatusCode.Ok : 0;
+        status = body ? HTTP_STATUS_CODE_OK : 0;
       }
       const ok = status >= 200 && status < 300;
       if (ok) {
@@ -1290,8 +1295,10 @@ var FetchBackend = class _FetchBackend {
     const headers = {};
     const credentials = req.withCredentials ? "include" : void 0;
     req.headers.forEach((name, values) => headers[name] = values.join(","));
-    headers["Accept"] ??= "application/json, text/plain, */*";
-    if (!headers["Content-Type"]) {
+    if (!req.headers.has("Accept")) {
+      headers["Accept"] = "application/json, text/plain, */*";
+    }
+    if (!req.headers.has("Content-Type")) {
       const detectedType = req.detectContentTypeHeader();
       if (detectedType !== null) {
         headers["Content-Type"] = detectedType;
@@ -1314,8 +1321,8 @@ var FetchBackend = class _FetchBackend {
     return chunksAll;
   }
   static {
-    this.ɵfac = function FetchBackend_Factory(t) {
-      return new (t || _FetchBackend)();
+    this.ɵfac = function FetchBackend_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _FetchBackend)();
     };
   }
   static {
@@ -1351,7 +1358,10 @@ function chainedInterceptorFn(chainTailFn, interceptorFn, injector) {
 var HTTP_INTERCEPTORS = new InjectionToken(ngDevMode ? "HTTP_INTERCEPTORS" : "");
 var HTTP_INTERCEPTOR_FNS = new InjectionToken(ngDevMode ? "HTTP_INTERCEPTOR_FNS" : "");
 var HTTP_ROOT_INTERCEPTOR_FNS = new InjectionToken(ngDevMode ? "HTTP_ROOT_INTERCEPTOR_FNS" : "");
-var PRIMARY_HTTP_BACKEND = new InjectionToken(ngDevMode ? "PRIMARY_HTTP_BACKEND" : "");
+var REQUESTS_CONTRIBUTE_TO_STABILITY = new InjectionToken(ngDevMode ? "REQUESTS_CONTRIBUTE_TO_STABILITY" : "", {
+  providedIn: "root",
+  factory: () => true
+});
 function legacyInterceptorFnFactory() {
   let chain = null;
   return (req, handler) => {
@@ -1362,8 +1372,13 @@ function legacyInterceptorFnFactory() {
       chain = interceptors.reduceRight(adaptLegacyInterceptorToChain, interceptorChainEndFn);
     }
     const pendingTasks = inject(PendingTasks);
-    const taskId = pendingTasks.add();
-    return chain(req, handler).pipe(finalize(() => pendingTasks.remove(taskId)));
+    const contributeToStability = inject(REQUESTS_CONTRIBUTE_TO_STABILITY);
+    if (contributeToStability) {
+      const taskId = pendingTasks.add();
+      return chain(req, handler).pipe(finalize(() => pendingTasks.remove(taskId)));
+    } else {
+      return chain(req, handler);
+    }
   };
 }
 var fetchBackendWarningDisplayed = false;
@@ -1374,10 +1389,7 @@ var HttpInterceptorHandler = class _HttpInterceptorHandler extends HttpHandler {
     this.injector = injector;
     this.chain = null;
     this.pendingTasks = inject(PendingTasks);
-    const primaryHttpBackend = inject(PRIMARY_HTTP_BACKEND, {
-      optional: true
-    });
-    this.backend = primaryHttpBackend ?? backend;
+    this.contributeToStability = inject(REQUESTS_CONTRIBUTE_TO_STABILITY);
     if ((typeof ngDevMode === "undefined" || ngDevMode) && !fetchBackendWarningDisplayed) {
       const isServer = isPlatformServer(injector.get(PLATFORM_ID));
       if (isServer && !(this.backend instanceof FetchBackend)) {
@@ -1391,12 +1403,16 @@ var HttpInterceptorHandler = class _HttpInterceptorHandler extends HttpHandler {
       const dedupedInterceptorFns = Array.from(/* @__PURE__ */ new Set([...this.injector.get(HTTP_INTERCEPTOR_FNS), ...this.injector.get(HTTP_ROOT_INTERCEPTOR_FNS, [])]));
       this.chain = dedupedInterceptorFns.reduceRight((nextSequencedFn, interceptorFn) => chainedInterceptorFn(nextSequencedFn, interceptorFn, this.injector), interceptorChainEndFn);
     }
-    const taskId = this.pendingTasks.add();
-    return this.chain(initialRequest, (downstreamRequest) => this.backend.handle(downstreamRequest)).pipe(finalize(() => this.pendingTasks.remove(taskId)));
+    if (this.contributeToStability) {
+      const taskId = this.pendingTasks.add();
+      return this.chain(initialRequest, (downstreamRequest) => this.backend.handle(downstreamRequest)).pipe(finalize(() => this.pendingTasks.remove(taskId)));
+    } else {
+      return this.chain(initialRequest, (downstreamRequest) => this.backend.handle(downstreamRequest));
+    }
   }
   static {
-    this.ɵfac = function HttpInterceptorHandler_Factory(t) {
-      return new (t || _HttpInterceptorHandler)(ɵɵinject(HttpBackend), ɵɵinject(EnvironmentInjector));
+    this.ɵfac = function HttpInterceptorHandler_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpInterceptorHandler)(ɵɵinject(HttpBackend), ɵɵinject(EnvironmentInjector));
     };
   }
   static {
@@ -1469,9 +1485,9 @@ var JsonpClientBackend = class _JsonpClientBackend {
         finished = true;
       };
       const cleanup = () => {
-        if (node.parentNode) {
-          node.parentNode.removeChild(node);
-        }
+        node.removeEventListener("load", onLoad);
+        node.removeEventListener("error", onError);
+        node.remove();
         delete this.callbackMap[callback];
       };
       const onLoad = (event) => {
@@ -1488,7 +1504,7 @@ var JsonpClientBackend = class _JsonpClientBackend {
           }
           observer.next(new HttpResponse({
             body,
-            status: HttpStatusCode.Ok,
+            status: HTTP_STATUS_CODE_OK,
             statusText: "OK",
             url
           }));
@@ -1523,8 +1539,8 @@ var JsonpClientBackend = class _JsonpClientBackend {
     foreignDocument.adoptNode(script);
   }
   static {
-    this.ɵfac = function JsonpClientBackend_Factory(t) {
-      return new (t || _JsonpClientBackend)(ɵɵinject(JsonpCallbackContext), ɵɵinject(DOCUMENT));
+    this.ɵfac = function JsonpClientBackend_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _JsonpClientBackend)(ɵɵinject(JsonpCallbackContext), ɵɵinject(DOCUMENT));
     };
   }
   static {
@@ -1568,8 +1584,8 @@ var JsonpInterceptor = class _JsonpInterceptor {
     return runInInjectionContext(this.injector, () => jsonpInterceptorFn(initialRequest, (downstreamRequest) => next.handle(downstreamRequest)));
   }
   static {
-    this.ɵfac = function JsonpInterceptor_Factory(t) {
-      return new (t || _JsonpInterceptor)(ɵɵinject(EnvironmentInjector));
+    this.ɵfac = function JsonpInterceptor_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _JsonpInterceptor)(ɵɵinject(EnvironmentInjector));
     };
   }
   static {
@@ -1657,11 +1673,11 @@ var HttpXhrBackend = class _HttpXhrBackend {
             url
           } = partialFromXhr();
           let body = null;
-          if (status !== HttpStatusCode.NoContent) {
+          if (status !== HTTP_STATUS_CODE_NO_CONTENT) {
             body = typeof xhr.response === "undefined" ? xhr.responseText : xhr.response;
           }
           if (status === 0) {
-            status = !!body ? HttpStatusCode.Ok : 0;
+            status = !!body ? HTTP_STATUS_CODE_OK : 0;
           }
           let ok = status >= 200 && status < 300;
           if (req.responseType === "json" && typeof body === "string") {
@@ -1773,8 +1789,8 @@ var HttpXhrBackend = class _HttpXhrBackend {
     }));
   }
   static {
-    this.ɵfac = function HttpXhrBackend_Factory(t) {
-      return new (t || _HttpXhrBackend)(ɵɵinject(XhrFactory));
+    this.ɵfac = function HttpXhrBackend_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpXhrBackend)(ɵɵinject(XhrFactory));
     };
   }
   static {
@@ -1826,8 +1842,8 @@ var HttpXsrfCookieExtractor = class _HttpXsrfCookieExtractor {
     return this.lastToken;
   }
   static {
-    this.ɵfac = function HttpXsrfCookieExtractor_Factory(t) {
-      return new (t || _HttpXsrfCookieExtractor)(ɵɵinject(DOCUMENT), ɵɵinject(PLATFORM_ID), ɵɵinject(XSRF_COOKIE_NAME));
+    this.ɵfac = function HttpXsrfCookieExtractor_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpXsrfCookieExtractor)(ɵɵinject(DOCUMENT), ɵɵinject(PLATFORM_ID), ɵɵinject(XSRF_COOKIE_NAME));
     };
   }
   static {
@@ -1882,8 +1898,8 @@ var HttpXsrfInterceptor = class _HttpXsrfInterceptor {
     return runInInjectionContext(this.injector, () => xsrfInterceptorFn(initialRequest, (downstreamRequest) => next.handle(downstreamRequest)));
   }
   static {
-    this.ɵfac = function HttpXsrfInterceptor_Factory(t) {
-      return new (t || _HttpXsrfInterceptor)(ɵɵinject(EnvironmentInjector));
+    this.ɵfac = function HttpXsrfInterceptor_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpXsrfInterceptor)(ɵɵinject(EnvironmentInjector));
     };
   }
   static {
@@ -1928,7 +1944,11 @@ function provideHttpClient(...features) {
     useExisting: HttpInterceptorHandler
   }, {
     provide: HttpBackend,
-    useExisting: HttpXhrBackend
+    useFactory: () => {
+      return inject(FetchBackend, {
+        optional: true
+      }) ?? inject(HttpXhrBackend);
+    }
   }, {
     provide: HTTP_INTERCEPTOR_FNS,
     useValue: xsrfInterceptorFn,
@@ -2016,8 +2036,8 @@ var HttpClientXsrfModule = class _HttpClientXsrfModule {
     };
   }
   static {
-    this.ɵfac = function HttpClientXsrfModule_Factory(t) {
-      return new (t || _HttpClientXsrfModule)();
+    this.ɵfac = function HttpClientXsrfModule_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpClientXsrfModule)();
     };
   }
   static {
@@ -2067,8 +2087,8 @@ var HttpClientXsrfModule = class _HttpClientXsrfModule {
 })();
 var HttpClientModule = class _HttpClientModule {
   static {
-    this.ɵfac = function HttpClientModule_Factory(t) {
-      return new (t || _HttpClientModule)();
+    this.ɵfac = function HttpClientModule_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpClientModule)();
     };
   }
   static {
@@ -2087,7 +2107,7 @@ var HttpClientModule = class _HttpClientModule {
     type: NgModule,
     args: [{
       /**
-       * Configures the [dependency injector](guide/glossary#injector) where it is imported
+       * Configures the dependency injector where it is imported
        * with supporting services for HTTP communications.
        */
       providers: [provideHttpClient(withInterceptorsFromDi())]
@@ -2096,8 +2116,8 @@ var HttpClientModule = class _HttpClientModule {
 })();
 var HttpClientJsonpModule = class _HttpClientJsonpModule {
   static {
-    this.ɵfac = function HttpClientJsonpModule_Factory(t) {
-      return new (t || _HttpClientJsonpModule)();
+    this.ɵfac = function HttpClientJsonpModule_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HttpClientJsonpModule)();
     };
   }
   static {
@@ -2119,11 +2139,12 @@ var HttpClientJsonpModule = class _HttpClientJsonpModule {
     }]
   }], null, null);
 })();
+var HTTP_TRANSFER_CACHE_ORIGIN_MAP = new InjectionToken(ngDevMode ? "HTTP_TRANSFER_CACHE_ORIGIN_MAP" : "");
 var BODY = "b";
 var HEADERS = "h";
 var STATUS = "s";
 var STATUS_TEXT = "st";
-var URL2 = "u";
+var REQ_URL = "u";
 var RESPONSE_TYPE = "rt";
 var CACHE_OPTIONS = new InjectionToken(ngDevMode ? "HTTP_TRANSFER_STATE_CACHE_OPTIONS" : "");
 var ALLOWED_METHODS = ["GET", "HEAD"];
@@ -2137,13 +2158,21 @@ function transferCacheInterceptorFn(req, next) {
     transferCache: requestOptions,
     method: requestMethod
   } = req;
-  if (!isCacheActive || // POST requests are allowed either globally or at request level
-  requestMethod === "POST" && !globalOptions.includePostRequests && !requestOptions || requestMethod !== "POST" && !ALLOWED_METHODS.includes(requestMethod) || requestOptions === false || //
-  globalOptions.filter?.(req) === false) {
+  if (!isCacheActive || requestOptions === false || // POST requests are allowed either globally or at request level
+  requestMethod === "POST" && !globalOptions.includePostRequests && !requestOptions || requestMethod !== "POST" && !ALLOWED_METHODS.includes(requestMethod) || // Do not cache request that require authorization when includeRequestsWithAuthHeaders is falsey
+  !globalOptions.includeRequestsWithAuthHeaders && hasAuthHeaders(req) || globalOptions.filter?.(req) === false) {
     return next(req);
   }
   const transferState = inject(TransferState);
-  const storeKey = makeCacheKey(req);
+  const originMap = inject(HTTP_TRANSFER_CACHE_ORIGIN_MAP, {
+    optional: true
+  });
+  const isServer = isPlatformServer(inject(PLATFORM_ID));
+  if (originMap && !isServer) {
+    throw new RuntimeError(2803, ngDevMode && "Angular detected that the `HTTP_TRANSFER_CACHE_ORIGIN_MAP` token is configured and present in the client side code. Please ensure that this token is only provided in the server code of the application.");
+  }
+  const requestUrl = isServer && originMap ? mapRequestOriginUrl(req.url, originMap) : req.url;
+  const storeKey = makeCacheKey(req, requestUrl);
   const response = transferState.get(storeKey, null);
   let headersToInclude = globalOptions.includeHeaders;
   if (typeof requestOptions === "object" && requestOptions.includeHeaders) {
@@ -2156,7 +2185,7 @@ function transferCacheInterceptorFn(req, next) {
       [HEADERS]: httpHeaders,
       [STATUS]: status,
       [STATUS_TEXT]: statusText,
-      [URL2]: url
+      [REQ_URL]: url
     } = response;
     let body = undecodedBody;
     switch (responseType) {
@@ -2179,7 +2208,6 @@ function transferCacheInterceptorFn(req, next) {
       url
     }));
   }
-  const isServer = isPlatformServer(inject(PLATFORM_ID));
   return next(req).pipe(tap((event) => {
     if (event instanceof HttpResponse && isServer) {
       transferState.set(storeKey, {
@@ -2187,11 +2215,14 @@ function transferCacheInterceptorFn(req, next) {
         [HEADERS]: getFilteredHeaders(event.headers, headersToInclude),
         [STATUS]: event.status,
         [STATUS_TEXT]: event.statusText,
-        [URL2]: event.url || "",
+        [REQ_URL]: requestUrl,
         [RESPONSE_TYPE]: req.responseType
       });
     }
   }));
+}
+function hasAuthHeaders(req) {
+  return req.headers.has("authorization") || req.headers.has("proxy-authorization");
 }
 function getFilteredHeaders(headers, includeHeaders) {
   if (!includeHeaders) {
@@ -2209,12 +2240,11 @@ function getFilteredHeaders(headers, includeHeaders) {
 function sortAndConcatParams(params) {
   return [...params.keys()].sort().map((k) => `${k}=${params.getAll(k)}`).join("&");
 }
-function makeCacheKey(request) {
+function makeCacheKey(request, mappedRequestUrl) {
   const {
     params,
     method,
-    responseType,
-    url
+    responseType
   } = request;
   const encodedParams = sortAndConcatParams(params);
   let serializedBody = request.serializeBody();
@@ -2223,7 +2253,7 @@ function makeCacheKey(request) {
   } else if (typeof serializedBody !== "string") {
     serializedBody = "";
   }
-  const key = [method, responseType, url, serializedBody, encodedParams].join("|");
+  const key = [method, responseType, mappedRequestUrl, serializedBody, encodedParams].join("|");
   const hash = generateHash(key);
   return makeStateKey(hash);
 }
@@ -2284,8 +2314,24 @@ function appendMissingHeadersDetection(url, headers, headersToInclude) {
     }
   });
 }
+function mapRequestOriginUrl(url, originMap) {
+  const origin = new URL(url, "resolve://").origin;
+  const mappedOrigin = originMap[origin];
+  if (!mappedOrigin) {
+    return url;
+  }
+  if (typeof ngDevMode === "undefined" || ngDevMode) {
+    verifyMappedOrigin(mappedOrigin);
+  }
+  return url.replace(origin, mappedOrigin);
+}
+function verifyMappedOrigin(url) {
+  if (new URL(url, "resolve://").pathname !== "/") {
+    throw new RuntimeError(2804, `Angular detected a URL with a path segment in the value provided for the \`HTTP_TRANSFER_CACHE_ORIGIN_MAP\` token: ${url}. The map should only contain origins without any other segments.`);
+  }
+}
 
-// node_modules/.pnpm/@angular+platform-browser@17.3.12_@angular+animations@17.3.12_@angular+core@17.3.12_rxjs@7.8._2smkrnkygfkzvc225i6vqts5oq/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs
+// node_modules/.pnpm/@angular+platform-browser@18.2.13_@angular+animations@18.2.13_@angular+core@18.2.13_rxjs@7.8._i5vkrou5hgdgmpckuhczodyy3m/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs
 var GenericBrowserDomAdapter = class extends DomAdapter {
   constructor() {
     super(...arguments);
@@ -2306,9 +2352,7 @@ var BrowserDomAdapter = class _BrowserDomAdapter extends GenericBrowserDomAdapte
     el.dispatchEvent(evt);
   }
   remove(node) {
-    if (node.parentNode) {
-      node.parentNode.removeChild(node);
-    }
+    node.remove();
   }
   createElement(tagName, doc) {
     doc = doc || this.getDefaultDocument();
@@ -2411,8 +2455,8 @@ var BrowserXhr = class _BrowserXhr {
     return new XMLHttpRequest();
   }
   static {
-    this.ɵfac = function BrowserXhr_Factory(t) {
-      return new (t || _BrowserXhr)();
+    this.ɵfac = function BrowserXhr_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _BrowserXhr)();
     };
   }
   static {
@@ -2474,8 +2518,8 @@ var EventManager = class _EventManager {
     return plugin;
   }
   static {
-    this.ɵfac = function EventManager_Factory(t) {
-      return new (t || _EventManager)(ɵɵinject(EVENT_MANAGER_PLUGINS), ɵɵinject(NgZone));
+    this.ɵfac = function EventManager_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _EventManager)(ɵɵinject(EVENT_MANAGER_PLUGINS), ɵɵinject(NgZone));
     };
   }
   static {
@@ -2634,8 +2678,8 @@ var SharedStylesHost = class _SharedStylesHost {
     hostNodes.add(this.doc.head);
   }
   static {
-    this.ɵfac = function SharedStylesHost_Factory(t) {
-      return new (t || _SharedStylesHost)(ɵɵinject(DOCUMENT), ɵɵinject(APP_ID), ɵɵinject(CSP_NONCE, 8), ɵɵinject(PLATFORM_ID));
+    this.ɵfac = function SharedStylesHost_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _SharedStylesHost)(ɵɵinject(DOCUMENT), ɵɵinject(APP_ID), ɵɵinject(CSP_NONCE, 8), ɵɵinject(PLATFORM_ID));
     };
   }
   static {
@@ -2682,7 +2726,7 @@ var NAMESPACE_URIS = {
   "xlink": "http://www.w3.org/1999/xlink",
   "xml": "http://www.w3.org/XML/1998/namespace",
   "xmlns": "http://www.w3.org/2000/xmlns/",
-  "math": "http://www.w3.org/1998/MathML/"
+  "math": "http://www.w3.org/1998/Math/MathML"
 };
 var COMPONENT_REGEX = /%COMP%/g;
 var COMPONENT_VARIABLE = "%COMP%";
@@ -2761,8 +2805,8 @@ var DomRendererFactory2 = class _DomRendererFactory2 {
     this.rendererByCompId.clear();
   }
   static {
-    this.ɵfac = function DomRendererFactory2_Factory(t) {
-      return new (t || _DomRendererFactory2)(ɵɵinject(EventManager), ɵɵinject(SharedStylesHost), ɵɵinject(APP_ID), ɵɵinject(REMOVE_STYLES_ON_COMPONENT_DESTROY), ɵɵinject(DOCUMENT), ɵɵinject(PLATFORM_ID), ɵɵinject(NgZone), ɵɵinject(CSP_NONCE));
+    this.ɵfac = function DomRendererFactory2_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _DomRendererFactory2)(ɵɵinject(EventManager), ɵɵinject(SharedStylesHost), ɵɵinject(APP_ID), ɵɵinject(REMOVE_STYLES_ON_COMPONENT_DESTROY), ɵɵinject(DOCUMENT), ɵɵinject(PLATFORM_ID), ɵɵinject(NgZone), ɵɵinject(CSP_NONCE));
     };
   }
   static {
@@ -2847,10 +2891,8 @@ var DefaultDomRenderer2 = class {
       targetParent.insertBefore(newChild, refChild);
     }
   }
-  removeChild(parent, oldChild) {
-    if (parent) {
-      parent.removeChild(oldChild);
-    }
+  removeChild(_parent, oldChild) {
+    oldChild.remove();
   }
   selectRootElement(selectorOrNode, preserveContent) {
     let el = typeof selectorOrNode === "string" ? this.doc.querySelector(selectorOrNode) : selectorOrNode;
@@ -2985,8 +3027,8 @@ var ShadowDomRenderer = class extends DefaultDomRenderer2 {
   insertBefore(parent, newChild, refChild) {
     return super.insertBefore(this.nodeOrShadowRoot(parent), newChild, refChild);
   }
-  removeChild(parent, oldChild) {
-    return super.removeChild(this.nodeOrShadowRoot(parent), oldChild);
+  removeChild(_parent, oldChild) {
+    return super.removeChild(null, oldChild);
   }
   parentNode(node) {
     return this.nodeOrShadowRoot(super.parentNode(this.nodeOrShadowRoot(node)));
@@ -3046,8 +3088,8 @@ var DomEventsPlugin = class _DomEventsPlugin extends EventManagerPlugin {
     return target.removeEventListener(eventName, callback);
   }
   static {
-    this.ɵfac = function DomEventsPlugin_Factory(t) {
-      return new (t || _DomEventsPlugin)(ɵɵinject(DOCUMENT));
+    this.ɵfac = function DomEventsPlugin_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _DomEventsPlugin)(ɵɵinject(DOCUMENT));
     };
   }
   static {
@@ -3213,8 +3255,8 @@ var KeyEventsPlugin = class _KeyEventsPlugin extends EventManagerPlugin {
     return keyName === "esc" ? "escape" : keyName;
   }
   static {
-    this.ɵfac = function KeyEventsPlugin_Factory(t) {
-      return new (t || _KeyEventsPlugin)(ɵɵinject(DOCUMENT));
+    this.ɵfac = function KeyEventsPlugin_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _KeyEventsPlugin)(ɵɵinject(DOCUMENT));
     };
   }
   static {
@@ -3344,8 +3386,8 @@ var BrowserModule = class _BrowserModule {
     };
   }
   static {
-    this.ɵfac = function BrowserModule_Factory(t) {
-      return new (t || _BrowserModule)(ɵɵinject(BROWSER_MODULE_PROVIDERS_MARKER, 12));
+    this.ɵfac = function BrowserModule_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _BrowserModule)(ɵɵinject(BROWSER_MODULE_PROVIDERS_MARKER, 12));
     };
   }
   static {
@@ -3499,8 +3541,8 @@ var Meta = class _Meta {
     return META_KEYS_MAP[prop] || prop;
   }
   static {
-    this.ɵfac = function Meta_Factory(t) {
-      return new (t || _Meta)(ɵɵinject(DOCUMENT));
+    this.ɵfac = function Meta_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _Meta)(ɵɵinject(DOCUMENT));
     };
   }
   static {
@@ -3546,8 +3588,8 @@ var Title = class _Title {
     this._doc.title = newTitle || "";
   }
   static {
-    this.ɵfac = function Title_Factory(t) {
-      return new (t || _Title)(ɵɵinject(DOCUMENT));
+    this.ɵfac = function Title_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _Title)(ɵɵinject(DOCUMENT));
     };
   }
   static {
@@ -3743,8 +3785,8 @@ var HammerGestureConfig = class _HammerGestureConfig {
     return mc;
   }
   static {
-    this.ɵfac = function HammerGestureConfig_Factory(t) {
-      return new (t || _HammerGestureConfig)();
+    this.ɵfac = function HammerGestureConfig_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HammerGestureConfig)();
     };
   }
   static {
@@ -3831,8 +3873,8 @@ var HammerGesturesPlugin = class _HammerGesturesPlugin extends EventManagerPlugi
     return this._config.events.indexOf(eventName) > -1;
   }
   static {
-    this.ɵfac = function HammerGesturesPlugin_Factory(t) {
-      return new (t || _HammerGesturesPlugin)(ɵɵinject(DOCUMENT), ɵɵinject(HAMMER_GESTURE_CONFIG), ɵɵinject(Console), ɵɵinject(HAMMER_LOADER, 8));
+    this.ɵfac = function HammerGesturesPlugin_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HammerGesturesPlugin)(ɵɵinject(DOCUMENT), ɵɵinject(HAMMER_GESTURE_CONFIG), ɵɵinject(Console), ɵɵinject(HAMMER_LOADER, 8));
     };
   }
   static {
@@ -3871,8 +3913,8 @@ var HammerGesturesPlugin = class _HammerGesturesPlugin extends EventManagerPlugi
 })();
 var HammerModule = class _HammerModule {
   static {
-    this.ɵfac = function HammerModule_Factory(t) {
-      return new (t || _HammerModule)();
+    this.ɵfac = function HammerModule_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _HammerModule)();
     };
   }
   static {
@@ -3914,21 +3956,21 @@ var HammerModule = class _HammerModule {
 })();
 var DomSanitizer = class _DomSanitizer {
   static {
-    this.ɵfac = function DomSanitizer_Factory(t) {
-      return new (t || _DomSanitizer)();
+    this.ɵfac = function DomSanitizer_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _DomSanitizer)();
     };
   }
   static {
     this.ɵprov = ɵɵdefineInjectable({
       token: _DomSanitizer,
-      factory: function DomSanitizer_Factory(t) {
-        let r = null;
-        if (t) {
-          r = new (t || _DomSanitizer)();
+      factory: function DomSanitizer_Factory(__ngFactoryType__) {
+        let __ngConditionalFactory__ = null;
+        if (__ngFactoryType__) {
+          __ngConditionalFactory__ = new (__ngFactoryType__ || _DomSanitizer)();
         } else {
-          r = ɵɵinject(DomSanitizerImpl);
+          __ngConditionalFactory__ = ɵɵinject(DomSanitizerImpl);
         }
-        return r;
+        return __ngConditionalFactory__;
       },
       providedIn: "root"
     });
@@ -4018,8 +4060,8 @@ var DomSanitizerImpl = class _DomSanitizerImpl extends DomSanitizer {
     return bypassSanitizationTrustResourceUrl(value);
   }
   static {
-    this.ɵfac = function DomSanitizerImpl_Factory(t) {
-      return new (t || _DomSanitizerImpl)(ɵɵinject(DOCUMENT));
+    this.ɵfac = function DomSanitizerImpl_Factory(__ngFactoryType__) {
+      return new (__ngFactoryType__ || _DomSanitizerImpl)(ɵɵinject(DOCUMENT));
     };
   }
   static {
@@ -4048,6 +4090,8 @@ var HydrationFeatureKind;
 (function(HydrationFeatureKind2) {
   HydrationFeatureKind2[HydrationFeatureKind2["NoHttpTransferCache"] = 0] = "NoHttpTransferCache";
   HydrationFeatureKind2[HydrationFeatureKind2["HttpTransferCacheOptions"] = 1] = "HttpTransferCacheOptions";
+  HydrationFeatureKind2[HydrationFeatureKind2["I18nSupport"] = 2] = "I18nSupport";
+  HydrationFeatureKind2[HydrationFeatureKind2["EventReplay"] = 3] = "EventReplay";
 })(HydrationFeatureKind || (HydrationFeatureKind = {}));
 function hydrationFeature(ɵkind, ɵproviders = [], ɵoptions = {}) {
   return {
@@ -4061,12 +4105,19 @@ function withNoHttpTransferCache() {
 function withHttpTransferCacheOptions(options) {
   return hydrationFeature(HydrationFeatureKind.HttpTransferCacheOptions, withHttpTransferCache(options));
 }
+function withI18nSupport2() {
+  return hydrationFeature(HydrationFeatureKind.I18nSupport, withI18nSupport());
+}
+function withEventReplay2() {
+  return hydrationFeature(HydrationFeatureKind.EventReplay, withEventReplay());
+}
 function provideZoneJsCompatibilityDetector() {
   return [{
     provide: ENVIRONMENT_INITIALIZER,
     useValue: () => {
       const ngZone = inject(NgZone);
-      if (ngZone.constructor !== NgZone) {
+      const isZoneless = inject(ZONELESS_ENABLED);
+      if (!isZoneless && ngZone.constructor !== NgZone) {
         const console2 = inject(Console);
         const message = formatRuntimeError(-5e3, "Angular detected that hydration was enabled for an application that uses a custom or a noop Zone.js implementation. This is not yet a fully supported configuration.");
         console2.warn(message);
@@ -4093,9 +4144,7 @@ function provideClientHydration(...features) {
   }
   return makeEnvironmentProviders([typeof ngDevMode !== "undefined" && ngDevMode ? provideZoneJsCompatibilityDetector() : [], withDomHydration(), featuresKind.has(HydrationFeatureKind.NoHttpTransferCache) || hasHttpTransferCacheOptions ? [] : withHttpTransferCache({}), providers]);
 }
-var VERSION = new Version("17.3.12");
-var makeStateKey2 = makeStateKey;
-var TransferState2 = TransferState;
+var VERSION = new Version("18.2.13");
 
 export {
   BrowserDomAdapter,
@@ -4130,25 +4179,25 @@ export {
   HydrationFeatureKind,
   withNoHttpTransferCache,
   withHttpTransferCacheOptions,
+  withI18nSupport2 as withI18nSupport,
+  withEventReplay2 as withEventReplay,
   provideClientHydration,
-  VERSION,
-  makeStateKey2 as makeStateKey,
-  TransferState2 as TransferState
+  VERSION
 };
 /*! Bundled license information:
 
 @angular/common/fesm2022/http.mjs:
   (**
-   * @license Angular v17.3.12
+   * @license Angular v18.2.13
    * (c) 2010-2024 Google LLC. https://angular.io/
    * License: MIT
    *)
 
 @angular/platform-browser/fesm2022/platform-browser.mjs:
   (**
-   * @license Angular v17.3.12
+   * @license Angular v18.2.13
    * (c) 2010-2024 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-VETMJ7EK.js.map
+//# sourceMappingURL=chunk-JFC3Z3EW.js.map

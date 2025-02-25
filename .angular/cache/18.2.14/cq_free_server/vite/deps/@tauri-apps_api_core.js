@@ -35,7 +35,10 @@ var Channel = class {
     );
     _Channel_nextMessageId.set(this, 0);
     _Channel_pendingMessages.set(this, []);
-    this.id = transformCallback(({ message, id }) => {
+    this.id = transformCallback(({
+      message,
+      id
+    }) => {
       if (id == __classPrivateFieldGet(this, _Channel_nextMessageId, "f")) {
         __classPrivateFieldGet(this, _Channel_onmessage, "f").call(this, message);
         __classPrivateFieldSet(this, _Channel_nextMessageId, __classPrivateFieldGet(this, _Channel_nextMessageId, "f") + 1, "f");
@@ -82,7 +85,10 @@ function addPluginListener(plugin, event, cb) {
   return __async(this, null, function* () {
     const handler = new Channel();
     handler.onmessage = cb;
-    return invoke(`plugin:${plugin}|registerListener`, { event, handler }).then(() => new PluginListener(plugin, event, handler.id));
+    return invoke(`plugin:${plugin}|registerListener`, {
+      event,
+      handler
+    }).then(() => new PluginListener(plugin, event, handler.id));
   });
 }
 function checkPermissions(plugin) {
