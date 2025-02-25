@@ -1,0 +1,12 @@
+<aside class="col-md-3 col-lg-2 p-3 bg-white border-end">
+    <nav class="nav flex-column gap-2">
+      <a class="nav-link rounded-3 hover:bg-blue-50 text-dark py-3 
+                d-flex align-items-center gap-2"
+         [routerLinkActive]="['bg-blue-600', 'text-white']"
+         *ngFor="let item of menuItems" 
+         [routerLink]="item.link">
+        <i class="bi {{ item.icon }} fs-5"></i>  <!-- 移除me-2 -->
+        <span>{{ item.title }}</span>  <!-- 新增文字容器 -->
+      </a>
+    </nav>
+</aside>

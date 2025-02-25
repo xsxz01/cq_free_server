@@ -1,0 +1,16 @@
+<app-header></app-header>
+
+<!-- 修改为高度继承方案 -->
+<div class="container-fluid vh-100 d-flex flex-column p-0">
+  <div class="row g-0 flex-grow-1">  <!-- 移除默认间距 -->
+    <!-- 侧边栏容器 -->
+    <div class="col-md-3 col-lg-2 h-100 bg-white border-end">  <!-- 添加边框和背景 -->
+      <app-sidebar-menu></app-sidebar-menu>
+    </div>
+
+    <!-- 主内容区域 -->
+    <main class="col-md-9 col-lg-10 p-4 bg-gray-50 overflow-auto">  <!-- 添加滚动 -->
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

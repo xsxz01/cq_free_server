@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom">
+  <!-- 改为白色背景+底部边框 -->
+  <div class="container-fluid">
+    <!-- 左侧品牌标识 -->
+    <a class="navbar-brand fw-bold text-blue-800" href="#">
+      <!-- 深蓝色文字 -->
+      <i class="bi bi-shield-check me-2 text-blue-600"></i>
+      <!-- 更换为盾牌图标 -->
+      cq_free_server
+    </a>
+
+    <!-- 右侧用户菜单 -->
+    <div class="d-flex align-items-center">
+      <small class="text-muted me-3 d-none d-md-block">欢迎回来，管理员</small>
+      <!-- 添加欢迎语 -->
+      <div class="dropdown">
+        <button
+          class="btn btn-link p-0 dropdown-toggle d-flex align-items-center"
+          type="button"
+          data-bs-toggle="dropdown"
+        >
+          <img
+            src="assets/avatar.png"
+            class="rounded-circle border border-3 border-blue-100 transition-all"
+            width="40"
+            height="40"
+            alt="用户头像"
+          />
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end mt-2 shadow border-blue-50">
+          <!-- 浅蓝边框菜单 -->
+          <li>
+            <a class="dropdown-item text-blue-800 hover:bg-blue-50" href="#">
+              <i class="bi bi-person-circle me-2"></i>个人中心
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item text-blue-800 hover:bg-blue-50" href="#">
+              <i class="bi bi-gear me-2"></i>系统设置
+            </a>
+          </li>
+          <li><hr class="dropdown-divider" /></li>
+          <li>
+            <a class="dropdown-item text-blue-500 hover:bg-blue-50" href="#">
+              <i class="bi bi-box-arrow-right me-2"></i>退出登录
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

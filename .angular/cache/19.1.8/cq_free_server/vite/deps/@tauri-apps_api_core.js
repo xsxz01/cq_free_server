@@ -1,6 +1,6 @@
 import {
   __async
-} from "./chunk-WDMUDEB6.js";
+} from "./chunk-3OV72XIM.js";
 
 // node_modules/.pnpm/@tauri-apps+api@2.2.0/node_modules/@tauri-apps/api/external/tslib/tslib.es6.js
 function __classPrivateFieldGet(receiver, state, kind, f) {

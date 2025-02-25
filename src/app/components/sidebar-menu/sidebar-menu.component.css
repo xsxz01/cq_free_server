@@ -1,0 +1,13 @@
+.active-menu {
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);  /* 新增阴影效果 */
+}
+
+.nav-link:not(.active-menu):hover {
+    transform: translateX(4px);  /* 悬停位移效果 */
+    box-shadow: 0 2px 8px rgba(30, 58, 138, 0.1);  /* 悬停阴影 */
+}
+
+.nav-link:active {
+    transform: scale(0.98);  /* 点击缩放效果 */
+}
