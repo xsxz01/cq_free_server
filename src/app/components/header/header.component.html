@@ -11,13 +11,13 @@
 
     <!-- 右侧控制按钮 -->
     <div class="d-flex">
-      <a class="btn btn-window-control" title="最小化">
+      <a class="btn btn-window-control" title="最小化" (click)="onMinimize()">
         <i class="bi bi-dash-lg fs-5"></i>
       </a>
-      <a class="btn btn-window-control" title="最大化">
+      <a class="btn btn-window-control" title="最大化" (click)="onMaximize()">
         <i class="bi bi-square fs-5"></i>
       </a>
-      <a class="btn btn-window-control btn-close" title="关闭">
+      <a class="btn btn-window-control btn-close" title="关闭" (click)="onClose()">
         <i class="bi bi-x-lg fs-5"></i>
       </a>
     </div>
