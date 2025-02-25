@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ShortUrlPipe } from '../../shared/pipes/short-url.pipe';
+import { ShortUrlPipe } from '../../pipe/short-url.pipe';
 
 interface ServerInfo {
   name: string;
