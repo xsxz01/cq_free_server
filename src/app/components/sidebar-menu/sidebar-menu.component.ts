@@ -44,7 +44,26 @@ export class SidebarMenuComponent implements OnInit {
       icon: 'bi-database', 
       link: '/data',
     },
-    // 保持其他菜单项不变
+    { 
+      title: '探索版本',
+      icon: 'bi-globe2',
+      link: '/explore'
+    },
+    {
+      title: '本地版本',
+      icon: 'bi-folder',
+      link: '/local'
+    },
+    {
+      title: '免费列表',
+      icon: 'bi-list-ul',
+      link: '/launchers'
+    },
+    {
+      title: '常用工具',
+      icon: 'bi-tools',
+      link: '/tools'
+    }
   ];
 
   // 新增菜单激活状态处理
