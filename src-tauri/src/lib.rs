@@ -17,7 +17,7 @@ pub fn run() {
             window.set_always_on_top(true).unwrap();
             Ok(())
         })
-        .on_window_event(|window, e| {
+        .on_window_event(|_window, e| {
             if let WindowEvent::Resized(_) = e {  
                 std::thread::sleep(std::time::Duration::from_nanos(1));
             }
