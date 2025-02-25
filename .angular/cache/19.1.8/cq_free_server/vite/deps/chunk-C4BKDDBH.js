@@ -3,9 +3,9 @@ import {
   Attribute,
   ChangeDetectorRef,
   DEFAULT_CURRENCY_CODE,
+  DestroyRef,
   Directive,
   ElementRef,
-  EventEmitter,
   Host,
   IMAGE_CONFIG,
   IMAGE_CONFIG_DEFAULTS,
@@ -27,6 +27,7 @@ import {
   Renderer2,
   RendererStyleFlags2,
   RuntimeError,
+  Subject,
   TemplateRef,
   Version,
   ViewContainerRef,
@@ -46,8 +47,6 @@ import {
   stringify,
   untracked,
   unwrapSafeValue,
-  whenStable,
-  ɵɵInputTransformsFeature,
   ɵɵNgOnChangesFeature,
   ɵɵdefineDirective,
   ɵɵdefineInjectable,
@@ -58,14 +57,14 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-} from "./chunk-X3UYTZMZ.js";
+} from "./chunk-DN6ORXPI.js";
 import {
   __async,
   __spreadProps,
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
 
-// node_modules/.pnpm/@angular+common@18.2.13_@angular+core@18.2.13_rxjs@7.8.2_zone.js@0.14.10__rxjs@7.8.2/node_modules/@angular/common/fesm2022/common.mjs
+// node_modules/.pnpm/@angular+common@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0__rxjs@7.8.2/node_modules/@angular/common/fesm2022/common.mjs
 var _DOM = null;
 function getDOM() {
   return _DOM;
@@ -76,18 +75,14 @@ function setRootDomAdapter(adapter) {
 var DomAdapter = class {
 };
 var PlatformNavigation = class _PlatformNavigation {
-  static {
-    this.ɵfac = function PlatformNavigation_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _PlatformNavigation)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _PlatformNavigation,
-      factory: () => (() => window.navigation)(),
-      providedIn: "platform"
-    });
-  }
+  static ɵfac = function PlatformNavigation_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _PlatformNavigation)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _PlatformNavigation,
+    factory: () => (() => window.navigation)(),
+    providedIn: "platform"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PlatformNavigation, [{
@@ -103,18 +98,14 @@ var PlatformLocation = class _PlatformLocation {
   historyGo(relativePosition) {
     throw new Error(ngDevMode ? "Not implemented" : "");
   }
-  static {
-    this.ɵfac = function PlatformLocation_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _PlatformLocation)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _PlatformLocation,
-      factory: () => (() => inject(BrowserPlatformLocation))(),
-      providedIn: "platform"
-    });
-  }
+  static ɵfac = function PlatformLocation_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _PlatformLocation)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _PlatformLocation,
+    factory: () => (() => inject(BrowserPlatformLocation))(),
+    providedIn: "platform"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PlatformLocation, [{
@@ -127,9 +118,11 @@ var PlatformLocation = class _PlatformLocation {
 })();
 var LOCATION_INITIALIZED = new InjectionToken(ngDevMode ? "Location Initialized" : "");
 var BrowserPlatformLocation = class _BrowserPlatformLocation extends PlatformLocation {
+  _location;
+  _history;
+  _doc = inject(DOCUMENT);
   constructor() {
     super();
-    this._doc = inject(DOCUMENT);
     this._location = window.location;
     this._history = window.history;
   }
@@ -188,18 +181,14 @@ var BrowserPlatformLocation = class _BrowserPlatformLocation extends PlatformLoc
   getState() {
     return this._history.state;
   }
-  static {
-    this.ɵfac = function BrowserPlatformLocation_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _BrowserPlatformLocation)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _BrowserPlatformLocation,
-      factory: () => (() => new _BrowserPlatformLocation())(),
-      providedIn: "platform"
-    });
-  }
+  static ɵfac = function BrowserPlatformLocation_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _BrowserPlatformLocation)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _BrowserPlatformLocation,
+    factory: () => (() => new _BrowserPlatformLocation())(),
+    providedIn: "platform"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BrowserPlatformLocation, [{
@@ -211,52 +200,32 @@ var BrowserPlatformLocation = class _BrowserPlatformLocation extends PlatformLoc
   }], () => [], null);
 })();
 function joinWithSlash(start, end) {
-  if (start.length == 0) {
-    return end;
-  }
-  if (end.length == 0) {
-    return start;
-  }
-  let slashes = 0;
+  if (!start) return end;
+  if (!end) return start;
   if (start.endsWith("/")) {
-    slashes++;
+    return end.startsWith("/") ? start + end.slice(1) : start + end;
   }
-  if (end.startsWith("/")) {
-    slashes++;
-  }
-  if (slashes == 2) {
-    return start + end.substring(1);
-  }
-  if (slashes == 1) {
-    return start + end;
-  }
-  return start + "/" + end;
+  return end.startsWith("/") ? start + end : `${start}/${end}`;
 }
 function stripTrailingSlash(url) {
-  const match = url.match(/#|\?|$/);
-  const pathEndIdx = match && match.index || url.length;
-  const droppedSlashIdx = pathEndIdx - (url[pathEndIdx - 1] === "/" ? 1 : 0);
-  return url.slice(0, droppedSlashIdx) + url.slice(pathEndIdx);
+  const pathEndIdx = url.search(/#|\?|$/);
+  return url[pathEndIdx - 1] === "/" ? url.slice(0, pathEndIdx - 1) + url.slice(pathEndIdx) : url;
 }
 function normalizeQueryParams(params) {
-  return params && params[0] !== "?" ? "?" + params : params;
+  return params && params[0] !== "?" ? `?${params}` : params;
 }
 var LocationStrategy = class _LocationStrategy {
   historyGo(relativePosition) {
     throw new Error(ngDevMode ? "Not implemented" : "");
   }
-  static {
-    this.ɵfac = function LocationStrategy_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _LocationStrategy)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _LocationStrategy,
-      factory: () => (() => inject(PathLocationStrategy))(),
-      providedIn: "root"
-    });
-  }
+  static ɵfac = function LocationStrategy_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _LocationStrategy)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _LocationStrategy,
+    factory: () => (() => inject(PathLocationStrategy))(),
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(LocationStrategy, [{
@@ -269,10 +238,12 @@ var LocationStrategy = class _LocationStrategy {
 })();
 var APP_BASE_HREF = new InjectionToken(ngDevMode ? "appBaseHref" : "");
 var PathLocationStrategy = class _PathLocationStrategy extends LocationStrategy {
+  _platformLocation;
+  _baseHref;
+  _removeListenerFns = [];
   constructor(_platformLocation, href) {
     super();
     this._platformLocation = _platformLocation;
-    this._removeListenerFns = [];
     this._baseHref = href ?? this._platformLocation.getBaseHrefFromDOM() ?? inject(DOCUMENT).location?.origin ?? "";
   }
   /** @nodoc */
@@ -315,18 +286,14 @@ var PathLocationStrategy = class _PathLocationStrategy extends LocationStrategy 
   historyGo(relativePosition = 0) {
     this._platformLocation.historyGo?.(relativePosition);
   }
-  static {
-    this.ɵfac = function PathLocationStrategy_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _PathLocationStrategy)(ɵɵinject(PlatformLocation), ɵɵinject(APP_BASE_HREF, 8));
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _PathLocationStrategy,
-      factory: _PathLocationStrategy.ɵfac,
-      providedIn: "root"
-    });
-  }
+  static ɵfac = function PathLocationStrategy_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _PathLocationStrategy)(ɵɵinject(PlatformLocation), ɵɵinject(APP_BASE_HREF, 8));
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _PathLocationStrategy,
+    factory: _PathLocationStrategy.ɵfac,
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PathLocationStrategy, [{
@@ -347,11 +314,12 @@ var PathLocationStrategy = class _PathLocationStrategy extends LocationStrategy 
   }], null);
 })();
 var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy {
+  _platformLocation;
+  _baseHref = "";
+  _removeListenerFns = [];
   constructor(_platformLocation, _baseHref) {
     super();
     this._platformLocation = _platformLocation;
-    this._baseHref = "";
-    this._removeListenerFns = [];
     if (_baseHref != null) {
       this._baseHref = _baseHref;
     }
@@ -377,17 +345,11 @@ var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy 
     return url.length > 0 ? "#" + url : url;
   }
   pushState(state, title, path, queryParams) {
-    let url = this.prepareExternalUrl(path + normalizeQueryParams(queryParams));
-    if (url.length == 0) {
-      url = this._platformLocation.pathname;
-    }
+    const url = this.prepareExternalUrl(path + normalizeQueryParams(queryParams)) || this._platformLocation.pathname;
     this._platformLocation.pushState(state, title, url);
   }
   replaceState(state, title, path, queryParams) {
-    let url = this.prepareExternalUrl(path + normalizeQueryParams(queryParams));
-    if (url.length == 0) {
-      url = this._platformLocation.pathname;
-    }
+    const url = this.prepareExternalUrl(path + normalizeQueryParams(queryParams)) || this._platformLocation.pathname;
     this._platformLocation.replaceState(state, title, url);
   }
   forward() {
@@ -402,17 +364,13 @@ var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy 
   historyGo(relativePosition = 0) {
     this._platformLocation.historyGo?.(relativePosition);
   }
-  static {
-    this.ɵfac = function HashLocationStrategy_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _HashLocationStrategy)(ɵɵinject(PlatformLocation), ɵɵinject(APP_BASE_HREF, 8));
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _HashLocationStrategy,
-      factory: _HashLocationStrategy.ɵfac
-    });
-  }
+  static ɵfac = function HashLocationStrategy_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _HashLocationStrategy)(ɵɵinject(PlatformLocation), ɵɵinject(APP_BASE_HREF, 8));
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _HashLocationStrategy,
+    factory: _HashLocationStrategy.ɵfac
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(HashLocationStrategy, [{
@@ -430,15 +388,22 @@ var HashLocationStrategy = class _HashLocationStrategy extends LocationStrategy 
   }], null);
 })();
 var Location = class _Location {
+  /** @internal */
+  _subject = new Subject();
+  /** @internal */
+  _basePath;
+  /** @internal */
+  _locationStrategy;
+  /** @internal */
+  _urlChangeListeners = [];
+  /** @internal */
+  _urlChangeSubscription = null;
   constructor(locationStrategy) {
-    this._subject = new EventEmitter();
-    this._urlChangeListeners = [];
-    this._urlChangeSubscription = null;
     this._locationStrategy = locationStrategy;
     const baseHref = this._locationStrategy.getBaseHref();
     this._basePath = _stripOrigin(stripTrailingSlash(_stripIndexHtml(baseHref)));
     this._locationStrategy.onPopState((ev) => {
-      this._subject.emit({
+      this._subject.next({
         "url": this.path(true),
         "pop": true,
         "state": ev.state,
@@ -602,31 +567,46 @@ var Location = class _Location {
   subscribe(onNext, onThrow, onReturn) {
     return this._subject.subscribe({
       next: onNext,
-      error: onThrow,
-      complete: onReturn
+      error: onThrow ?? void 0,
+      complete: onReturn ?? void 0
     });
   }
-  static {
-    this.normalizeQueryParams = normalizeQueryParams;
-  }
-  static {
-    this.joinWithSlash = joinWithSlash;
-  }
-  static {
-    this.stripTrailingSlash = stripTrailingSlash;
-  }
-  static {
-    this.ɵfac = function Location_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _Location)(ɵɵinject(LocationStrategy));
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _Location,
-      factory: () => createLocation(),
-      providedIn: "root"
-    });
-  }
+  /**
+   * Normalizes URL parameters by prepending with `?` if needed.
+   *
+   * @param  params String of URL parameters.
+   *
+   * @returns The normalized URL parameters string.
+   */
+  static normalizeQueryParams = normalizeQueryParams;
+  /**
+   * Joins two parts of a URL with a slash if needed.
+   *
+   * @param start  URL string
+   * @param end    URL string
+   *
+   *
+   * @returns The joined URL string.
+   */
+  static joinWithSlash = joinWithSlash;
+  /**
+   * Removes a trailing slash from a URL string if needed.
+   * Looks for the first occurrence of either `#`, `?`, or the end of the
+   * line as `/` characters and removes the trailing slash if one exists.
+   *
+   * @param url URL string.
+   *
+   * @returns The URL string, modified if needed.
+   */
+  static stripTrailingSlash = stripTrailingSlash;
+  static ɵfac = function Location_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _Location)(ɵɵinject(LocationStrategy));
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _Location,
+    factory: () => createLocation(),
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(Location, [{
@@ -1084,31 +1064,6 @@ function getNumberOfCurrencyDigits(code) {
 var ISO8601_DATE_REGEX = /^(\d{4,})-?(\d\d)-?(\d\d)(?:T(\d\d)(?::?(\d\d)(?::?(\d\d)(?:\.(\d+))?)?)?(Z|([+-])(\d\d):?(\d\d))?)?$/;
 var NAMED_FORMATS = {};
 var DATE_FORMATS_SPLIT = /((?:[^BEGHLMOSWYZabcdhmswyz']+)|(?:'(?:[^']|'')*')|(?:G{1,5}|y{1,4}|Y{1,4}|M{1,5}|L{1,5}|w{1,2}|W{1}|d{1,2}|E{1,6}|c{1,6}|a{1,5}|b{1,5}|B{1,5}|h{1,2}|H{1,2}|m{1,2}|s{1,2}|S{1,3}|z{1,4}|Z{1,5}|O{1,4}))([\s\S]*)/;
-var ZoneWidth;
-(function(ZoneWidth2) {
-  ZoneWidth2[ZoneWidth2["Short"] = 0] = "Short";
-  ZoneWidth2[ZoneWidth2["ShortGMT"] = 1] = "ShortGMT";
-  ZoneWidth2[ZoneWidth2["Long"] = 2] = "Long";
-  ZoneWidth2[ZoneWidth2["Extended"] = 3] = "Extended";
-})(ZoneWidth || (ZoneWidth = {}));
-var DateType;
-(function(DateType2) {
-  DateType2[DateType2["FullYear"] = 0] = "FullYear";
-  DateType2[DateType2["Month"] = 1] = "Month";
-  DateType2[DateType2["Date"] = 2] = "Date";
-  DateType2[DateType2["Hours"] = 3] = "Hours";
-  DateType2[DateType2["Minutes"] = 4] = "Minutes";
-  DateType2[DateType2["Seconds"] = 5] = "Seconds";
-  DateType2[DateType2["FractionalSeconds"] = 6] = "FractionalSeconds";
-  DateType2[DateType2["Day"] = 7] = "Day";
-})(DateType || (DateType = {}));
-var TranslationType;
-(function(TranslationType2) {
-  TranslationType2[TranslationType2["DayPeriods"] = 0] = "DayPeriods";
-  TranslationType2[TranslationType2["Days"] = 1] = "Days";
-  TranslationType2[TranslationType2["Months"] = 2] = "Months";
-  TranslationType2[TranslationType2["Eras"] = 3] = "Eras";
-})(TranslationType || (TranslationType = {}));
 function formatDate(value, format, locale, timezone) {
   let date = toDate(value);
   const namedFormat = getNamedFormat(locale, format);
@@ -1242,11 +1197,11 @@ function dateGetter(name, size, offset = 0, trim = false, negWrap = false) {
     if (offset > 0 || part > -offset) {
       part += offset;
     }
-    if (name === DateType.Hours) {
+    if (name === 3) {
       if (part === 0 && offset === -12) {
         part = 12;
       }
-    } else if (name === DateType.FractionalSeconds) {
+    } else if (name === 6) {
       return formatFractionalSeconds(part, size);
     }
     const localeMinus = getLocaleNumberSymbol(locale, NumberSymbol.MinusSign);
@@ -1255,21 +1210,21 @@ function dateGetter(name, size, offset = 0, trim = false, negWrap = false) {
 }
 function getDatePart(part, date) {
   switch (part) {
-    case DateType.FullYear:
+    case 0:
       return date.getFullYear();
-    case DateType.Month:
+    case 1:
       return date.getMonth();
-    case DateType.Date:
+    case 2:
       return date.getDate();
-    case DateType.Hours:
+    case 3:
       return date.getHours();
-    case DateType.Minutes:
+    case 4:
       return date.getMinutes();
-    case DateType.Seconds:
+    case 5:
       return date.getSeconds();
-    case DateType.FractionalSeconds:
+    case 6:
       return date.getMilliseconds();
-    case DateType.Day:
+    case 7:
       return date.getDay();
     default:
       throw new Error(`Unknown DateType value "${part}".`);
@@ -1282,11 +1237,11 @@ function dateStrGetter(name, width, form = FormStyle.Format, extended = false) {
 }
 function getDateTranslation(date, locale, name, width, form, extended) {
   switch (name) {
-    case TranslationType.Months:
+    case 2:
       return getLocaleMonthNames(locale, form, width)[date.getMonth()];
-    case TranslationType.Days:
+    case 1:
       return getLocaleDayNames(locale, form, width)[date.getDay()];
-    case TranslationType.DayPeriods:
+    case 0:
       const currentHours = date.getHours();
       const currentMinutes = date.getMinutes();
       if (extended) {
@@ -1316,7 +1271,7 @@ function getDateTranslation(date, locale, name, width, form, extended) {
         }
       }
       return getLocaleDayPeriods(locale, form, width)[currentHours < 12 ? 0 : 1];
-    case TranslationType.Eras:
+    case 3:
       return getLocaleEraNames(locale, width)[date.getFullYear() <= 0 ? 0 : 1];
     default:
       const unexpected = name;
@@ -1329,13 +1284,13 @@ function timeZoneGetter(width) {
     const minusSign = getLocaleNumberSymbol(locale, NumberSymbol.MinusSign);
     const hours = zone > 0 ? Math.floor(zone / 60) : Math.ceil(zone / 60);
     switch (width) {
-      case ZoneWidth.Short:
+      case 0:
         return (zone >= 0 ? "+" : "") + padNumber(hours, 2, minusSign) + padNumber(Math.abs(zone % 60), 2, minusSign);
-      case ZoneWidth.ShortGMT:
+      case 1:
         return "GMT" + (zone >= 0 ? "+" : "") + padNumber(hours, 1, minusSign);
-      case ZoneWidth.Long:
+      case 2:
         return "GMT" + (zone >= 0 ? "+" : "") + padNumber(hours, 2, minusSign) + ":" + padNumber(Math.abs(zone % 60), 2, minusSign);
-      case ZoneWidth.Extended:
+      case 3:
         if (offset === 0) {
           return "Z";
         } else {
@@ -1387,198 +1342,244 @@ function getDateFormatter(format) {
   }
   let formatter;
   switch (format) {
+    // Era name (AD/BC)
     case "G":
     case "GG":
     case "GGG":
-      formatter = dateStrGetter(TranslationType.Eras, TranslationWidth.Abbreviated);
+      formatter = dateStrGetter(3, TranslationWidth.Abbreviated);
       break;
     case "GGGG":
-      formatter = dateStrGetter(TranslationType.Eras, TranslationWidth.Wide);
+      formatter = dateStrGetter(3, TranslationWidth.Wide);
       break;
     case "GGGGG":
-      formatter = dateStrGetter(TranslationType.Eras, TranslationWidth.Narrow);
+      formatter = dateStrGetter(3, TranslationWidth.Narrow);
       break;
+    // 1 digit representation of the year, e.g. (AD 1 => 1, AD 199 => 199)
     case "y":
-      formatter = dateGetter(DateType.FullYear, 1, 0, false, true);
+      formatter = dateGetter(0, 1, 0, false, true);
       break;
+    // 2 digit representation of the year, padded (00-99). (e.g. AD 2001 => 01, AD 2010 => 10)
     case "yy":
-      formatter = dateGetter(DateType.FullYear, 2, 0, true, true);
+      formatter = dateGetter(0, 2, 0, true, true);
       break;
+    // 3 digit representation of the year, padded (000-999). (e.g. AD 2001 => 01, AD 2010 => 10)
     case "yyy":
-      formatter = dateGetter(DateType.FullYear, 3, 0, false, true);
+      formatter = dateGetter(0, 3, 0, false, true);
       break;
+    // 4 digit representation of the year (e.g. AD 1 => 0001, AD 2010 => 2010)
     case "yyyy":
-      formatter = dateGetter(DateType.FullYear, 4, 0, false, true);
+      formatter = dateGetter(0, 4, 0, false, true);
       break;
+    // 1 digit representation of the week-numbering year, e.g. (AD 1 => 1, AD 199 => 199)
     case "Y":
       formatter = weekNumberingYearGetter(1);
       break;
+    // 2 digit representation of the week-numbering year, padded (00-99). (e.g. AD 2001 => 01, AD
+    // 2010 => 10)
     case "YY":
       formatter = weekNumberingYearGetter(2, true);
       break;
+    // 3 digit representation of the week-numbering year, padded (000-999). (e.g. AD 1 => 001, AD
+    // 2010 => 2010)
     case "YYY":
       formatter = weekNumberingYearGetter(3);
       break;
+    // 4 digit representation of the week-numbering year (e.g. AD 1 => 0001, AD 2010 => 2010)
     case "YYYY":
       formatter = weekNumberingYearGetter(4);
       break;
+    // Month of the year (1-12), numeric
     case "M":
     case "L":
-      formatter = dateGetter(DateType.Month, 1, 1);
+      formatter = dateGetter(1, 1, 1);
       break;
     case "MM":
     case "LL":
-      formatter = dateGetter(DateType.Month, 2, 1);
+      formatter = dateGetter(1, 2, 1);
       break;
+    // Month of the year (January, ...), string, format
     case "MMM":
-      formatter = dateStrGetter(TranslationType.Months, TranslationWidth.Abbreviated);
+      formatter = dateStrGetter(2, TranslationWidth.Abbreviated);
       break;
     case "MMMM":
-      formatter = dateStrGetter(TranslationType.Months, TranslationWidth.Wide);
+      formatter = dateStrGetter(2, TranslationWidth.Wide);
       break;
     case "MMMMM":
-      formatter = dateStrGetter(TranslationType.Months, TranslationWidth.Narrow);
+      formatter = dateStrGetter(2, TranslationWidth.Narrow);
       break;
+    // Month of the year (January, ...), string, standalone
     case "LLL":
-      formatter = dateStrGetter(TranslationType.Months, TranslationWidth.Abbreviated, FormStyle.Standalone);
+      formatter = dateStrGetter(2, TranslationWidth.Abbreviated, FormStyle.Standalone);
       break;
     case "LLLL":
-      formatter = dateStrGetter(TranslationType.Months, TranslationWidth.Wide, FormStyle.Standalone);
+      formatter = dateStrGetter(2, TranslationWidth.Wide, FormStyle.Standalone);
       break;
     case "LLLLL":
-      formatter = dateStrGetter(TranslationType.Months, TranslationWidth.Narrow, FormStyle.Standalone);
+      formatter = dateStrGetter(2, TranslationWidth.Narrow, FormStyle.Standalone);
       break;
+    // Week of the year (1, ... 52)
     case "w":
       formatter = weekGetter(1);
       break;
     case "ww":
       formatter = weekGetter(2);
       break;
+    // Week of the month (1, ...)
     case "W":
       formatter = weekGetter(1, true);
       break;
+    // Day of the month (1-31)
     case "d":
-      formatter = dateGetter(DateType.Date, 1);
+      formatter = dateGetter(2, 1);
       break;
     case "dd":
-      formatter = dateGetter(DateType.Date, 2);
+      formatter = dateGetter(2, 2);
       break;
+    // Day of the Week StandAlone (1, 1, Mon, Monday, M, Mo)
     case "c":
     case "cc":
-      formatter = dateGetter(DateType.Day, 1);
+      formatter = dateGetter(7, 1);
       break;
     case "ccc":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Abbreviated, FormStyle.Standalone);
+      formatter = dateStrGetter(1, TranslationWidth.Abbreviated, FormStyle.Standalone);
       break;
     case "cccc":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Wide, FormStyle.Standalone);
+      formatter = dateStrGetter(1, TranslationWidth.Wide, FormStyle.Standalone);
       break;
     case "ccccc":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Narrow, FormStyle.Standalone);
+      formatter = dateStrGetter(1, TranslationWidth.Narrow, FormStyle.Standalone);
       break;
     case "cccccc":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Short, FormStyle.Standalone);
+      formatter = dateStrGetter(1, TranslationWidth.Short, FormStyle.Standalone);
       break;
+    // Day of the Week
     case "E":
     case "EE":
     case "EEE":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Abbreviated);
+      formatter = dateStrGetter(1, TranslationWidth.Abbreviated);
       break;
     case "EEEE":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Wide);
+      formatter = dateStrGetter(1, TranslationWidth.Wide);
       break;
     case "EEEEE":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Narrow);
+      formatter = dateStrGetter(1, TranslationWidth.Narrow);
       break;
     case "EEEEEE":
-      formatter = dateStrGetter(TranslationType.Days, TranslationWidth.Short);
+      formatter = dateStrGetter(1, TranslationWidth.Short);
       break;
+    // Generic period of the day (am-pm)
     case "a":
     case "aa":
     case "aaa":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Abbreviated);
+      formatter = dateStrGetter(0, TranslationWidth.Abbreviated);
       break;
     case "aaaa":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Wide);
+      formatter = dateStrGetter(0, TranslationWidth.Wide);
       break;
     case "aaaaa":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Narrow);
+      formatter = dateStrGetter(0, TranslationWidth.Narrow);
       break;
+    // Extended period of the day (midnight, at night, ...), standalone
     case "b":
     case "bb":
     case "bbb":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Abbreviated, FormStyle.Standalone, true);
+      formatter = dateStrGetter(0, TranslationWidth.Abbreviated, FormStyle.Standalone, true);
       break;
     case "bbbb":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Wide, FormStyle.Standalone, true);
+      formatter = dateStrGetter(0, TranslationWidth.Wide, FormStyle.Standalone, true);
       break;
     case "bbbbb":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Narrow, FormStyle.Standalone, true);
+      formatter = dateStrGetter(0, TranslationWidth.Narrow, FormStyle.Standalone, true);
       break;
+    // Extended period of the day (midnight, night, ...), standalone
     case "B":
     case "BB":
     case "BBB":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Abbreviated, FormStyle.Format, true);
+      formatter = dateStrGetter(0, TranslationWidth.Abbreviated, FormStyle.Format, true);
       break;
     case "BBBB":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Wide, FormStyle.Format, true);
+      formatter = dateStrGetter(0, TranslationWidth.Wide, FormStyle.Format, true);
       break;
     case "BBBBB":
-      formatter = dateStrGetter(TranslationType.DayPeriods, TranslationWidth.Narrow, FormStyle.Format, true);
+      formatter = dateStrGetter(0, TranslationWidth.Narrow, FormStyle.Format, true);
       break;
+    // Hour in AM/PM, (1-12)
     case "h":
-      formatter = dateGetter(DateType.Hours, 1, -12);
+      formatter = dateGetter(3, 1, -12);
       break;
     case "hh":
-      formatter = dateGetter(DateType.Hours, 2, -12);
+      formatter = dateGetter(3, 2, -12);
       break;
+    // Hour of the day (0-23)
     case "H":
-      formatter = dateGetter(DateType.Hours, 1);
+      formatter = dateGetter(3, 1);
       break;
+    // Hour in day, padded (00-23)
     case "HH":
-      formatter = dateGetter(DateType.Hours, 2);
+      formatter = dateGetter(3, 2);
       break;
+    // Minute of the hour (0-59)
     case "m":
-      formatter = dateGetter(DateType.Minutes, 1);
+      formatter = dateGetter(4, 1);
       break;
     case "mm":
-      formatter = dateGetter(DateType.Minutes, 2);
+      formatter = dateGetter(4, 2);
       break;
+    // Second of the minute (0-59)
     case "s":
-      formatter = dateGetter(DateType.Seconds, 1);
+      formatter = dateGetter(5, 1);
       break;
     case "ss":
-      formatter = dateGetter(DateType.Seconds, 2);
+      formatter = dateGetter(5, 2);
       break;
+    // Fractional second
     case "S":
-      formatter = dateGetter(DateType.FractionalSeconds, 1);
+      formatter = dateGetter(6, 1);
       break;
     case "SS":
-      formatter = dateGetter(DateType.FractionalSeconds, 2);
+      formatter = dateGetter(6, 2);
       break;
     case "SSS":
-      formatter = dateGetter(DateType.FractionalSeconds, 3);
+      formatter = dateGetter(6, 3);
       break;
+    // Timezone ISO8601 short format (-0430)
     case "Z":
     case "ZZ":
     case "ZZZ":
-      formatter = timeZoneGetter(ZoneWidth.Short);
+      formatter = timeZoneGetter(
+        0
+        /* ZoneWidth.Short */
+      );
       break;
+    // Timezone ISO8601 extended format (-04:30)
     case "ZZZZZ":
-      formatter = timeZoneGetter(ZoneWidth.Extended);
+      formatter = timeZoneGetter(
+        3
+        /* ZoneWidth.Extended */
+      );
       break;
+    // Timezone GMT short format (GMT+4)
     case "O":
     case "OO":
     case "OOO":
+    // Should be location, but fallback to format O instead because we don't have the data yet
     case "z":
     case "zz":
     case "zzz":
-      formatter = timeZoneGetter(ZoneWidth.ShortGMT);
+      formatter = timeZoneGetter(
+        1
+        /* ZoneWidth.ShortGMT */
+      );
       break;
+    // Timezone GMT long format (GMT+0430)
     case "OOOO":
     case "ZZZZ":
+    // Should be location, but fallback to format O instead because we don't have the data yet
     case "zzzz":
-      formatter = timeZoneGetter(ZoneWidth.Long);
+      formatter = timeZoneGetter(
+        2
+        /* ZoneWidth.Long */
+      );
       break;
     default:
       return null;
@@ -1912,26 +1913,22 @@ function parseIntAutoRadix(text) {
   return result;
 }
 var NgLocalization = class _NgLocalization {
-  static {
-    this.ɵfac = function NgLocalization_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgLocalization)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _NgLocalization,
-      factory: function NgLocalization_Factory(__ngFactoryType__) {
-        let __ngConditionalFactory__ = null;
-        if (__ngFactoryType__) {
-          __ngConditionalFactory__ = new __ngFactoryType__();
-        } else {
-          __ngConditionalFactory__ = ((locale) => new NgLocaleLocalization(locale))(ɵɵinject(LOCALE_ID));
-        }
-        return __ngConditionalFactory__;
-      },
-      providedIn: "root"
-    });
-  }
+  static ɵfac = function NgLocalization_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgLocalization)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _NgLocalization,
+    factory: function NgLocalization_Factory(__ngFactoryType__) {
+      let __ngConditionalFactory__ = null;
+      if (__ngFactoryType__) {
+        __ngConditionalFactory__ = new __ngFactoryType__();
+      } else {
+        __ngConditionalFactory__ = ((locale) => new NgLocaleLocalization(locale))(ɵɵinject(LOCALE_ID));
+      }
+      return __ngConditionalFactory__;
+    },
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgLocalization, [{
@@ -1958,6 +1955,7 @@ function getPluralCategory(value, cases, ngLocalization, locale) {
   throw new Error(`No plural message found for value "${value}"`);
 }
 var NgLocaleLocalization = class _NgLocaleLocalization extends NgLocalization {
+  locale;
   constructor(locale) {
     super();
     this.locale = locale;
@@ -1979,17 +1977,13 @@ var NgLocaleLocalization = class _NgLocaleLocalization extends NgLocalization {
         return "other";
     }
   }
-  static {
-    this.ɵfac = function NgLocaleLocalization_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgLocaleLocalization)(ɵɵinject(LOCALE_ID));
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _NgLocaleLocalization,
-      factory: _NgLocaleLocalization.ɵfac
-    });
-  }
+  static ɵfac = function NgLocaleLocalization_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgLocaleLocalization)(ɵɵinject(LOCALE_ID));
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _NgLocaleLocalization,
+    factory: _NgLocaleLocalization.ɵfac
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgLocaleLocalization, [{
@@ -2019,11 +2013,14 @@ function parseCookieValue(cookieStr, name) {
 var WS_REGEXP = /\s+/;
 var EMPTY_ARRAY = [];
 var NgClass = class _NgClass {
+  _ngEl;
+  _renderer;
+  initialClasses = EMPTY_ARRAY;
+  rawClass;
+  stateMap = /* @__PURE__ */ new Map();
   constructor(_ngEl, _renderer) {
     this._ngEl = _ngEl;
     this._renderer = _renderer;
-    this.initialClasses = EMPTY_ARRAY;
-    this.stateMap = /* @__PURE__ */ new Map();
   }
   set klass(value) {
     this.initialClasses = value != null ? value.trim().split(WS_REGEXP) : EMPTY_ARRAY;
@@ -2118,29 +2115,23 @@ var NgClass = class _NgClass {
       });
     }
   }
-  static {
-    this.ɵfac = function NgClass_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgClass)(ɵɵdirectiveInject(ElementRef), ɵɵdirectiveInject(Renderer2));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgClass,
-      selectors: [["", "ngClass", ""]],
-      inputs: {
-        klass: [0, "class", "klass"],
-        ngClass: "ngClass"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgClass_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgClass)(ɵɵdirectiveInject(ElementRef), ɵɵdirectiveInject(Renderer2));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgClass,
+    selectors: [["", "ngClass", ""]],
+    inputs: {
+      klass: [0, "class", "klass"],
+      ngClass: "ngClass"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgClass, [{
     type: Directive,
     args: [{
-      selector: "[ngClass]",
-      standalone: true
+      selector: "[ngClass]"
     }]
   }], () => [{
     type: ElementRef
@@ -2158,10 +2149,36 @@ var NgClass = class _NgClass {
   });
 })();
 var NgComponentOutlet = class _NgComponentOutlet {
+  _viewContainerRef;
+  // TODO(crisbeto): this should be `Type<T>`, but doing so broke a few
+  // targets in a TGP so we need to do it in a major version.
+  /** Component that should be rendered in the outlet. */
+  ngComponentOutlet = null;
+  ngComponentOutletInputs;
+  ngComponentOutletInjector;
+  ngComponentOutletContent;
+  ngComponentOutletNgModule;
+  /**
+   * @deprecated This input is deprecated, use `ngComponentOutletNgModule` instead.
+   */
+  ngComponentOutletNgModuleFactory;
+  _componentRef;
+  _moduleRef;
+  /**
+   * A helper data structure that allows us to track inputs that were part of the
+   * ngComponentOutletInputs expression. Tracking inputs is necessary for proper removal of ones
+   * that are no longer referenced.
+   */
+  _inputsUsed = /* @__PURE__ */ new Map();
+  /**
+   * Gets the instance of the currently-rendered component.
+   * Will be null if no component has been rendered.
+   */
+  get componentInstance() {
+    return this._componentRef?.instance ?? null;
+  }
   constructor(_viewContainerRef) {
     this._viewContainerRef = _viewContainerRef;
-    this.ngComponentOutlet = null;
-    this._inputsUsed = /* @__PURE__ */ new Map();
   }
   _needToReCreateNgModuleInstance(changes) {
     return changes["ngComponentOutletNgModule"] !== void 0 || changes["ngComponentOutletNgModuleFactory"] !== void 0;
@@ -2221,34 +2238,30 @@ var NgComponentOutlet = class _NgComponentOutlet {
       }
     }
   }
-  static {
-    this.ɵfac = function NgComponentOutlet_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgComponentOutlet)(ɵɵdirectiveInject(ViewContainerRef));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgComponentOutlet,
-      selectors: [["", "ngComponentOutlet", ""]],
-      inputs: {
-        ngComponentOutlet: "ngComponentOutlet",
-        ngComponentOutletInputs: "ngComponentOutletInputs",
-        ngComponentOutletInjector: "ngComponentOutletInjector",
-        ngComponentOutletContent: "ngComponentOutletContent",
-        ngComponentOutletNgModule: "ngComponentOutletNgModule",
-        ngComponentOutletNgModuleFactory: "ngComponentOutletNgModuleFactory"
-      },
-      standalone: true,
-      features: [ɵɵNgOnChangesFeature]
-    });
-  }
+  static ɵfac = function NgComponentOutlet_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgComponentOutlet)(ɵɵdirectiveInject(ViewContainerRef));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgComponentOutlet,
+    selectors: [["", "ngComponentOutlet", ""]],
+    inputs: {
+      ngComponentOutlet: "ngComponentOutlet",
+      ngComponentOutletInputs: "ngComponentOutletInputs",
+      ngComponentOutletInjector: "ngComponentOutletInjector",
+      ngComponentOutletContent: "ngComponentOutletContent",
+      ngComponentOutletNgModule: "ngComponentOutletNgModule",
+      ngComponentOutletNgModuleFactory: "ngComponentOutletNgModuleFactory"
+    },
+    exportAs: ["ngComponentOutlet"],
+    features: [ɵɵNgOnChangesFeature]
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgComponentOutlet, [{
     type: Directive,
     args: [{
       selector: "[ngComponentOutlet]",
-      standalone: true
+      exportAs: "ngComponentOutlet"
     }]
   }], () => [{
     type: ViewContainerRef
@@ -2278,6 +2291,10 @@ function getParentInjector(injector) {
   return parentNgModule.injector;
 }
 var NgForOfContext = class {
+  $implicit;
+  ngForOf;
+  index;
+  count;
   constructor($implicit, ngForOf, index, count) {
     this.$implicit = $implicit;
     this.ngForOf = ngForOf;
@@ -2302,6 +2319,9 @@ var NgForOfContext = class {
   }
 };
 var NgForOf = class _NgForOf {
+  _viewContainer;
+  _template;
+  _differs;
   /**
    * The value of the iterable expression, which can be used as a
    * [template input variable](guide/directives/structural-directives#shorthand).
@@ -2337,13 +2357,17 @@ var NgForOf = class _NgForOf {
   get ngForTrackBy() {
     return this._trackByFn;
   }
+  _ngForOf = null;
+  _ngForOfDirty = true;
+  _differ = null;
+  // TODO(issue/24571): remove '!'
+  // waiting for microsoft/typescript#43662 to allow the return type `TrackByFunction|undefined` for
+  // the getter
+  _trackByFn;
   constructor(_viewContainer, _template, _differs) {
     this._viewContainer = _viewContainer;
     this._template = _template;
     this._differs = _differs;
-    this._ngForOf = null;
-    this._ngForOfDirty = true;
-    this._differ = null;
   }
   /**
    * A reference to the template that is stamped out for each item in the iterable.
@@ -2417,30 +2441,24 @@ var NgForOf = class _NgForOf {
   static ngTemplateContextGuard(dir, ctx) {
     return true;
   }
-  static {
-    this.ɵfac = function NgForOf_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgForOf)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(IterableDiffers));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgForOf,
-      selectors: [["", "ngFor", "", "ngForOf", ""]],
-      inputs: {
-        ngForOf: "ngForOf",
-        ngForTrackBy: "ngForTrackBy",
-        ngForTemplate: "ngForTemplate"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgForOf_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgForOf)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(IterableDiffers));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgForOf,
+    selectors: [["", "ngFor", "", "ngForOf", ""]],
+    inputs: {
+      ngForOf: "ngForOf",
+      ngForTrackBy: "ngForTrackBy",
+      ngForTemplate: "ngForTemplate"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgForOf, [{
     type: Directive,
     args: [{
-      selector: "[ngFor][ngForOf]",
-      standalone: true
+      selector: "[ngFor][ngForOf]"
     }]
   }], () => [{
     type: ViewContainerRef
@@ -2467,13 +2485,14 @@ function getTypeName(type) {
   return type["name"] || typeof type;
 }
 var NgIf = class _NgIf {
+  _viewContainer;
+  _context = new NgIfContext();
+  _thenTemplateRef = null;
+  _elseTemplateRef = null;
+  _thenViewRef = null;
+  _elseViewRef = null;
   constructor(_viewContainer, templateRef) {
     this._viewContainer = _viewContainer;
-    this._context = new NgIfContext();
-    this._thenTemplateRef = null;
-    this._elseTemplateRef = null;
-    this._thenViewRef = null;
-    this._elseViewRef = null;
     this._thenTemplateRef = templateRef;
   }
   /**
@@ -2520,6 +2539,17 @@ var NgIf = class _NgIf {
       }
     }
   }
+  /** @internal */
+  static ngIfUseIfTypeGuard;
+  /**
+   * Assert the correct type of the expression bound to the `ngIf` input within the template.
+   *
+   * The presence of this static field is a signal to the Ivy template type check compiler that
+   * when the `NgIf` structural directive renders its template, the type of the expression bound
+   * to `ngIf` should be narrowed in some way. For `NgIf`, the binding expression itself is used to
+   * narrow its type, which allows the strictNullChecks feature of TypeScript to work with `NgIf`.
+   */
+  static ngTemplateGuard_ngIf;
   /**
    * Asserts the correct type of the context for the template that `NgIf` will render.
    *
@@ -2529,30 +2559,24 @@ var NgIf = class _NgIf {
   static ngTemplateContextGuard(dir, ctx) {
     return true;
   }
-  static {
-    this.ɵfac = function NgIf_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgIf)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgIf,
-      selectors: [["", "ngIf", ""]],
-      inputs: {
-        ngIf: "ngIf",
-        ngIfThen: "ngIfThen",
-        ngIfElse: "ngIfElse"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgIf_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgIf)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgIf,
+    selectors: [["", "ngIf", ""]],
+    inputs: {
+      ngIf: "ngIf",
+      ngIfThen: "ngIfThen",
+      ngIfElse: "ngIfElse"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgIf, [{
     type: Directive,
     args: [{
-      selector: "[ngIf]",
-      standalone: true
+      selector: "[ngIf]"
     }]
   }], () => [{
     type: ViewContainerRef
@@ -2571,10 +2595,8 @@ var NgIf = class _NgIf {
   });
 })();
 var NgIfContext = class {
-  constructor() {
-    this.$implicit = null;
-    this.ngIf = null;
-  }
+  $implicit = null;
+  ngIf = null;
 };
 function assertTemplate(property, templateRef) {
   const isTemplateRefOrNull = !!(!templateRef || templateRef.createEmbeddedView);
@@ -2583,10 +2605,12 @@ function assertTemplate(property, templateRef) {
   }
 }
 var SwitchView = class {
+  _viewContainerRef;
+  _templateRef;
+  _created = false;
   constructor(_viewContainerRef, _templateRef) {
     this._viewContainerRef = _viewContainerRef;
     this._templateRef = _templateRef;
-    this._created = false;
   }
   create() {
     this._created = true;
@@ -2605,13 +2629,12 @@ var SwitchView = class {
   }
 };
 var NgSwitch = class _NgSwitch {
-  constructor() {
-    this._defaultViews = [];
-    this._defaultUsed = false;
-    this._caseCount = 0;
-    this._lastCaseCheckIndex = 0;
-    this._lastCasesMatched = false;
-  }
+  _defaultViews = [];
+  _defaultUsed = false;
+  _caseCount = 0;
+  _lastCaseCheckIndex = 0;
+  _lastCasesMatched = false;
+  _ngSwitch;
   set ngSwitch(newValue) {
     this._ngSwitch = newValue;
     if (this._caseCount === 0) {
@@ -2646,28 +2669,22 @@ var NgSwitch = class _NgSwitch {
       }
     }
   }
-  static {
-    this.ɵfac = function NgSwitch_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgSwitch)();
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgSwitch,
-      selectors: [["", "ngSwitch", ""]],
-      inputs: {
-        ngSwitch: "ngSwitch"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgSwitch_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgSwitch)();
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgSwitch,
+    selectors: [["", "ngSwitch", ""]],
+    inputs: {
+      ngSwitch: "ngSwitch"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgSwitch, [{
     type: Directive,
     args: [{
-      selector: "[ngSwitch]",
-      standalone: true
+      selector: "[ngSwitch]"
     }]
   }], null, {
     ngSwitch: [{
@@ -2676,6 +2693,12 @@ var NgSwitch = class _NgSwitch {
   });
 })();
 var NgSwitchCase = class _NgSwitchCase {
+  ngSwitch;
+  _view;
+  /**
+   * Stores the HTML template to be selected on match.
+   */
+  ngSwitchCase;
   constructor(viewContainer, templateRef, ngSwitch) {
     this.ngSwitch = ngSwitch;
     if ((typeof ngDevMode === "undefined" || ngDevMode) && !ngSwitch) {
@@ -2691,28 +2714,22 @@ var NgSwitchCase = class _NgSwitchCase {
   ngDoCheck() {
     this._view.enforceState(this.ngSwitch._matchCase(this.ngSwitchCase));
   }
-  static {
-    this.ɵfac = function NgSwitchCase_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgSwitchCase)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(NgSwitch, 9));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgSwitchCase,
-      selectors: [["", "ngSwitchCase", ""]],
-      inputs: {
-        ngSwitchCase: "ngSwitchCase"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgSwitchCase_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgSwitchCase)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(NgSwitch, 9));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgSwitchCase,
+    selectors: [["", "ngSwitchCase", ""]],
+    inputs: {
+      ngSwitchCase: "ngSwitchCase"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgSwitchCase, [{
     type: Directive,
     args: [{
-      selector: "[ngSwitchCase]",
-      standalone: true
+      selector: "[ngSwitchCase]"
     }]
   }], () => [{
     type: ViewContainerRef
@@ -2738,25 +2755,19 @@ var NgSwitchDefault = class _NgSwitchDefault {
     }
     ngSwitch._addDefault(new SwitchView(viewContainer, templateRef));
   }
-  static {
-    this.ɵfac = function NgSwitchDefault_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgSwitchDefault)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(NgSwitch, 9));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgSwitchDefault,
-      selectors: [["", "ngSwitchDefault", ""]],
-      standalone: true
-    });
-  }
+  static ɵfac = function NgSwitchDefault_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgSwitchDefault)(ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(NgSwitch, 9));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgSwitchDefault,
+    selectors: [["", "ngSwitchDefault", ""]]
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgSwitchDefault, [{
     type: Directive,
     args: [{
-      selector: "[ngSwitchDefault]",
-      standalone: true
+      selector: "[ngSwitchDefault]"
     }]
   }], () => [{
     type: ViewContainerRef
@@ -2775,9 +2786,11 @@ function throwNgSwitchProviderNotFoundError(attrName, directiveName) {
   throw new RuntimeError(2e3, `An element with the "${attrName}" attribute (matching the "${directiveName}" directive) must be located inside an element with the "ngSwitch" attribute (matching "NgSwitch" directive)`);
 }
 var NgPlural = class _NgPlural {
+  _localization;
+  _activeView;
+  _caseViews = {};
   constructor(_localization) {
     this._localization = _localization;
-    this._caseViews = {};
   }
   set ngPlural(value) {
     this._updateView(value);
@@ -2800,28 +2813,22 @@ var NgPlural = class _NgPlural {
       this._activeView.create();
     }
   }
-  static {
-    this.ɵfac = function NgPlural_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgPlural)(ɵɵdirectiveInject(NgLocalization));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgPlural,
-      selectors: [["", "ngPlural", ""]],
-      inputs: {
-        ngPlural: "ngPlural"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgPlural_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgPlural)(ɵɵdirectiveInject(NgLocalization));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgPlural,
+    selectors: [["", "ngPlural", ""]],
+    inputs: {
+      ngPlural: "ngPlural"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgPlural, [{
     type: Directive,
     args: [{
-      selector: "[ngPlural]",
-      standalone: true
+      selector: "[ngPlural]"
     }]
   }], () => [{
     type: NgLocalization
@@ -2832,30 +2839,25 @@ var NgPlural = class _NgPlural {
   });
 })();
 var NgPluralCase = class _NgPluralCase {
+  value;
   constructor(value, template, viewContainer, ngPlural) {
     this.value = value;
     const isANumber = !isNaN(Number(value));
     ngPlural.addCase(isANumber ? `=${value}` : value, new SwitchView(viewContainer, template));
   }
-  static {
-    this.ɵfac = function NgPluralCase_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgPluralCase)(ɵɵinjectAttribute("ngPluralCase"), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(NgPlural, 1));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgPluralCase,
-      selectors: [["", "ngPluralCase", ""]],
-      standalone: true
-    });
-  }
+  static ɵfac = function NgPluralCase_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgPluralCase)(ɵɵinjectAttribute("ngPluralCase"), ɵɵdirectiveInject(TemplateRef), ɵɵdirectiveInject(ViewContainerRef), ɵɵdirectiveInject(NgPlural, 1));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgPluralCase,
+    selectors: [["", "ngPluralCase", ""]]
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgPluralCase, [{
     type: Directive,
     args: [{
-      selector: "[ngPluralCase]",
-      standalone: true
+      selector: "[ngPluralCase]"
     }]
   }], () => [{
     type: void 0,
@@ -2875,12 +2877,15 @@ var NgPluralCase = class _NgPluralCase {
   }], null);
 })();
 var NgStyle = class _NgStyle {
+  _ngEl;
+  _differs;
+  _renderer;
+  _ngStyle = null;
+  _differ = null;
   constructor(_ngEl, _differs, _renderer) {
     this._ngEl = _ngEl;
     this._differs = _differs;
     this._renderer = _renderer;
-    this._ngStyle = null;
-    this._differ = null;
   }
   set ngStyle(values) {
     this._ngStyle = values;
@@ -2910,28 +2915,22 @@ var NgStyle = class _NgStyle {
     changes.forEachAddedItem((record) => this._setStyle(record.key, record.currentValue));
     changes.forEachChangedItem((record) => this._setStyle(record.key, record.currentValue));
   }
-  static {
-    this.ɵfac = function NgStyle_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgStyle)(ɵɵdirectiveInject(ElementRef), ɵɵdirectiveInject(KeyValueDiffers), ɵɵdirectiveInject(Renderer2));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgStyle,
-      selectors: [["", "ngStyle", ""]],
-      inputs: {
-        ngStyle: "ngStyle"
-      },
-      standalone: true
-    });
-  }
+  static ɵfac = function NgStyle_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgStyle)(ɵɵdirectiveInject(ElementRef), ɵɵdirectiveInject(KeyValueDiffers), ɵɵdirectiveInject(Renderer2));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgStyle,
+    selectors: [["", "ngStyle", ""]],
+    inputs: {
+      ngStyle: "ngStyle"
+    }
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgStyle, [{
     type: Directive,
     args: [{
-      selector: "[ngStyle]",
-      standalone: true
+      selector: "[ngStyle]"
     }]
   }], () => [{
     type: ElementRef
@@ -2947,12 +2946,23 @@ var NgStyle = class _NgStyle {
   });
 })();
 var NgTemplateOutlet = class _NgTemplateOutlet {
+  _viewContainerRef;
+  _viewRef = null;
+  /**
+   * A context object to attach to the {@link EmbeddedViewRef}. This should be an
+   * object, the object's keys will be available for binding by the local template `let`
+   * declarations.
+   * Using the key `$implicit` in the context object will set its value as default.
+   */
+  ngTemplateOutletContext = null;
+  /**
+   * A string defining the template reference and optionally the context object for the template.
+   */
+  ngTemplateOutlet = null;
+  /** Injector to be used within the embedded view. */
+  ngTemplateOutletInjector = null;
   constructor(_viewContainerRef) {
     this._viewContainerRef = _viewContainerRef;
-    this._viewRef = null;
-    this.ngTemplateOutletContext = null;
-    this.ngTemplateOutlet = null;
-    this.ngTemplateOutletInjector = null;
   }
   ngOnChanges(changes) {
     if (this._shouldRecreateView(changes)) {
@@ -2999,31 +3009,25 @@ var NgTemplateOutlet = class _NgTemplateOutlet {
       }
     });
   }
-  static {
-    this.ɵfac = function NgTemplateOutlet_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgTemplateOutlet)(ɵɵdirectiveInject(ViewContainerRef));
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgTemplateOutlet,
-      selectors: [["", "ngTemplateOutlet", ""]],
-      inputs: {
-        ngTemplateOutletContext: "ngTemplateOutletContext",
-        ngTemplateOutlet: "ngTemplateOutlet",
-        ngTemplateOutletInjector: "ngTemplateOutletInjector"
-      },
-      standalone: true,
-      features: [ɵɵNgOnChangesFeature]
-    });
-  }
+  static ɵfac = function NgTemplateOutlet_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgTemplateOutlet)(ɵɵdirectiveInject(ViewContainerRef));
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgTemplateOutlet,
+    selectors: [["", "ngTemplateOutlet", ""]],
+    inputs: {
+      ngTemplateOutletContext: "ngTemplateOutletContext",
+      ngTemplateOutlet: "ngTemplateOutlet",
+      ngTemplateOutletInjector: "ngTemplateOutletInjector"
+    },
+    features: [ɵɵNgOnChangesFeature]
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgTemplateOutlet, [{
     type: Directive,
     args: [{
-      selector: "[ngTemplateOutlet]",
-      standalone: true
+      selector: "[ngTemplateOutlet]"
     }]
   }], () => [{
     type: ViewContainerRef
@@ -3068,12 +3072,13 @@ var PromiseStrategy = class {
 var _promiseStrategy = new PromiseStrategy();
 var _subscribableStrategy = new SubscribableStrategy();
 var AsyncPipe = class _AsyncPipe {
+  _ref;
+  _latestValue = null;
+  markForCheckOnValueUpdate = true;
+  _subscription = null;
+  _obj = null;
+  _strategy = null;
   constructor(ref) {
-    this._latestValue = null;
-    this.markForCheckOnValueUpdate = true;
-    this._subscription = null;
-    this._obj = null;
-    this._strategy = null;
     this._ref = ref;
   }
   ngOnDestroy() {
@@ -3128,27 +3133,21 @@ var AsyncPipe = class _AsyncPipe {
       }
     }
   }
-  static {
-    this.ɵfac = function AsyncPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _AsyncPipe)(ɵɵdirectiveInject(ChangeDetectorRef, 16));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "async",
-      type: _AsyncPipe,
-      pure: false,
-      standalone: true
-    });
-  }
+  static ɵfac = function AsyncPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _AsyncPipe)(ɵɵdirectiveInject(ChangeDetectorRef, 16));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "async",
+    type: _AsyncPipe,
+    pure: false
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(AsyncPipe, [{
     type: Pipe,
     args: [{
       name: "async",
-      pure: false,
-      standalone: true
+      pure: false
     }]
   }], () => [{
     type: ChangeDetectorRef
@@ -3162,26 +3161,20 @@ var LowerCasePipe = class _LowerCasePipe {
     }
     return value.toLowerCase();
   }
-  static {
-    this.ɵfac = function LowerCasePipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _LowerCasePipe)();
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "lowercase",
-      type: _LowerCasePipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function LowerCasePipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _LowerCasePipe)();
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "lowercase",
+    type: _LowerCasePipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(LowerCasePipe, [{
     type: Pipe,
     args: [{
-      name: "lowercase",
-      standalone: true
+      name: "lowercase"
     }]
   }], null, null);
 })();
@@ -3194,26 +3187,20 @@ var TitleCasePipe = class _TitleCasePipe {
     }
     return value.replace(unicodeWordMatch, (txt) => txt[0].toUpperCase() + txt.slice(1).toLowerCase());
   }
-  static {
-    this.ɵfac = function TitleCasePipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _TitleCasePipe)();
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "titlecase",
-      type: _TitleCasePipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function TitleCasePipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _TitleCasePipe)();
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "titlecase",
+    type: _TitleCasePipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(TitleCasePipe, [{
     type: Pipe,
     args: [{
-      name: "titlecase",
-      standalone: true
+      name: "titlecase"
     }]
   }], null, null);
 })();
@@ -3225,26 +3212,20 @@ var UpperCasePipe = class _UpperCasePipe {
     }
     return value.toUpperCase();
   }
-  static {
-    this.ɵfac = function UpperCasePipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _UpperCasePipe)();
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "uppercase",
-      type: _UpperCasePipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function UpperCasePipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _UpperCasePipe)();
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "uppercase",
+    type: _UpperCasePipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(UpperCasePipe, [{
     type: Pipe,
     args: [{
-      name: "uppercase",
-      standalone: true
+      name: "uppercase"
     }]
   }], null, null);
 })();
@@ -3252,6 +3233,9 @@ var DEFAULT_DATE_FORMAT = "mediumDate";
 var DATE_PIPE_DEFAULT_TIMEZONE = new InjectionToken(ngDevMode ? "DATE_PIPE_DEFAULT_TIMEZONE" : "");
 var DATE_PIPE_DEFAULT_OPTIONS = new InjectionToken(ngDevMode ? "DATE_PIPE_DEFAULT_OPTIONS" : "");
 var DatePipe = class _DatePipe {
+  locale;
+  defaultTimezone;
+  defaultOptions;
   constructor(locale, defaultTimezone, defaultOptions) {
     this.locale = locale;
     this.defaultTimezone = defaultTimezone;
@@ -3267,26 +3251,20 @@ var DatePipe = class _DatePipe {
       throw invalidPipeArgumentError(_DatePipe, error.message);
     }
   }
-  static {
-    this.ɵfac = function DatePipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _DatePipe)(ɵɵdirectiveInject(LOCALE_ID, 16), ɵɵdirectiveInject(DATE_PIPE_DEFAULT_TIMEZONE, 24), ɵɵdirectiveInject(DATE_PIPE_DEFAULT_OPTIONS, 24));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "date",
-      type: _DatePipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function DatePipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _DatePipe)(ɵɵdirectiveInject(LOCALE_ID, 16), ɵɵdirectiveInject(DATE_PIPE_DEFAULT_TIMEZONE, 24), ɵɵdirectiveInject(DATE_PIPE_DEFAULT_OPTIONS, 24));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "date",
+    type: _DatePipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(DatePipe, [{
     type: Pipe,
     args: [{
-      name: "date",
-      standalone: true
+      name: "date"
     }]
   }], () => [{
     type: void 0,
@@ -3314,6 +3292,7 @@ var DatePipe = class _DatePipe {
 })();
 var _INTERPOLATION_REGEXP = /#/g;
 var I18nPluralPipe = class _I18nPluralPipe {
+  _localization;
   constructor(_localization) {
     this._localization = _localization;
   }
@@ -3332,26 +3311,20 @@ var I18nPluralPipe = class _I18nPluralPipe {
     const key = getPluralCategory(value, Object.keys(pluralMap), this._localization, locale);
     return pluralMap[key].replace(_INTERPOLATION_REGEXP, value.toString());
   }
-  static {
-    this.ɵfac = function I18nPluralPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _I18nPluralPipe)(ɵɵdirectiveInject(NgLocalization, 16));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "i18nPlural",
-      type: _I18nPluralPipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function I18nPluralPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _I18nPluralPipe)(ɵɵdirectiveInject(NgLocalization, 16));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "i18nPlural",
+    type: _I18nPluralPipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(I18nPluralPipe, [{
     type: Pipe,
     args: [{
-      name: "i18nPlural",
-      standalone: true
+      name: "i18nPlural"
     }]
   }], () => [{
     type: NgLocalization
@@ -3376,26 +3349,20 @@ var I18nSelectPipe = class _I18nSelectPipe {
     }
     return "";
   }
-  static {
-    this.ɵfac = function I18nSelectPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _I18nSelectPipe)();
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "i18nSelect",
-      type: _I18nSelectPipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function I18nSelectPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _I18nSelectPipe)();
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "i18nSelect",
+    type: _I18nSelectPipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(I18nSelectPipe, [{
     type: Pipe,
     args: [{
-      name: "i18nSelect",
-      standalone: true
+      name: "i18nSelect"
     }]
   }], null, null);
 })();
@@ -3406,27 +3373,21 @@ var JsonPipe = class _JsonPipe {
   transform(value) {
     return JSON.stringify(value, null, 2);
   }
-  static {
-    this.ɵfac = function JsonPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _JsonPipe)();
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "json",
-      type: _JsonPipe,
-      pure: false,
-      standalone: true
-    });
-  }
+  static ɵfac = function JsonPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _JsonPipe)();
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "json",
+    type: _JsonPipe,
+    pure: false
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(JsonPipe, [{
     type: Pipe,
     args: [{
       name: "json",
-      pure: false,
-      standalone: true
+      pure: false
     }]
   }], null, null);
 })();
@@ -3437,11 +3398,13 @@ function makeKeyValuePair(key, value) {
   };
 }
 var KeyValuePipe = class _KeyValuePipe {
+  differs;
   constructor(differs) {
     this.differs = differs;
-    this.keyValues = [];
-    this.compareFn = defaultComparator;
   }
+  differ;
+  keyValues = [];
+  compareFn = defaultComparator;
   transform(input, compareFn = defaultComparator) {
     if (!input || !(input instanceof Map) && typeof input !== "object") {
       return null;
@@ -3456,32 +3419,28 @@ var KeyValuePipe = class _KeyValuePipe {
       });
     }
     if (differChanges || compareFnChanged) {
-      this.keyValues.sort(compareFn);
+      if (compareFn) {
+        this.keyValues.sort(compareFn);
+      }
       this.compareFn = compareFn;
     }
     return this.keyValues;
   }
-  static {
-    this.ɵfac = function KeyValuePipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _KeyValuePipe)(ɵɵdirectiveInject(KeyValueDiffers, 16));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "keyvalue",
-      type: _KeyValuePipe,
-      pure: false,
-      standalone: true
-    });
-  }
+  static ɵfac = function KeyValuePipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _KeyValuePipe)(ɵɵdirectiveInject(KeyValueDiffers, 16));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "keyvalue",
+    type: _KeyValuePipe,
+    pure: false
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(KeyValuePipe, [{
     type: Pipe,
     args: [{
       name: "keyvalue",
-      pure: false,
-      standalone: true
+      pure: false
     }]
   }], () => [{
     type: KeyValueDiffers
@@ -3491,10 +3450,8 @@ function defaultComparator(keyValueA, keyValueB) {
   const a = keyValueA.key;
   const b = keyValueB.key;
   if (a === b) return 0;
-  if (a === void 0) return 1;
-  if (b === void 0) return -1;
-  if (a === null) return 1;
-  if (b === null) return -1;
+  if (a == null) return 1;
+  if (b == null) return -1;
   if (typeof a == "string" && typeof b == "string") {
     return a < b ? -1 : 1;
   }
@@ -3509,6 +3466,7 @@ function defaultComparator(keyValueA, keyValueB) {
   return aString == bString ? 0 : aString < bString ? -1 : 1;
 }
 var DecimalPipe = class _DecimalPipe {
+  _locale;
   constructor(_locale) {
     this._locale = _locale;
   }
@@ -3522,26 +3480,20 @@ var DecimalPipe = class _DecimalPipe {
       throw invalidPipeArgumentError(_DecimalPipe, error.message);
     }
   }
-  static {
-    this.ɵfac = function DecimalPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _DecimalPipe)(ɵɵdirectiveInject(LOCALE_ID, 16));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "number",
-      type: _DecimalPipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function DecimalPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _DecimalPipe)(ɵɵdirectiveInject(LOCALE_ID, 16));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "number",
+    type: _DecimalPipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(DecimalPipe, [{
     type: Pipe,
     args: [{
-      name: "number",
-      standalone: true
+      name: "number"
     }]
   }], () => [{
     type: void 0,
@@ -3552,6 +3504,7 @@ var DecimalPipe = class _DecimalPipe {
   }], null);
 })();
 var PercentPipe = class _PercentPipe {
+  _locale;
   constructor(_locale) {
     this._locale = _locale;
   }
@@ -3581,26 +3534,20 @@ var PercentPipe = class _PercentPipe {
       throw invalidPipeArgumentError(_PercentPipe, error.message);
     }
   }
-  static {
-    this.ɵfac = function PercentPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _PercentPipe)(ɵɵdirectiveInject(LOCALE_ID, 16));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "percent",
-      type: _PercentPipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function PercentPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _PercentPipe)(ɵɵdirectiveInject(LOCALE_ID, 16));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "percent",
+    type: _PercentPipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PercentPipe, [{
     type: Pipe,
     args: [{
-      name: "percent",
-      standalone: true
+      name: "percent"
     }]
   }], () => [{
     type: void 0,
@@ -3611,6 +3558,8 @@ var PercentPipe = class _PercentPipe {
   }], null);
 })();
 var CurrencyPipe = class _CurrencyPipe {
+  _locale;
+  _defaultCurrencyCode;
   constructor(_locale, _defaultCurrencyCode = "USD") {
     this._locale = _locale;
     this._defaultCurrencyCode = _defaultCurrencyCode;
@@ -3639,26 +3588,20 @@ var CurrencyPipe = class _CurrencyPipe {
       throw invalidPipeArgumentError(_CurrencyPipe, error.message);
     }
   }
-  static {
-    this.ɵfac = function CurrencyPipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _CurrencyPipe)(ɵɵdirectiveInject(LOCALE_ID, 16), ɵɵdirectiveInject(DEFAULT_CURRENCY_CODE, 16));
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "currency",
-      type: _CurrencyPipe,
-      pure: true,
-      standalone: true
-    });
-  }
+  static ɵfac = function CurrencyPipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _CurrencyPipe)(ɵɵdirectiveInject(LOCALE_ID, 16), ɵɵdirectiveInject(DEFAULT_CURRENCY_CODE, 16));
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "currency",
+    type: _CurrencyPipe,
+    pure: true
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CurrencyPipe, [{
     type: Pipe,
     args: [{
-      name: "currency",
-      standalone: true
+      name: "currency"
     }]
   }], () => [{
     type: void 0,
@@ -3689,55 +3632,41 @@ function strToNumber(value) {
 var SlicePipe = class _SlicePipe {
   transform(value, start, end) {
     if (value == null) return null;
-    if (!this.supports(value)) {
+    const supports = typeof value === "string" || Array.isArray(value);
+    if (!supports) {
       throw invalidPipeArgumentError(_SlicePipe, value);
     }
     return value.slice(start, end);
   }
-  supports(obj) {
-    return typeof obj === "string" || Array.isArray(obj);
-  }
-  static {
-    this.ɵfac = function SlicePipe_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _SlicePipe)();
-    };
-  }
-  static {
-    this.ɵpipe = ɵɵdefinePipe({
-      name: "slice",
-      type: _SlicePipe,
-      pure: false,
-      standalone: true
-    });
-  }
+  static ɵfac = function SlicePipe_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _SlicePipe)();
+  };
+  static ɵpipe = ɵɵdefinePipe({
+    name: "slice",
+    type: _SlicePipe,
+    pure: false
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(SlicePipe, [{
     type: Pipe,
     args: [{
       name: "slice",
-      pure: false,
-      standalone: true
+      pure: false
     }]
   }], null, null);
 })();
 var COMMON_PIPES = [AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe, DecimalPipe, PercentPipe, TitleCasePipe, CurrencyPipe, DatePipe, I18nPluralPipe, I18nSelectPipe, KeyValuePipe];
 var CommonModule = class _CommonModule {
-  static {
-    this.ɵfac = function CommonModule_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _CommonModule)();
-    };
-  }
-  static {
-    this.ɵmod = ɵɵdefineNgModule({
-      type: _CommonModule,
-      imports: [NgClass, NgComponentOutlet, NgForOf, NgIf, NgTemplateOutlet, NgStyle, NgSwitch, NgSwitchCase, NgSwitchDefault, NgPlural, NgPluralCase, AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe, DecimalPipe, PercentPipe, TitleCasePipe, CurrencyPipe, DatePipe, I18nPluralPipe, I18nSelectPipe, KeyValuePipe],
-      exports: [NgClass, NgComponentOutlet, NgForOf, NgIf, NgTemplateOutlet, NgStyle, NgSwitch, NgSwitchCase, NgSwitchDefault, NgPlural, NgPluralCase, AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe, DecimalPipe, PercentPipe, TitleCasePipe, CurrencyPipe, DatePipe, I18nPluralPipe, I18nSelectPipe, KeyValuePipe]
-    });
-  }
-  static {
-    this.ɵinj = ɵɵdefineInjector({});
-  }
+  static ɵfac = function CommonModule_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _CommonModule)();
+  };
+  static ɵmod = ɵɵdefineNgModule({
+    type: _CommonModule,
+    imports: [NgClass, NgComponentOutlet, NgForOf, NgIf, NgTemplateOutlet, NgStyle, NgSwitch, NgSwitchCase, NgSwitchDefault, NgPlural, NgPluralCase, AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe, DecimalPipe, PercentPipe, TitleCasePipe, CurrencyPipe, DatePipe, I18nPluralPipe, I18nSelectPipe, KeyValuePipe],
+    exports: [NgClass, NgComponentOutlet, NgForOf, NgIf, NgTemplateOutlet, NgStyle, NgSwitch, NgSwitchCase, NgSwitchDefault, NgPlural, NgPluralCase, AsyncPipe, UpperCasePipe, LowerCasePipe, JsonPipe, SlicePipe, DecimalPipe, PercentPipe, TitleCasePipe, CurrencyPipe, DatePipe, I18nPluralPipe, I18nSelectPipe, KeyValuePipe]
+  });
+  static ɵinj = ɵɵdefineInjector({});
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CommonModule, [{
@@ -3756,21 +3685,27 @@ function isPlatformBrowser(platformId) {
 function isPlatformServer(platformId) {
   return platformId === PLATFORM_SERVER_ID;
 }
-var VERSION = new Version("18.2.13");
+var VERSION = new Version("19.1.7");
 var ViewportScroller = class _ViewportScroller {
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
+  // De-sugared tree-shakable injection
+  // See #23917
+  /** @nocollapse */
+  static ɵprov = (
+    /** @pureOrBreakMyCode */
+    ɵɵdefineInjectable({
       token: _ViewportScroller,
       providedIn: "root",
-      factory: () => isPlatformBrowser(inject(PLATFORM_ID)) ? new BrowserViewportScroller(inject(DOCUMENT), window) : new NullViewportScroller()
-    });
-  }
+      factory: () => false ? new NullViewportScroller() : new BrowserViewportScroller(inject(DOCUMENT), window)
+    })
+  );
 };
 var BrowserViewportScroller = class {
+  document;
+  window;
+  offset = () => [0, 0];
   constructor(document, window2) {
     this.document = document;
     this.window = window2;
-    this.offset = () => [0, 0];
   }
   /**
    * Configures the top offset used when scrolling to an anchor.
@@ -3974,6 +3909,9 @@ function createCloudinaryUrl(path, config) {
   if (config.width) {
     params += `,w_${config.width}`;
   }
+  if (config.loaderParams?.["rounded"]) {
+    params += `,r_max`;
+  }
   return `${path}/image/upload/${params}/${config.src}`;
 }
 var imageKitLoaderInfo = {
@@ -4082,10 +4020,11 @@ function assertDevMode(checkName) {
   }
 }
 var LCPImageObserver = class _LCPImageObserver {
+  // Map of full image URLs -> original `ngSrc` values.
+  images = /* @__PURE__ */ new Map();
+  window = null;
+  observer = null;
   constructor() {
-    this.images = /* @__PURE__ */ new Map();
-    this.window = null;
-    this.observer = null;
     const isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
     assertDevMode("LCP checker");
     const win = inject(DOCUMENT).defaultView;
@@ -4151,18 +4090,14 @@ var LCPImageObserver = class _LCPImageObserver {
     this.observer.disconnect();
     this.images.clear();
   }
-  static {
-    this.ɵfac = function LCPImageObserver_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _LCPImageObserver)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _LCPImageObserver,
-      factory: _LCPImageObserver.ɵfac,
-      providedIn: "root"
-    });
-  }
+  static ɵfac = function LCPImageObserver_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _LCPImageObserver)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _LCPImageObserver,
+    factory: _LCPImageObserver.ɵfac,
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(LCPImageObserver, [{
@@ -4183,18 +4118,20 @@ function logModifiedWarning(ngSrc) {
 var INTERNAL_PRECONNECT_CHECK_BLOCKLIST = /* @__PURE__ */ new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
 var PRECONNECT_CHECK_BLOCKLIST = new InjectionToken(ngDevMode ? "PRECONNECT_CHECK_BLOCKLIST" : "");
 var PreconnectLinkChecker = class _PreconnectLinkChecker {
+  document = inject(DOCUMENT);
+  /**
+   * Set of <link rel="preconnect"> tags found on this page.
+   * The `null` value indicates that there was no DOM query operation performed.
+   */
+  preconnectLinks = null;
+  /*
+   * Keep track of all already seen origin URLs to avoid repeating the same check.
+   */
+  alreadySeen = /* @__PURE__ */ new Set();
+  window = this.document.defaultView;
+  blocklist = new Set(INTERNAL_PRECONNECT_CHECK_BLOCKLIST);
   constructor() {
-    this.document = inject(DOCUMENT);
-    this.isServer = isPlatformServer(inject(PLATFORM_ID));
-    this.preconnectLinks = null;
-    this.alreadySeen = /* @__PURE__ */ new Set();
-    this.window = null;
-    this.blocklist = new Set(INTERNAL_PRECONNECT_CHECK_BLOCKLIST);
     assertDevMode("preconnect link checker");
-    const win = this.document.defaultView;
-    if (typeof win !== "undefined") {
-      this.window = win;
-    }
     const blocklist = inject(PRECONNECT_CHECK_BLOCKLIST, {
       optional: true
     });
@@ -4219,7 +4156,7 @@ var PreconnectLinkChecker = class _PreconnectLinkChecker {
    * @param originalNgSrc ngSrc value
    */
   assertPreconnect(rewrittenSrc, originalNgSrc) {
-    if (this.isServer) return;
+    if (false) return;
     const imgUrl = getUrl(rewrittenSrc, this.window);
     if (this.blocklist.has(imgUrl.hostname) || this.alreadySeen.has(imgUrl.origin)) return;
     this.alreadySeen.add(imgUrl.origin);
@@ -4243,18 +4180,14 @@ var PreconnectLinkChecker = class _PreconnectLinkChecker {
     this.preconnectLinks?.clear();
     this.alreadySeen.clear();
   }
-  static {
-    this.ɵfac = function PreconnectLinkChecker_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _PreconnectLinkChecker)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _PreconnectLinkChecker,
-      factory: _PreconnectLinkChecker.ɵfac,
-      providedIn: "root"
-    });
-  }
+  static ɵfac = function PreconnectLinkChecker_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _PreconnectLinkChecker)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _PreconnectLinkChecker,
+    factory: _PreconnectLinkChecker.ɵfac,
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PreconnectLinkChecker, [{
@@ -4270,15 +4203,13 @@ function deepForEach(input, fn) {
   }
 }
 var DEFAULT_PRELOADED_IMAGES_LIMIT = 5;
-var PRELOADED_IMAGES = new InjectionToken("NG_OPTIMIZED_PRELOADED_IMAGES", {
+var PRELOADED_IMAGES = new InjectionToken(typeof ngDevMode === "undefined" || ngDevMode ? "NG_OPTIMIZED_PRELOADED_IMAGES" : "", {
   providedIn: "root",
   factory: () => /* @__PURE__ */ new Set()
 });
 var PreloadLinkCreator = class _PreloadLinkCreator {
-  constructor() {
-    this.preloadedImages = inject(PRELOADED_IMAGES);
-    this.document = inject(DOCUMENT);
-  }
+  preloadedImages = inject(PRELOADED_IMAGES);
+  document = inject(DOCUMENT);
   /**
    * @description Add a preload `<link>` to the `<head>` of the `index.html` that is served from the
    * server while using Angular Universal and SSR to kick off image loads for high priority images.
@@ -4318,18 +4249,14 @@ var PreloadLinkCreator = class _PreloadLinkCreator {
     }
     renderer.appendChild(this.document.head, preload);
   }
-  static {
-    this.ɵfac = function PreloadLinkCreator_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _PreloadLinkCreator)();
-    };
-  }
-  static {
-    this.ɵprov = ɵɵdefineInjectable({
-      token: _PreloadLinkCreator,
-      factory: _PreloadLinkCreator.ɵfac,
-      providedIn: "root"
-    });
-  }
+  static ɵfac = function PreloadLinkCreator_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _PreloadLinkCreator)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _PreloadLinkCreator,
+    factory: _PreloadLinkCreator.ɵfac,
+    providedIn: "root"
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(PreloadLinkCreator, [{
@@ -4358,19 +4285,113 @@ var BUILT_IN_LOADERS = [imgixLoaderInfo, imageKitLoaderInfo, cloudinaryLoaderInf
 var PRIORITY_COUNT_THRESHOLD = 10;
 var IMGS_WITH_PRIORITY_ATTR_COUNT = 0;
 var NgOptimizedImage = class _NgOptimizedImage {
+  imageLoader = inject(IMAGE_LOADER);
+  config = processConfig(inject(IMAGE_CONFIG));
+  renderer = inject(Renderer2);
+  imgElement = inject(ElementRef).nativeElement;
+  injector = inject(Injector);
+  // An LCP image observer should be injected only in development mode.
+  // Do not assign it to `null` to avoid having a redundant property in the production bundle.
+  lcpObserver;
+  /**
+   * Calculate the rewritten `src` once and store it.
+   * This is needed to avoid repetitive calculations and make sure the directive cleanup in the
+   * `ngOnDestroy` does not rely on the `IMAGE_LOADER` logic (which in turn can rely on some other
+   * instance that might be already destroyed).
+   */
+  _renderedSrc = null;
+  /**
+   * Name of the source image.
+   * Image name will be processed by the image loader and the final URL will be applied as the `src`
+   * property of the image.
+   */
+  ngSrc;
+  /**
+   * A comma separated list of width or density descriptors.
+   * The image name will be taken from `ngSrc` and combined with the list of width or density
+   * descriptors to generate the final `srcset` property of the image.
+   *
+   * Example:
+   * ```html
+   * <img ngSrc="hello.jpg" ngSrcset="100w, 200w" />  =>
+   * <img src="path/hello.jpg" srcset="path/hello.jpg?w=100 100w, path/hello.jpg?w=200 200w" />
+   * ```
+   */
+  ngSrcset;
+  /**
+   * The base `sizes` attribute passed through to the `<img>` element.
+   * Providing sizes causes the image to create an automatic responsive srcset.
+   */
+  sizes;
+  /**
+   * For responsive images: the intrinsic width of the image in pixels.
+   * For fixed size images: the desired rendered width of the image in pixels.
+   */
+  width;
+  /**
+   * For responsive images: the intrinsic height of the image in pixels.
+   * For fixed size images: the desired rendered height of the image in pixels.
+   */
+  height;
+  /**
+   * The desired loading behavior (lazy, eager, or auto). Defaults to `lazy`,
+   * which is recommended for most images.
+   *
+   * Warning: Setting images as loading="eager" or loading="auto" marks them
+   * as non-priority images and can hurt loading performance. For images which
+   * may be the LCP element, use the `priority` attribute instead of `loading`.
+   */
+  loading;
+  /**
+   * Indicates whether this image should have a high priority.
+   */
+  priority = false;
+  /**
+   * Data to pass through to custom loaders.
+   */
+  loaderParams;
+  /**
+   * Disables automatic srcset generation for this image.
+   */
+  disableOptimizedSrcset = false;
+  /**
+   * Sets the image to "fill mode", which eliminates the height/width requirement and adds
+   * styles such that the image fills its containing element.
+   */
+  fill = false;
+  /**
+   * A URL or data URL for an image to be used as a placeholder while this image loads.
+   */
+  placeholder;
+  /**
+   * Configuration object for placeholder settings. Options:
+   *   * blur: Setting this to false disables the automatic CSS blur.
+   */
+  placeholderConfig;
+  /**
+   * Value of the `src` attribute if set on the host `<img>` element.
+   * This input is exclusively read to assert that `src` is not set in conflict
+   * with `ngSrc` and that images don't start to load until a lazy loading strategy is set.
+   * @internal
+   */
+  src;
+  /**
+   * Value of the `srcset` attribute if set on the host `<img>` element.
+   * This input is exclusively read to assert that `srcset` is not set in conflict
+   * with `ngSrcset` and that images don't start to load until a lazy loading strategy is set.
+   * @internal
+   */
+  srcset;
   constructor() {
-    this.imageLoader = inject(IMAGE_LOADER);
-    this.config = processConfig(inject(IMAGE_CONFIG));
-    this.renderer = inject(Renderer2);
-    this.imgElement = inject(ElementRef).nativeElement;
-    this.injector = inject(Injector);
-    this.isServer = isPlatformServer(inject(PLATFORM_ID));
-    this.preloadLinkCreator = inject(PreloadLinkCreator);
-    this.lcpObserver = ngDevMode ? this.injector.get(LCPImageObserver) : null;
-    this._renderedSrc = null;
-    this.priority = false;
-    this.disableOptimizedSrcset = false;
-    this.fill = false;
+    if (ngDevMode) {
+      this.lcpObserver = this.injector.get(LCPImageObserver);
+      const destroyRef = inject(DestroyRef);
+      destroyRef.onDestroy(() => {
+        if (!this.priority && this._renderedSrc !== null) {
+          this.lcpObserver.unregisterImage(this._renderedSrc);
+        }
+      });
+    }
   }
   /** @nodoc */
   ngOnInit() {
@@ -4406,16 +4427,13 @@ var NgOptimizedImage = class _NgOptimizedImage {
       assertNotMissingBuiltInLoader(this.ngSrc, this.imageLoader);
       assertNoNgSrcsetWithoutLoader(this, this.imageLoader);
       assertNoLoaderParamsWithoutLoader(this, this.imageLoader);
-      if (this.lcpObserver !== null) {
-        const ngZone2 = this.injector.get(NgZone);
-        ngZone2.runOutsideAngular(() => {
-          this.lcpObserver.registerImage(this.getRewrittenSrc(), this.ngSrc, this.priority);
-        });
-      }
+      ngZone.runOutsideAngular(() => {
+        this.lcpObserver.registerImage(this.getRewrittenSrc(), this.ngSrc, this.priority);
+      });
       if (this.priority) {
         const checker = this.injector.get(PreconnectLinkChecker);
         checker.assertPreconnect(this.getRewrittenSrc(), this.ngSrc);
-        if (!this.isServer) {
+        if (true) {
           const applicationRef = this.injector.get(ApplicationRef);
           assetPriorityCountBelowThreshold(applicationRef);
         }
@@ -4438,10 +4456,19 @@ var NgOptimizedImage = class _NgOptimizedImage {
     this.setHostAttribute("ng-img", "true");
     const rewrittenSrcset = this.updateSrcAndSrcset();
     if (this.sizes) {
-      this.setHostAttribute("sizes", this.sizes);
+      if (this.getLoadingBehavior() === "lazy") {
+        this.setHostAttribute("sizes", "auto, " + this.sizes);
+      } else {
+        this.setHostAttribute("sizes", this.sizes);
+      }
+    } else {
+      if (this.ngSrcset && VALID_WIDTH_DESCRIPTOR_SRCSET.test(this.ngSrcset) && this.getLoadingBehavior() === "lazy") {
+        this.setHostAttribute("sizes", "auto, 100vw");
+      }
     }
-    if (this.isServer && this.priority) {
-      this.preloadLinkCreator.createPreloadLinkTag(this.renderer, this.getRewrittenSrc(), rewrittenSrcset, this.sizes);
+    if (false) {
+      const preloadLinkCreator = this.injector.get(PreloadLinkCreator);
+      preloadLinkCreator.createPreloadLinkTag(this.renderer, this.getRewrittenSrc(), rewrittenSrcset, this.sizes);
     }
   }
   /** @nodoc */
@@ -4452,15 +4479,17 @@ var NgOptimizedImage = class _NgOptimizedImage {
     if (changes["ngSrc"] && !changes["ngSrc"].isFirstChange()) {
       const oldSrc = this._renderedSrc;
       this.updateSrcAndSrcset(true);
-      const newSrc = this._renderedSrc;
-      if (this.lcpObserver !== null && oldSrc && newSrc && oldSrc !== newSrc) {
-        const ngZone = this.injector.get(NgZone);
-        ngZone.runOutsideAngular(() => {
-          this.lcpObserver?.updateImage(oldSrc, newSrc);
-        });
+      if (ngDevMode) {
+        const newSrc = this._renderedSrc;
+        if (oldSrc && newSrc && oldSrc !== newSrc) {
+          const ngZone = this.injector.get(NgZone);
+          ngZone.runOutsideAngular(() => {
+            this.lcpObserver.updateImage(oldSrc, newSrc);
+          });
+        }
       }
     }
-    if (ngDevMode && changes["placeholder"]?.currentValue && !this.isServer) {
+    if (ngDevMode && changes["placeholder"]?.currentValue && true && true) {
       assertPlaceholderDimensions(this, this.imgElement);
     }
   }
@@ -4595,58 +4624,44 @@ var NgOptimizedImage = class _NgOptimizedImage {
     const removeErrorListenerFn = this.renderer.listen(img, "error", callback);
     callOnLoadIfImageIsLoaded(img, callback);
   }
-  /** @nodoc */
-  ngOnDestroy() {
-    if (ngDevMode) {
-      if (!this.priority && this._renderedSrc !== null && this.lcpObserver !== null) {
-        this.lcpObserver.unregisterImage(this._renderedSrc);
-      }
-    }
-  }
   setHostAttribute(name, value) {
     this.renderer.setAttribute(this.imgElement, name, value);
   }
-  static {
-    this.ɵfac = function NgOptimizedImage_Factory(__ngFactoryType__) {
-      return new (__ngFactoryType__ || _NgOptimizedImage)();
-    };
-  }
-  static {
-    this.ɵdir = ɵɵdefineDirective({
-      type: _NgOptimizedImage,
-      selectors: [["img", "ngSrc", ""]],
-      hostVars: 18,
-      hostBindings: function NgOptimizedImage_HostBindings(rf, ctx) {
-        if (rf & 2) {
-          ɵɵstyleProp("position", ctx.fill ? "absolute" : null)("width", ctx.fill ? "100%" : null)("height", ctx.fill ? "100%" : null)("inset", ctx.fill ? "0" : null)("background-size", ctx.placeholder ? "cover" : null)("background-position", ctx.placeholder ? "50% 50%" : null)("background-repeat", ctx.placeholder ? "no-repeat" : null)("background-image", ctx.placeholder ? ctx.generatePlaceholder(ctx.placeholder) : null)("filter", ctx.placeholder && ctx.shouldBlurPlaceholder(ctx.placeholderConfig) ? "blur(15px)" : null);
-        }
-      },
-      inputs: {
-        ngSrc: [2, "ngSrc", "ngSrc", unwrapSafeUrl],
-        ngSrcset: "ngSrcset",
-        sizes: "sizes",
-        width: [2, "width", "width", numberAttribute],
-        height: [2, "height", "height", numberAttribute],
-        loading: "loading",
-        priority: [2, "priority", "priority", booleanAttribute],
-        loaderParams: "loaderParams",
-        disableOptimizedSrcset: [2, "disableOptimizedSrcset", "disableOptimizedSrcset", booleanAttribute],
-        fill: [2, "fill", "fill", booleanAttribute],
-        placeholder: [2, "placeholder", "placeholder", booleanOrUrlAttribute],
-        placeholderConfig: "placeholderConfig",
-        src: "src",
-        srcset: "srcset"
-      },
-      standalone: true,
-      features: [ɵɵInputTransformsFeature, ɵɵNgOnChangesFeature]
-    });
-  }
+  static ɵfac = function NgOptimizedImage_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _NgOptimizedImage)();
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _NgOptimizedImage,
+    selectors: [["img", "ngSrc", ""]],
+    hostVars: 18,
+    hostBindings: function NgOptimizedImage_HostBindings(rf, ctx) {
+      if (rf & 2) {
+        ɵɵstyleProp("position", ctx.fill ? "absolute" : null)("width", ctx.fill ? "100%" : null)("height", ctx.fill ? "100%" : null)("inset", ctx.fill ? "0" : null)("background-size", ctx.placeholder ? "cover" : null)("background-position", ctx.placeholder ? "50% 50%" : null)("background-repeat", ctx.placeholder ? "no-repeat" : null)("background-image", ctx.placeholder ? ctx.generatePlaceholder(ctx.placeholder) : null)("filter", ctx.placeholder && ctx.shouldBlurPlaceholder(ctx.placeholderConfig) ? "blur(15px)" : null);
+      }
+    },
+    inputs: {
+      ngSrc: [2, "ngSrc", "ngSrc", unwrapSafeUrl],
+      ngSrcset: "ngSrcset",
+      sizes: "sizes",
+      width: [2, "width", "width", numberAttribute],
+      height: [2, "height", "height", numberAttribute],
+      loading: "loading",
+      priority: [2, "priority", "priority", booleanAttribute],
+      loaderParams: "loaderParams",
+      disableOptimizedSrcset: [2, "disableOptimizedSrcset", "disableOptimizedSrcset", booleanAttribute],
+      fill: [2, "fill", "fill", booleanAttribute],
+      placeholder: [2, "placeholder", "placeholder", booleanOrUrlAttribute],
+      placeholderConfig: "placeholderConfig",
+      src: "src",
+      srcset: "srcset"
+    },
+    features: [ɵɵNgOnChangesFeature]
+  });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NgOptimizedImage, [{
     type: Directive,
     args: [{
-      standalone: true,
       selector: "img[ngSrc]",
       host: {
         "[style.position]": 'fill ? "absolute" : null',
@@ -4660,7 +4675,7 @@ var NgOptimizedImage = class _NgOptimizedImage {
         "[style.filter]": `placeholder && shouldBlurPlaceholder(placeholderConfig) ? "blur(${PLACEHOLDER_BLUR_AMOUNT}px)" : null`
       }
     }]
-  }], null, {
+  }], () => [], {
     ngSrc: [{
       type: Input,
       args: [{
@@ -4824,7 +4839,7 @@ function postInitInputChangeError(dir, inputName) {
   } else {
     reason = `Changing the \`${inputName}\` would have no effect on the underlying image element, because the resource loading has already occurred.`;
   }
-  return new RuntimeError(2953, `${imgDirectiveDetails(dir.ngSrc)} \`${inputName}\` was updated after initialization. The NgOptimizedImage directive will not react to this input change. ${reason} To fix this, either switch \`${inputName}\` to a static value or wrap the image element in an *ngIf that is gated on the necessary value.`);
+  return new RuntimeError(2953, `${imgDirectiveDetails(dir.ngSrc)} \`${inputName}\` was updated after initialization. The NgOptimizedImage directive will not react to this input change. ${reason} To fix this, either switch \`${inputName}\` to a static value or wrap the image element in an @if that is gated on the necessary value.`);
 }
 function assertNoPostInitInputChange(dir, changes, inputs) {
   inputs.forEach((input) => {
@@ -4969,7 +4984,7 @@ function assetPriorityCountBelowThreshold(appRef) {
   return __async(this, null, function* () {
     if (IMGS_WITH_PRIORITY_ATTR_COUNT === 0) {
       IMGS_WITH_PRIORITY_ATTR_COUNT++;
-      yield whenStable(appRef);
+      yield appRef.whenStable();
       if (IMGS_WITH_PRIORITY_ATTR_COUNT > PRIORITY_COUNT_THRESHOLD) {
         console.warn(formatRuntimeError(2966, `NgOptimizedImage: The "priority" attribute is set to true more than ${PRIORITY_COUNT_THRESHOLD} times (${IMGS_WITH_PRIORITY_ATTR_COUNT} times). Marking too many images as "high" priority can hurt your application's LCP (https://web.dev/lcp). "Priority" should only be set on the image expected to be the page's LCP element.`));
       }
@@ -5108,9 +5123,9 @@ export {
 
 @angular/common/fesm2022/common.mjs:
   (**
-   * @license Angular v18.2.13
+   * @license Angular v19.1.7
    * (c) 2010-2024 Google LLC. https://angular.io/
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-OTL5KBH6.js.map
+//# sourceMappingURL=chunk-C4BKDDBH.js.map

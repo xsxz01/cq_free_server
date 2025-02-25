@@ -34,12 +34,13 @@ import {
   withEventReplay,
   withHttpTransferCacheOptions,
   withI18nSupport,
+  withIncrementalHydration,
   withNoHttpTransferCache
-} from "./chunk-JFC3Z3EW.js";
+} from "./chunk-JJUB54G5.js";
 import {
   getDOM
-} from "./chunk-OTL5KBH6.js";
-import "./chunk-X3UYTZMZ.js";
+} from "./chunk-C4BKDDBH.js";
+import "./chunk-DN6ORXPI.js";
 import "./chunk-WDMUDEB6.js";
 export {
   BrowserModule,
@@ -67,6 +68,7 @@ export {
   withEventReplay,
   withHttpTransferCacheOptions,
   withI18nSupport,
+  withIncrementalHydration,
   withNoHttpTransferCache,
   BrowserDomAdapter as ɵBrowserDomAdapter,
   BrowserGetTestability as ɵBrowserGetTestability,
@@ -80,4 +82,3 @@ export {
   getDOM as ɵgetDOM,
   initDomAdapter as ɵinitDomAdapter
 };
-//# sourceMappingURL=@angular_platform-browser.js.map

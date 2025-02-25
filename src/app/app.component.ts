@@ -5,7 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
 
 @Component({
     selector: 'app-root',
-    imports: [CommonModule, RouterOutlet],
+    imports: [CommonModule],
     templateUrl: './app.component.html',
     styleUrl: './app.component.css'
 })
