@@ -108,9 +108,3 @@ router-outlet {
 .border-blue-100 { border-color: #e3f2fd; }
 .text-blue-800 { color: #1e3a8a; }
 .transition-all { transition: all 0.2s ease; }
-
-/* 修复Bootstrap容器padding */
-.vh-100.container-fluid {
-  padding-left: 0;
-  padding-right: 0;
-}
