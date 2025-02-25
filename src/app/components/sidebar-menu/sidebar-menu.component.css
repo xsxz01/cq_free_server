@@ -102,3 +102,9 @@
 .nav-link.active-route .opacity-transition {
   opacity: 1 !important;
 }
+
+.active-route {
+  background-color: #e3f2fd !important; /* 使用与 hover 相同的蓝色背景 */
+  color: #1e3a8a !important;            /* 深蓝色文字 */
+  font-weight: 500;
+}

@@ -1,8 +1,15 @@
 <aside class="col-md-3 col-lg-2 p-3 bg-white border-end">
     <nav class="nav flex-column gap-2">
-      <a class="nav-link rounded-3 text-dark py-2 px-3 
-                d-flex align-items-center gap-2 transition-all"
-         *ngFor="let item of menuItems"
+      <a class="nav-link rounded-3 text-dark py-3 
+                d-flex align-items-center gap-2"
+         [routerLinkActive]="['active-route']"
+         [routerLinkActiveOptions]="{ exact: true }"
+         #rla="routerLinkActive"
+         [ngClass]="{
+           'hover:bg-blue-50': !rla.isActive,
+           'bg-blue-50 text-blue-800': rla.isActive
+         }"
+         *ngFor="let item of menuItems" 
          [routerLink]="item.link">
         <i class="bi {{ item.icon }} fs-5 flex-shrink-0"></i>
         <span class="flex-grow-1 text-truncate opacity-transition"
