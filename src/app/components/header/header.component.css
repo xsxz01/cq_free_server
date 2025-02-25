@@ -2,10 +2,61 @@
   transition: all 0.3s ease-in-out;
 }
 
+.bi {
+  transition: opacity 0.2s ease;
+  line-height: 1;
+  display: block; /* 新增，解决图标对齐问题 */
+}
+
+/* 窗口控制栏容器 */
+.window-control-bar {
+  height: 40px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+/* 窗口控制按钮通用样式 */
+.btn-window-control {
+  padding: 0 1.25rem;
+  min-width: 2.5rem;
+  color: #495057;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px; /* 改为固定高度 */
+  margin: 0 -1px;  /* 调整负边距 */
+  position: relative; /* 新增 */
+  z-index: 1; /* 新增 */
+}
+
+.btn-window-control:hover {
+  background-color: #e9ecef;
+  z-index: 2; /* 新增 */
+}
+
+/* 关闭按钮特殊样式 */
+.btn-window-control.btn-close:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+/* 菜单图标动画 */
 .bi-list {
   transform: rotate(0deg);
 }
 
 .bi-x-lg {
   transform: rotate(90deg);
+}
+
+/* 删除重复定义 */
+.bi:hover {
+  opacity: 0.8;
 }

@@ -1,53 +1,91 @@
-<nav class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom">
-  <div class="container-fluid">
-    <!-- 左侧菜单切换按钮 -->
-    <button class="navbar-brand fw-bold text-blue-800 btn btn-link transition-all"
-        (click)="toggleSidebar()">
-  <i class="bi bi-list text-blue-600 transition-all"
-     [class.bi-x-lg]="(sidebarService.isOpen$ | async)"></i>&nbsp;
-  传奇版本库
-</button>
+<div>
+  <!-- 头部 -->
+  <div
+    class="window-control-bar d-flex justify-content-between align-items-center px-3"
+  >
+    <!-- 左侧区域 -->
+    <div class="d-flex align-items-center gap-2">
+      <i class="bi bi-windows fs-5 text-primary"></i>
+      <span class="fw-bold text-dark">我的应用</span>
+    </div>
 
-<!-- 右侧用户菜单保持不变 -->
+    <!-- 右侧控制按钮 -->
+    <div class="d-flex">
+      <a class="btn btn-window-control" title="最小化">
+        <i class="bi bi-dash-lg fs-5"></i>
+      </a>
+      <a class="btn btn-window-control" title="最大化">
+        <i class="bi bi-square fs-5"></i>
+      </a>
+      <a class="btn btn-window-control btn-close" title="关闭">
+        <i class="bi bi-x-lg fs-5"></i>
+      </a>
+    </div>
 
-    <!-- 右侧用户菜单 -->
-    <div class="d-flex align-items-center">
-      <small class="text-muted me-3 d-none d-md-block">欢迎回来，管理员</small>
-      <!-- 添加欢迎语 -->
-      <div class="dropdown">
-        <button
-          class="btn btn-link p-0 dropdown-toggle d-flex align-items-center"
-          type="button"
-          data-bs-toggle="dropdown"
+  </div>
+  <nav
+    class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom"
+  >
+    <div class="container-fluid">
+      <!-- 左侧菜单切换按钮 -->
+      <button
+        class="navbar-brand fw-bold text-blue-800 btn btn-link transition-all"
+        (click)="toggleSidebar()"
+      >
+        <div class="d-flex align-items-center gap-2">  <!-- 新增flex容器 -->
+          <i
+            class="bi bi-list text-blue-600 transition-all"
+            [class.bi-x-lg]="sidebarService.isOpen$ | async"
+          ></i>
+          <span>菜单</span>  <!-- 改用span元素 -->
+        </div>
+      </button>
+
+      <!-- 右侧用户菜单保持不变 -->
+
+      <!-- 右侧用户菜单 -->
+      <div class="d-flex align-items-center">
+        <small class="text-muted me-3 d-none d-md-block"
+          >欢迎回来，管理员</small
         >
-          <img
-            src="assets/avatar.png"
-            class="rounded-circle border-3 border-blue-100 transition-all"
-            width="40"
-            height="40"
-            alt="用户头像"
-          />
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end mt-2 shadow border-blue-50">
-          <!-- 浅蓝边框菜单 -->
-          <li>
-            <a class="dropdown-item text-blue-800 hover:bg-blue-50" href="#">
-              <i class="bi bi-person-circle me-2"></i>个人中心
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item text-blue-800 hover:bg-blue-50" href="#">
-              <i class="bi bi-gear me-2"></i>系统设置
-            </a>
-          </li>
-          <li><hr class="dropdown-divider" /></li>
-          <li>
-            <a class="dropdown-item text-blue-500 hover:bg-blue-50" href="#">
-              <i class="bi bi-box-arrow-right me-2"></i>退出登录
-            </a>
-          </li>
-        </ul>
+        <!-- 添加欢迎语 -->
+        <div class="dropdown">
+          <button
+            class="btn btn-link p-0 dropdown-toggle d-flex align-items-center"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
+            <img
+              src="assets/avatar.png"
+              class="rounded-circle border-3 border-blue-100 transition-all"
+              width="40"
+              height="40"
+              alt="用户头像"
+            />
+          </button>
+          <ul
+            class="dropdown-menu dropdown-menu-end mt-2 shadow border-blue-50"
+          >
+            <!-- 浅蓝边框菜单 -->
+            <li>
+              <a class="dropdown-item text-blue-800 hover:bg-blue-50" href="#">
+                <i class="bi bi-person-circle me-2"></i>个人中心
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item text-blue-800 hover:bg-blue-50" href="#">
+                <i class="bi bi-gear me-2"></i>系统设置
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item text-blue-500 hover:bg-blue-50" href="#">
+                <i class="bi bi-box-arrow-right me-2"></i>退出登录
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
+</div>
