@@ -1,0 +1,167 @@
+/* 高斯模糊背景 */
+.bg-blur {
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+    filter: blur(10px);
+    z-index: 0;
+  }
+}
+
+/* 悬停动效 */
+.hover-shadow {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.15)!important;
+}
+
+/* 图片裁剪 */
+.object-fit-cover {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* 响应式高度 */
+@media (min-width: 768px) {
+  .vh-50 {
+    height: 50vh;
+  }
+}
+
+/* 新增加载按钮动效 */
+.btn-primary {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* 加载按钮波纹效果 */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(255,255,255,0.3);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:active::after {
+  opacity: 1;
+}
+
+/* 价格标签 */
+.price-tag {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  border-radius: 25px;
+  padding: 8px 15px;
+  box-shadow: 0 4px 6px rgba(46, 204, 113, 0.2);
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.price-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(46, 204, 113, 0.3);
+}
+
+.price-text {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.discount-badge {
+  background: #fff;
+  color: #27ae60;
+  font-size: 0.75em;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: 10px;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.bi-tag-fill {
+  font-size: 0.9em;
+  vertical-align: middle;
+}
+
+/* 下载统计 */
+.text-gradient {
+  background: linear-gradient(150deg, #4b6cb7 0%, #182848 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.download-stats {
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 立即获取按钮 */
+.btn-hover-scale {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-hover-scale:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(75, 108, 183, 0.3);
+}
+
+.btn-hover-scale::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(255,255,255,0.2);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.btn-hover-scale:active::after {
+  opacity: 1;
+}
+/* 标题渐变效果 */
+.title-gradient {
+  background: linear-gradient(15deg, #2c3e50 0%, #3498db 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* 更新时间样式 */
+.update-time {
+  background: rgba(52, 152, 219, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: #2c3e50!important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.update-time:hover {
+  background: rgba(52, 152, 219, 0.15);
+  transform: translateX(3px);
+}
