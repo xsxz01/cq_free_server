@@ -13,8 +13,10 @@
     <main [class.col-md-9]="sidebarService.isOpen$ | async"
           [class.col-md-11]="!(sidebarService.isOpen$ | async)"
           class="p-4 bg-gray-50 overflow-hidden d-flex flex-column min-h-0">
-      <div class="flex-grow-1 overflow-auto" style="height: 0;">  <!-- 修改高度基准 -->
-        <router-outlet></router-outlet>
+      <div class="flex-grow-1 overflow-auto min-h-0 h-100 route-container">  <!-- 新增容器 -->
+        <div class="route-transition">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </main>
   </div>

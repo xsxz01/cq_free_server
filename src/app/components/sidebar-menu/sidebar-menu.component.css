@@ -82,3 +82,23 @@
 .nav-link {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* 菜单项整体过渡 */
+.transition-all {
+  transition: padding 0.3s ease-in-out, margin 0.3s ease-in-out;
+}
+
+/* 文字透明度过渡 */
+.opacity-transition {
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* 折叠状态下保持可读性 */
+.nav-link:not(.active-route) .opacity-transition {
+  opacity: 0.9;
+}
+
+/* 激活状态保持高可见性 */
+.nav-link.active-route .opacity-transition {
+  opacity: 1 !important;
+}

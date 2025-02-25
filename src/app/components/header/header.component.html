@@ -1,11 +1,14 @@
 <nav class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom">
   <div class="container-fluid">
     <!-- 左侧菜单切换按钮 -->
-    <button class="navbar-brand fw-bold text-blue-800 btn btn-link"
-            (click)="toggleSidebar()">
-      <i class="bi bi-list me-2 text-blue-600"></i>  <!-- 更换为菜单图标 -->
-      传奇版本库
-    </button>
+    <button class="navbar-brand fw-bold text-blue-800 btn btn-link transition-all"
+        (click)="toggleSidebar()">
+  <i class="bi bi-list text-blue-600 transition-all"
+     [class.bi-x-lg]="(sidebarService.isOpen$ | async)"></i>&nbsp;
+  传奇版本库
+</button>
+
+<!-- 右侧用户菜单保持不变 -->
 
     <!-- 右侧用户菜单 -->
     <div class="d-flex align-items-center">

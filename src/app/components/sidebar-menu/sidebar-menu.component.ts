@@ -1,7 +1,6 @@
-import { Component, inject, Inject, type OnInit } from '@angular/core';
+import { Component, type OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterLinkActive } from '@angular/router';
 import { SidebarService } from '../../service/sidebar.service';
 
 interface MenuItem {
@@ -16,8 +15,7 @@ interface MenuItem {
   styleUrls: ['./sidebar-menu.component.css'], // 添加独立样式文件
   imports: [
     RouterModule,
-    CommonModule,
-    RouterLinkActive
+    CommonModule
   ],
   standalone: true
 })
