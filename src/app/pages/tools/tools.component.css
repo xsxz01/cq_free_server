@@ -1,0 +1,39 @@
+.tool-category {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.tool-category:hover {
+  transform: translateY(-5px);
+  background-color: #f8f9fa;
+}
+
+.shadow-hover {
+  transition: box-shadow 0.3s ease;
+}
+
+.shadow-hover:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15)!important;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+.description-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.9em;
+  line-height: 1.6;
+  min-height: 3.2em;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
