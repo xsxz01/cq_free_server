@@ -108,3 +108,27 @@ router-outlet {
 .border-blue-100 { border-color: #e3f2fd; }
 .text-blue-800 { color: #1e3a8a; }
 .transition-all { transition: all 0.2s ease; }
+.transition-all {
+  transition: flex-basis 0.3s ease-in-out, min-width 0.3s ease-in-out;  /* 改用flex-basis控制 */
+  will-change: flex-basis;
+}
+
+/* 修复后的主区域样式 */
+main {
+  transition: margin-left 0.3s ease-in-out, flex-basis 0.3s ease-in-out;
+  flex: 1 1 auto;
+  min-width: 0;  /* 添加此属性修复弹性容器溢出 */
+}
+
+/* 移除之前的路由动画设置 */
+router-outlet {
+  position: relative;
+  /* 删除 min-height: 300px; */
+}
+.row {
+  transition: none !important;  /* 禁用行容器的过渡 */
+}
+
+main {
+  transition: margin-left 0.3s ease-in-out;  /* 添加边缘过渡 */
+}

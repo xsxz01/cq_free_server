@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, Inject, type OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLinkActive } from '@angular/router';
+import { SidebarService } from '../../service/sidebar.service';
 
 interface MenuItem {
   title: string;
@@ -16,11 +17,19 @@ interface MenuItem {
   imports: [
     RouterModule,
     CommonModule,
-    RouterLinkActive // 添加路由激活状态支持
+    RouterLinkActive
   ],
   standalone: true
 })
-export class SidebarMenuComponent {
+export class SidebarMenuComponent implements OnInit {
+
+  constructor(public sidebarService: SidebarService) {}
+
+  ngOnInit(): void {
+    this.sidebarService.isOpen$.subscribe(isOpen => {
+      this.isCollapsed = isOpen;
+    })
+  }
   isCollapsed = false; // 添加折叠状态控制
   
   // 添加菜单激活状态跟踪

@@ -1,13 +1,11 @@
 <nav class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom">
-  <!-- 改为白色背景+底部边框 -->
   <div class="container-fluid">
-    <!-- 左侧品牌标识 -->
-    <a class="navbar-brand fw-bold text-blue-800" href="#">
-      <!-- 深蓝色文字 -->
-      <i class="bi bi-shield-check me-2 text-blue-600"></i>
-      <!-- 更换为盾牌图标 -->
-      cq_free_server
-    </a>
+    <!-- 左侧菜单切换按钮 -->
+    <button class="navbar-brand fw-bold text-blue-800 btn btn-link"
+            (click)="toggleSidebar()">
+      <i class="bi bi-list me-2 text-blue-600"></i>  <!-- 更换为菜单图标 -->
+      传奇版本库
+    </button>
 
     <!-- 右侧用户菜单 -->
     <div class="d-flex align-items-center">
