@@ -18,7 +18,11 @@
   align-items: center;
   padding: 0 1rem;
 }
-
+.drag-region {
+  z-index: 1; /* 保证在内容层上方 */
+  margin: -5px; /* 抵消容器 padding */
+  padding: 5px; /* 保持点击区域对齐 */
+}
 /* 窗口控制按钮通用样式 */
 .btn-window-control {
   padding: 0 1.25rem;

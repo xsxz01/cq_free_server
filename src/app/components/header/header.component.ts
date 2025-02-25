@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { SidebarService } from '../../service/sidebar.service';
 import { AsyncPipe } from '@angular/common';
-import { getCurrentWindow, type PhysicalSize } from "@tauri-apps/api/window";
+import { getCurrentWindow, LogicalPosition, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
 
 @Component({
   selector: 'app-header',
@@ -15,6 +15,10 @@ export class HeaderComponent {
   private windowSize: PhysicalSize | null = null;
   // 保存窗口是否最大化
   private isMaximized = signal(false);
+  // 窗口是否处于拖拽状态
+  private isDragging = false;
+  // 记录拖拽开始的位置
+  private dragStartPosition = { x: 0, y: 0 };
 
   constructor(public sidebarService: SidebarService) {
     getCurrentWindow().outerSize().then((size) => {
@@ -33,7 +37,7 @@ export class HeaderComponent {
    */
   async onClose() {
     // 使用Tauri API关闭窗口
-    getCurrentWindow().close();
+    await getCurrentWindow().close();
   }
   /**
    * 最大化窗口
@@ -47,13 +51,13 @@ export class HeaderComponent {
       if (!this.windowSize) {
         return; 
       }
-      currentWindow.setSize(this.windowSize);
+      await currentWindow.setSize(this.windowSize);
       this.isMaximized.set(false);
     } else {
       // 最大化窗口
       // 保存当前窗口大小
       this.windowSize = await currentWindow.outerSize();
-      currentWindow.maximize();
+      await currentWindow.maximize();
       this.isMaximized.set(true);
     }
   }
@@ -62,6 +66,14 @@ export class HeaderComponent {
    */
   async onMinimize() {
     // 使用Tauri API最小化窗口
-    getCurrentWindow().minimize();
+    await getCurrentWindow().minimize();
+  }
+
+  /**
+   * 开始拖拽窗口
+   * @param event 鼠标事件
+   */
+  async startDrag(event: MouseEvent) {
+    await getCurrentWindow().startDragging();
   }
 }

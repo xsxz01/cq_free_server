@@ -1,14 +1,19 @@
 <div>
   <!-- 头部 -->
   <div
-    class="window-control-bar d-flex justify-content-between align-items-center px-3"
+    class="window-control-bar d-flex justify-content-between align-items-center px-3 user-select-none"
   >
     <!-- 左侧区域 -->
     <div class="d-flex align-items-center gap-2">
       <i class="bi bi-windows fs-5 text-primary"></i>
       <span class="fw-bold text-dark">我的应用</span>
     </div>
-
+    <!-- 中间区域用于检测鼠标拖动 -->
+    <div 
+      class="flex-grow-1 h-100 drag-region"
+      (mousedown)="startDrag($event)"
+      style="cursor: move; -webkit-app-region: drag">
+    </div>
     <!-- 右侧控制按钮 -->
     <div class="d-flex">
       <a class="btn btn-window-control" title="最小化" (click)="onMinimize()">
