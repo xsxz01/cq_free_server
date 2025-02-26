@@ -14,6 +14,10 @@ export class ExploreComponent implements OnInit, AfterViewInit {
   versions: any[] = [];
   // 控制显示的项目数量
   visibleItems = 12;
+  // 过滤类型
+  filter = {
+    priceType: 'free' // 默认值设为 free 或 ''
+  };
   // 搜索框的背景图片
   @ViewChild('searchInput', { static: false })
   searchInputDiv! : ElementRef<HTMLDivElement>;

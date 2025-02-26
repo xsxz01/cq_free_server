@@ -1,72 +1,199 @@
 <!-- 高斯模糊背景层 -->
 <div class="hero-section position-relative vh-50">
-    <div #searchInput class="position-absolute top-0 start-0 w-100 h-100 bg-blur"
-        style="background-size: cover; background-position: center;">
-        <!-- 新增半透明遮罩层 -->
-        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(255, 255, 255, 0.2);"></div>
-    </div>
+  <div
+    #searchInput
+    class="position-absolute top-0 start-0 w-100 h-100 bg-blur"
+    style="background-size: cover; background-position: center"
+  >
+    <!-- 新增半透明遮罩层 -->
+    <div
+      class="position-absolute top-0 start-0 w-100 h-100"
+      style="background: rgba(255, 255, 255, 0.2)"
+    ></div>
+  </div>
 
-    <!-- 搜索区域 -->
-    <div class="position-relative z-1 d-flex justify-content-center align-items-center h-100">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6">
-                    <div class="input-group shadow-lg rounded-pill">
-                        <input type="search" class="form-control border-0 bg-white py-3 px-4 rounded-start-pill"
-                            placeholder="输入版本名称或关键词..." aria-label="搜索版本">
-                        <button class="btn btn-primary rounded-end-pill px-4" type="button">
-                            <i class="bi bi-search me-2"></i>搜索
-                        </button>
-                    </div>
-                </div>
-            </div>
+  <!-- 搜索区域 -->
+  <div
+    class="position-relative z-1 d-flex justify-content-center align-items-center h-100"
+  >
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+          <div class="input-group shadow-lg rounded-pill">
+            <input
+              type="search"
+              class="form-control border-0 bg-white py-3 px-4 rounded-start-pill"
+              placeholder="输入版本名称或关键词..."
+              aria-label="搜索版本"
+            />
+            <button class="btn btn-primary rounded-end-pill px-4" type="button">
+              <i class="bi bi-search me-2"></i>搜索
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- 筛选部分 -->
+<div class="container mt-4 mb-5">
+  <div class="card border-0 shadow-lg rounded-3 px-4 py-3">
+    <div class="row g-4 align-items-center">
+      <!-- 引擎版本 -->
+      <div class="col-md-2">
+        <div class="input-group input-group-borderless">
+          <span class="input-group-text bg-transparent border-0">
+            <i class="bi bi-gear fs-5 text-gradient"></i>
+          </span>
+          <select
+            class="form-select border-0 bg-light rounded-pill fs-6"
+            aria-label="引擎版本"
+          >
+            <option selected>所有引擎</option>
+            <option value="GOM">GOM引擎</option>
+            <option value="GEE">GEE引擎</option>
+            <option value="HGE">HGE引擎</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- 版本类型 -->
+      <div class="col-md-3">
+        <div class="input-group input-group-borderless">
+          <span class="input-group-text bg-transparent border-0">
+            <i class="bi bi-filter-left fs-5 text-gradient"></i>
+          </span>
+          <select class="form-select border-0 bg-light rounded-pill fs-6">
+            <option selected>全部类型</option>
+            <option value="retro">复古版本</option>
+            <option value="micro">微变版本</option>
+            <option value="medium">中变版本</option>
+            <option value="super">超变版本</option>
+            <option value="infinity">无限刀版本</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- 时间筛选 -->
+      <div class="col-md-3">
+        <div class="input-group input-group-borderless">
+          <span class="input-group-text bg-transparent border-0">
+            <i class="bi bi-clock-history fs-5 text-gradient"></i>
+          </span>
+          <select class="form-select border-0 bg-light rounded-pill fs-6">
+            <option selected>发布时间</option>
+            <option value="1">24小时内</option>
+            <option value="7">7天内</option>
+            <option value="30">30天内</option>
+          </select>
+          <select class="form-select border-0 bg-light rounded-pill fs-6 ms-2">
+            <option value="desc">从新到旧</option>
+            <option value="asc">从旧到新</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- 付费类型 -->
+      <div class="col-md-2 col-sm-4">
+        <div class="btn-group d-flex flex-nowrap gap-2">
+          <button type="button" 
+                  class="btn btn-light rounded-pill border-0 d-flex justify-content-center align-items-center gap-2"
+                  [class.active]="filter.priceType === 'free'">
+            <i class="bi bi-gift text-primary fs-5"></i>
+            <span class="d-none d-xl-inline">免费</span>
+            <span class="tooltip-text">免费版本</span>
+          </button>
+          <button type="button" 
+                  class="btn btn-light rounded-pill border-0 d-flex justify-content-center align-items-center gap-2"
+                  [class.active]="filter.priceType === 'paid'">
+            <i class="bi bi-currency-dollar text-success fs-5"></i>
+            <span class="d-none d-xl-inline">付费</span>
+            <span class="tooltip-text">付费版本</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 价格筛选 -->
+      <div class="col-md-2 col-6">
+        <div class="dropdown">
+          <button class="btn btn-light rounded-pill border-0 d-flex align-items-center" 
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="outside">
+            <i class="bi bi-funnel fs-5 text-gradient"></i>
+            <span class="d-none d-md-inline ms-2">筛选</span>
+            <i class="bi bi-chevron-down ms-2 d-none d-sm-inline"></i>
+          </button>
+          <div class="dropdown-menu p-3 w-100" style="min-width: 280px">
+            <!-- 保持原有输入框和按钮结构 -->
+            <div class="input-group">
+              <input type="number" 
+                    class="form-control border-0 bg-light rounded-pill" 
+                    placeholder="最低价">
+              <span class="input-group-text bg-transparent border-0">-</span>
+              <input type="number" 
+                    class="form-control border-0 bg-light rounded-pill" 
+                    placeholder="最高价">
+            </div>
+            <button class="btn btn-primary w-100 mt-3 rounded-pill py-2">
+              <i class="bi bi-check-lg me-2"></i>确认
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- 版本列表 -->
 <div class="container py-5">
-    <div class="row g-4">
-        <!-- 使用 *ngFor 生成假数据 -->
-        <div class="col-md-6 col-lg-4" *ngFor="let v of versions; let i = index">
-            <div class="card h-100 shadow-sm hover-shadow transition-all">
-                <img [src]="'https://picsum.photos/400/300?random=' + i" class="card-img-top object-fit-cover"
-                    alt="版本预览" style="height: 200px;">
-                <div class="card-body">
-                    <h5 class="card-title mb-2 title-gradient">
-                        <i class="bi bi-patch-check-fill text-success me-2"></i>
-                        {{v.name}}
-                    </h5>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge fs-6 price-tag animate__animated animate__fadeIn">
-                          <i class="bi bi-tag-fill me-1"></i>
-                          <span class="price-text">{{v.price}}</span>
-                          <span class="discount-badge">立减 15%</span>
-                        </span>
-                        <small class="text-muted">更新于{{v.updateTime}}</small>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-primary d-flex align-items-center">
-                            <i class="bi bi-download me-2 fs-5 text-gradient"></i>
-                            <span class="download-stats">
-                                <span class="fw-bold">{{v.downloads | abbreviate}}</span>
-                                <span class="text-muted fs-7">次下载</span>
-                            </span>
-                        </span>
-                        <button class="btn btn-primary btn-hover-scale px-3 py-2">
-                            <i class="bi bi-cart-check me-2"></i>
-                            立即获取
-                        </button>
-                    </div>
-                </div>
-            </div>
+  <div class="row g-4">
+    <!-- 使用 *ngFor 生成假数据 -->
+    <div class="col-md-6 col-lg-4" *ngFor="let v of versions; let i = index">
+      <div class="card h-100 shadow-sm hover-shadow transition-all">
+        <img
+          [src]="'https://picsum.photos/400/300?random=' + i"
+          class="card-img-top object-fit-cover"
+          alt="版本预览"
+          style="height: 200px"
+        />
+        <div class="card-body">
+          <h5 class="card-title mb-2 title-gradient">
+            <i class="bi bi-patch-check-fill text-success me-2"></i>
+            {{ v.name }}
+          </h5>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span
+              class="badge fs-6 price-tag animate__animated animate__fadeIn"
+            >
+              <i class="bi bi-tag-fill me-1"></i>
+              <span class="price-text">{{ v.price }}</span>
+              <span class="discount-badge">立减 15%</span>
+            </span>
+            <small class="text-muted">更新于{{ v.updateTime }}</small>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="text-primary d-flex align-items-center">
+              <i class="bi bi-download me-2 fs-5 text-gradient"></i>
+              <span class="download-stats">
+                <span class="fw-bold">{{ v.downloads | abbreviate }}</span>
+                <span class="text-muted fs-7">次下载</span>
+              </span>
+            </span>
+            <button class="btn btn-primary btn-hover-scale px-3 py-2">
+              <i class="bi bi-cart-check me-2"></i>
+              立即获取
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- 加载更多按钮 -->
-    <div class="text-center mt-5" *ngIf="versions.length > 12">
-        <button class="btn btn-primary px-5 rounded-pill" (click)="loadMore()">
-            <i class="bi bi-arrow-clockwise me-2"></i>加载更多
-        </button>
-    </div>
+  <!-- 加载更多按钮 -->
+  <div class="text-center mt-5" *ngIf="versions.length > 12">
+    <button class="btn btn-primary px-5 rounded-pill" (click)="loadMore()">
+      <i class="bi bi-arrow-clockwise me-2"></i>加载更多
+    </button>
+  </div>
 </div>
