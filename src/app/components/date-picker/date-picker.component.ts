@@ -74,16 +74,19 @@ export class DatePickerComponent {
   selectDate(date: Date) {
     if (this.isDateDisabled(date)) return;
     this.selectedDate = date;
-    this.showCalendar = false; // 选择后关闭弹窗
+    this.generateCalendarDays();
   }
 
   // 新增输入框点击处理
-  toggleCalendar() {
+  toggleCalendar(e: MouseEvent) {
+    e.preventDefault();
     this.showCalendar = !this.showCalendar;
   }
 
   // 修改确认方法
-  confirm() {
+  confirm(e: MouseEvent) {
+    e.stopPropagation();
+    e.preventDefault();
     if (this.selectedDate) {
       this.dateChanged.emit(this.selectedDate);
       this.showCalendar = false; // 确认后关闭弹窗
@@ -91,7 +94,8 @@ export class DatePickerComponent {
   }
 
   // 修改取消方法
-  cancel() {
+  cancel(e: MouseEvent) {
+    e.stopPropagation();
     this.canceled.emit();
     this.showCalendar = false; // 取消后关闭弹窗
   }
@@ -110,10 +114,11 @@ export class DatePickerComponent {
   }
 
   // 快捷选择今天
-  selectToday() {
+  selectToday(e: MouseEvent) {
+    e.preventDefault();
     this.selectedDate = new Date();
     this.generateCalendarDays();
-    this.confirm();
+    this.confirm(e);
   }
 
   // 当前月份显示文本

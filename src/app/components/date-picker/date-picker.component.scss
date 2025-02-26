@@ -159,3 +159,7 @@
     border-radius: 4px;
   }
 }
+.day-cell {
+  height: 40px;  // 设定固定高度
+  aspect-ratio: 1;  // 保持正方形
+}

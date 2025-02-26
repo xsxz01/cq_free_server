@@ -141,3 +141,14 @@ td {
     }
   }
 }
+
+.filter-popup {
+  /* 添加弹窗层级保护 */
+  position: absolute;
+  z-index: 1050;  // 高于datepicker的z-index
+  
+  .date-picker-container {
+    z-index: 1051 !important;  // 确保日期选择器在弹窗上层
+    position: relative;
+  }
+}

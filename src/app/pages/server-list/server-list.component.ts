@@ -1,9 +1,8 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, ViewChild, type ElementRef, Renderer2 } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { ShortUrlPipe } from "../../pipe/short-url.pipe";
-import { DateTimePickerComponent } from "../../components/date-time-picker/date-time-picker.component";
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { TruncatePipe } from "../../pipe/truncate.pipe";
 import { TimePickerComponent } from "../../components/time-picker/time-picker.component";
@@ -27,13 +26,12 @@ interface ServerInfo {
     FormsModule,
     DatePickerComponent,
     TruncatePipe,
-    TimePickerComponent
-],
+    TimePickerComponent,
+  ],
   templateUrl: "./server-list.component.html",
   styleUrls: ["./server-list.component.scss"],
 })
 export class ServerListComponent {
-  // 在组件类中添加以下属性
   selectedTags = new Set<string>();
   tags = [
     "无限刀",
@@ -51,12 +49,49 @@ export class ServerListComponent {
     { label: "24小时内", value: 1440 },
     { label: "一周内", value: 10080 },
   ];
+  isFilterOpen = false;
+  private clickListener!: () => void;
+  @ViewChild('filterPopup') filterPopup!: ElementRef;
   selectedTime?: number;
   startTime: string = "00:00";
   endTime: string = "00:00";
   searchText = "";
   startDate: Date = new Date();
   endDate: Date = new Date();
+  selectedHour: number = 0;
+  selectedMinute: number = 0;
+  tempTimeType: "start" | "end" = "start";
+
+  constructor(private renderer: Renderer2) {
+  }
+
+  toggleFilterPopup() {
+    this.isFilterOpen = !this.isFilterOpen;
+    if (this.isFilterOpen) {
+      setTimeout(() => this.addClickOutsideListener(), 0);
+    }
+  }
+  
+  private addClickOutsideListener() {
+    this.clickListener = this.renderer.listen('document', 'click', (event: MouseEvent) => {
+      if (!this.filterPopup.nativeElement.contains(event.target)) {
+        this.closeFilter();
+      }
+    });
+  }
+  
+  closeFilter() {
+    this.isFilterOpen = false;
+    if (this.clickListener) {
+      this.clickListener();
+    }
+  }
+  
+  // 在confirmTime方法中移除原有关闭逻辑
+  confirmTime() {
+    // 原有时间确认逻辑保持不变...
+    this.closeFilter();
+  }
 
   onTimeChanged(type: "start" | "end", time: string) {
     if (type === "start") {
@@ -91,13 +126,6 @@ export class ServerListComponent {
   filterServers() {
     // 实现筛选逻辑，根据选择的条件过滤 serverList
   }
-  // 新增组件属性
-  activePicker: "start-date" | "end-date" | "time-picker" | null = null;
-  currentMonth = "";
-  days: Date[] = [];
-  selectedHour: number = 0;
-  selectedMinute: number = 0;
-  tempTimeType: "start" | "end" = "start";
 
   onDateSelected(type: "start" | "end", date: Date) {
     if (type === "start") {
@@ -175,6 +203,7 @@ export class ServerListComponent {
 
   // 在组件类中添加
   onStartDateChanged(date: Date) {
+    console.log(date);
     this.startDate = date;
   }
 

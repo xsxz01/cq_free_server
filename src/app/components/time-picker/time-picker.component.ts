@@ -27,7 +27,8 @@ export class TimePickerComponent {
   }
 
   // 修改确认方法
-  confirm() {
+  confirm(e: MouseEvent) {
+    e.stopPropagation();
     const time = this.formatTime();
     this.timeChanged.emit(time);
     this.showPicker = false;
@@ -52,7 +53,8 @@ export class TimePickerComponent {
   }
 
   // 取消选择
-  cancel() {
+  cancel(e: MouseEvent) {
+    e.stopPropagation();
     this.showPicker = false;
   }
 
