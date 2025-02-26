@@ -1,13 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
-  imports: [CommonModule, RouterModule]
+  imports: [CommonModule, RouterModule, NgIcon],
+  viewProviders: [
+    provideIcons({...bootstrapIcons }), 
+  ]
 })
 export class DashboardComponent {
   constructor() { }
@@ -15,10 +20,10 @@ export class DashboardComponent {
 
   // 在Component装饰器下方添加
   menus = [
-    { title: '已购版本', icon: 'bi-collection', link: '/versions' },
-    { title: '应用管理', icon: 'bi-grid', link: '/apps' },
-    { title: '版本管理', icon: 'bi-clipboard', link: '/manage' },
-    { title: '一键开服', icon: 'bi-lightning', link: '/deploy' }
+    { title: '已购版本', icon: 'bootstrapCollection', link: '/versions' },
+    { title: '应用管理', icon: 'bootstrapGrid', link: '/apps' },
+    { title: '版本管理', icon: 'bootstrapClipboard', link: '/manage' },
+    { title: '一键开服', icon: 'bootstrapLightning', link: '/deploy' }
   ];
 
   versions = [

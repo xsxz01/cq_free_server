@@ -1,22 +1,28 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-tools',
-  imports: [CommonModule, RouterModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, NgIcon],
+  viewProviders: [
+    provideIcons({...bootstrapIcons }), 
+  ],
   templateUrl: './tools.component.html',
   styleUrl: './tools.component.css'
 })
 export class ToolsComponent {
   // 分类数据
   categories = [
-    { id: 1, name: '压缩工具', icon: 'bi-file-zip' },
-    { id: 2, name: '系统工具', icon: 'bi-pc' },
-    { id: 3, name: '安全工具', icon: 'bi-shield-lock' },
-    { id: 4, name: '网络工具', icon: 'bi-globe' },
-    { id: 5, name: '开发工具', icon: 'bi-code-square' },
-    { id: 6, name: '数据恢复', icon: 'bi-hdd' }
+    { id: 1, name: '压缩工具', icon: 'bootstrapFileZip' },
+    { id: 2, name: '系统工具', icon: 'bootstrapPc' },
+    { id: 3, name: '安全工具', icon: 'bootstrapShieldLock' },
+    { id: 4, name: '网络工具', icon: 'bootstrapGlobe' },
+    { id: 5, name: '开发工具', icon: 'bootstrapCodeSquare' },
+    { id: 6, name: '数据恢复', icon: 'bootstrapHdd' }
   ];
 
   // 工具数据

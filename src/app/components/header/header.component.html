@@ -5,7 +5,9 @@
   >
     <!-- 左侧区域 -->
     <div class="d-flex align-items-center gap-2">
-      <i class="bi bi-windows fs-5 text-primary"></i>
+      <ng-icon
+        name="bootstrapWindows"
+        class="fs-5 text-primary" />
       <span class="fw-bold text-dark" [textContent]="windowTitle()">我的应用</span>
     </div>
     <!-- 中间区域用于检测鼠标拖动 -->
@@ -17,13 +19,19 @@
     <!-- 右侧控制按钮 -->
     <div class="d-flex">
       <a class="btn btn-window-control" title="最小化" (click)="onMinimize()">
-        <i class="bi bi-dash-lg fs-5"></i>
+        <ng-icon
+          name="bootstrapDashLg"
+          class="fs-5" />
       </a>
       <a class="btn btn-window-control" title="最大化" (click)="onMaximize()">
-        <i class="bi bi-square fs-5"></i>
+        <ng-icon
+          name="bootstrapFullscreen"
+          class="fs-5" />
       </a>
       <a class="btn btn-window-control btn-close" title="关闭" (click)="onClose()">
-        <i class="bi bi-x-lg fs-5"></i>
+        <ng-icon
+          name="bootstrapXLg"
+          class="fs-5" />
       </a>
     </div>
 
@@ -37,12 +45,11 @@
         class="navbar-brand fw-bold text-blue-800 btn btn-link transition-all"
         (click)="toggleSidebar()"
       >
-        <div class="d-flex align-items-center gap-2">  <!-- 新增flex容器 -->
-          <i
-            class="bi bi-list text-blue-600 transition-all"
-            [class.bi-x-lg]="sidebarService.isOpen$ | async"
-          ></i>
-          <span>菜单</span>  <!-- 改用span元素 -->
+        <div class="d-flex align-items-center gap-2">
+          <ng-icon
+            name="bootstrapList"
+            class="text-blue-600 transition-all" />
+          <span>菜单</span>
         </div>
       </button>
 
@@ -75,18 +82,24 @@
             <!-- 浅蓝边框菜单 -->
             <li>
               <a class="dropdown-item text-blue-800 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2" href="#">
-                <i class="bi bi-person-circle fs-6"></i>个人中心
+                <ng-icon
+                  name="bootstrapPersonCircle"
+                  class="text-blue-600 transition-all fs-6" />个人中心
               </a>
             </li>
             <li>
               <a class="dropdown-item text-blue-800 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2" href="#">
-                <i class="bi bi-gear fs-6"></i>系统设置
+                <ng-icon
+                  name="bootstrapGear"
+                  class="text-blue-600 transition-all fs-6" />系统设置
               </a>
             </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
               <a class="dropdown-item text-blue-500 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2 hover:bg-blue-50" href="#">
-                <i class="bi bi-box-arrow-right fs-6"></i>退出登录
+                <ng-icon
+                  name="bootstrapBoxArrowRight"
+                  class="text-blue-600 transition-all fs-6" />退出登录
               </a>
             </li>
           </ul>

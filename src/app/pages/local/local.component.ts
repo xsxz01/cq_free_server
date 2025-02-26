@@ -5,7 +5,8 @@ import { NgbDropdownModule } from "@ng-bootstrap/ng-bootstrap";
 import { MatMenuModule, type MatMenu } from "@angular/material/menu";
 import { MatIconModule } from "@angular/material/icon";
 import { MatDividerModule } from '@angular/material/divider';
-
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 interface GameVersion {
   id: number;
@@ -23,7 +24,11 @@ interface GameVersion {
     NgbDropdownModule,
     MatMenuModule,
     MatIconModule,
-    MatDividerModule
+    MatDividerModule,
+    NgIcon,
+  ],
+  viewProviders: [
+    provideIcons({...bootstrapIcons }), 
   ],
   templateUrl: "./local.component.html",
   styleUrls: ["./local.component.scss"],

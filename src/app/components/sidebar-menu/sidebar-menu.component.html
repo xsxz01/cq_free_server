@@ -11,7 +11,8 @@
          }"
          *ngFor="let item of menuItems" 
          [routerLink]="item.link">
-        <i class="bi {{ item.icon }} fs-5 flex-shrink-0"></i>
+         <ng-icon [name]="item.icon" class="fs-5 flex-shrink-0"></ng-icon>
+        <!-- <i class="bi {{ item.icon }} fs-5 flex-shrink-0"></i> -->
         <span class="flex-grow-1 text-truncate opacity-transition"
               [class.d-none]="!(sidebarService.isOpen$ | async)">
             {{ item.title }}

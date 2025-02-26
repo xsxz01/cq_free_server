@@ -2,10 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild, type AfterViewInit, type OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AbbreviatePipe } from '../../pipe/abbreviate.pipe';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-explore',
-  imports: [CommonModule, RouterModule, AbbreviatePipe],
+  imports: [CommonModule, RouterModule, AbbreviatePipe, NgIcon],
+  standalone: true,
+  viewProviders: [
+    provideIcons({...bootstrapIcons }), 
+  ],
   templateUrl: './explore.component.html',
   styleUrl: './explore.component.css'
 })

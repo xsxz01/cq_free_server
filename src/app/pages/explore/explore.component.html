@@ -27,7 +27,8 @@
               aria-label="搜索版本"
             />
             <button class="btn btn-primary rounded-end-pill px-4" type="button">
-              <i class="bi bi-search me-2"></i>搜索
+              <i class="bi bi-search me-2"></i>
+              <ng-icon name="bootstrapSearch" class="me-2" />搜索
             </button>
           </div>
         </div>
@@ -44,7 +45,7 @@
       <div class="col-md-2">
         <div class="input-group input-group-borderless">
           <span class="input-group-text bg-transparent border-0">
-            <i class="bi bi-gear fs-5 text-gradient"></i>
+            <ng-icon name="bootstrapGear" class="fs-5" />
           </span>
           <select
             class="form-select border-0 bg-light rounded-pill fs-6"
@@ -62,7 +63,7 @@
       <div class="col-md-3">
         <div class="input-group input-group-borderless">
           <span class="input-group-text bg-transparent border-0">
-            <i class="bi bi-filter-left fs-5 text-gradient"></i>
+            <ng-icon name="bootstrapFilterLeft" class="fs-5" />
           </span>
           <select class="form-select border-0 bg-light rounded-pill fs-6">
             <option selected>全部类型</option>
@@ -79,7 +80,7 @@
       <div class="col-md-3">
         <div class="input-group input-group-borderless">
           <span class="input-group-text bg-transparent border-0">
-            <i class="bi bi-clock-history fs-5 text-gradient"></i>
+            <ng-icon name="bootstrapClockHistory" class="fs-5" />
           </span>
           <select class="form-select border-0 bg-light rounded-pill fs-6">
             <option selected>发布时间</option>
@@ -100,14 +101,14 @@
           <button type="button" 
                   class="btn btn-light rounded-pill border-0 d-flex justify-content-center align-items-center gap-2"
                   [class.active]="filter.priceType === 'free'">
-            <i class="bi bi-gift text-primary fs-5"></i>
+            <ng-icon name="bootstrapGift" class="fs-5" />
             <span class="d-none d-xl-inline">免费</span>
             <span class="tooltip-text">免费版本</span>
           </button>
           <button type="button" 
                   class="btn btn-light rounded-pill border-0 d-flex justify-content-center align-items-center gap-2"
                   [class.active]="filter.priceType === 'paid'">
-            <i class="bi bi-currency-dollar text-success fs-5"></i>
+            <ng-icon name="bootstrapCurrencyDollar" class="fs-5 text-success" />
             <span class="d-none d-xl-inline">付费</span>
             <span class="tooltip-text">付费版本</span>
           </button>
@@ -120,9 +121,9 @@
           <button class="btn btn-light rounded-pill border-0 d-flex align-items-center" 
                   data-bs-toggle="dropdown"
                   data-bs-auto-close="outside">
-            <i class="bi bi-funnel fs-5 text-gradient"></i>
+            <ng-icon name="bootstrapFunnel" class="fs-5" />
             <span class="d-none d-md-inline ms-2">筛选</span>
-            <i class="bi bi-chevron-down ms-2 d-none d-sm-inline"></i>
+            <ng-icon name="bootstrapChevronDown" class="ms-2 d-none d-sm-inline" />
           </button>
           <div class="dropdown-menu p-3 w-100" style="min-width: 280px">
             <!-- 保持原有输入框和按钮结构 -->
@@ -136,7 +137,7 @@
                     placeholder="最高价">
             </div>
             <button class="btn btn-primary w-100 mt-3 rounded-pill py-2">
-              <i class="bi bi-check-lg me-2"></i>确认
+              <ng-icon name="bootstrapCheckLg" class="me-2" />确认
             </button>
           </div>
         </div>
@@ -159,14 +160,14 @@
         />
         <div class="card-body">
           <h5 class="card-title mb-2 title-gradient">
-            <i class="bi bi-patch-check-fill text-success me-2"></i>
+            <ng-icon name="bootstrapPatchCheckFill" class="text-success me-2" />
             {{ v.name }}
           </h5>
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span
               class="badge fs-6 price-tag animate__animated animate__fadeIn"
             >
-              <i class="bi bi-tag-fill me-1"></i>
+              <ng-icon name="bootstrapTagFill" class="me-1" />
               <span class="price-text">{{ v.price }}</span>
               <span class="discount-badge">立减 15%</span>
             </span>
@@ -174,14 +175,14 @@
           </div>
           <div class="d-flex justify-content-between align-items-center mb-2">
             <span class="text-primary d-flex align-items-center">
-              <i class="bi bi-download me-2 fs-5 text-gradient"></i>
+              <ng-icon name="bootstrapDownload" class="me-2 fs-5" />
               <span class="download-stats">
                 <span class="fw-bold">{{ v.downloads | abbreviate }}</span>
                 <span class="text-muted fs-7">次下载</span>
               </span>
             </span>
             <button class="btn btn-primary btn-hover-scale px-3 py-2">
-              <i class="bi bi-cart-check me-2"></i>
+              <ng-icon name="bootstrapCartCheck" class="me-2" />
               立即获取
             </button>
           </div>
@@ -193,7 +194,7 @@
   <!-- 加载更多按钮 -->
   <div class="text-center mt-5" *ngIf="versions.length > 12">
     <button class="btn btn-primary px-5 rounded-pill" (click)="loadMore()">
-      <i class="bi bi-arrow-clockwise me-2"></i>加载更多
+      <ng-icon name="bootstrapArrowClockwise" class="me-2" />加载更多
     </button>
   </div>
 </div>

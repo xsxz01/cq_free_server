@@ -2,10 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FileSizePipe } from '../../pipe/file-size.pipe';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-launchers',
-  imports: [CommonModule, RouterModule, FileSizePipe],
+  standalone: true,
+  imports: [CommonModule, RouterModule, FileSizePipe, NgIcon],
+  viewProviders: [
+    provideIcons({...bootstrapIcons }), 
+  ],
   templateUrl: './launchers.component.html',
   styleUrl: './launchers.component.css'
 })

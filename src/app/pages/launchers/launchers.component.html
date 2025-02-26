@@ -2,7 +2,7 @@
   <!-- 上传区域 -->
   <div class="upload-zone border-dashed rounded-3 p-5 mb-5 bg-light">
     <div class="d-flex flex-column align-items-center justify-content-center h-100">
-      <i class="bi bi-upload display-4 text-muted mb-3"></i>
+      <ng-icon name="bootstrapUpload" class="display-4 text-muted mb-3"></ng-icon>
       <h4 class="text-secondary">将文件拖到此处上传</h4>
       <!--严禁上传其他内容文件，正常文件永久保存！-->
       <p class="text-muted mb-4">严禁上传其他内容文件，正常文件永久保存！</p>
@@ -26,17 +26,17 @@
           <tbody>
             <tr *ngFor="let file of files">
               <td class="text-truncate" style="max-width: 300px;">
-                <i class="bi bi-file-earmark-zip me-2"></i>
+                <ng-icon name="bootstrapFileEarmarkZip" class="me-2"></ng-icon>
                 {{file.name}}
               </td>
               <td class="text-end">{{file.size | fileSize}}</td>
               <td>{{file.date | date: 'yyyy-MM-dd HH:mm'}}</td>
               <td class="text-center">
                 <button class="btn btn-sm btn-outline-secondary me-2" title="复制链接">
-                  <i class="bi bi-clipboard"></i>
+                  <ng-icon name="bootstrapClipboard"></ng-icon>
                 </button>
                 <button class="btn btn-sm btn-outline-danger" title="删除">
-                  <i class="bi bi-trash"></i>
+                  <ng-icon name="bootstrapTrash"></ng-icon>
                 </button>
               </td>
             </tr>

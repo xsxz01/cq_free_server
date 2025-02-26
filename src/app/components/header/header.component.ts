@@ -1,12 +1,16 @@
 import { Component, input, signal } from '@angular/core';
 import { SidebarService } from '../../service/sidebar.service';
-import { AsyncPipe } from '@angular/common';
-import { getCurrentWindow, LogicalPosition, PhysicalPosition, PhysicalSize } from "@tauri-apps/api/window";
+import { getCurrentWindow, PhysicalSize } from "@tauri-apps/api/window";
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [NgIcon],
+  viewProviders: [
+    provideIcons({...bootstrapIcons }), 
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

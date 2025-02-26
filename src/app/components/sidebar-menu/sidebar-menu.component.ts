@@ -2,6 +2,8 @@ import { Component, type OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from '../../service/sidebar.service';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 
 interface MenuItem {
   title: string;
@@ -15,7 +17,11 @@ interface MenuItem {
   styleUrls: ['./sidebar-menu.component.css'], // 添加独立样式文件
   imports: [
     RouterModule,
-    CommonModule
+    CommonModule,
+    NgIcon,
+  ],
+  viewProviders: [
+   provideIcons({...bootstrapIcons }), 
   ],
   standalone: true
 })
@@ -36,7 +42,7 @@ export class SidebarMenuComponent implements OnInit {
   menuItems: MenuItem[] = [
     { 
       title: '仪表盘', 
-      icon: 'bi-speedometer2', 
+      icon: 'bootstrapSpeedometer2', 
       link: '/dashboard',
     },
     // { 
@@ -46,27 +52,27 @@ export class SidebarMenuComponent implements OnInit {
     // },
     { 
       title: '开服列表',
-      icon: 'bi-server',
+      icon: 'bootstrapServer',
       link: '/server-list'
     },
     { 
       title: '探索版本',
-      icon: 'bi-globe2',
+      icon: 'bootstrapGlobe2',
       link: '/explore'
     },
     {
       title: '本地版本',
-      icon: 'bi-folder',
+      icon: 'bootstrapFolder',
       link: '/local'
     },
     {
       title: '免费列表',
-      icon: 'bi-list-ul',
+      icon: 'bootstrapListUl',
       link: '/launchers'
     },
     {
       title: '常用工具',
-      icon: 'bi-tools',
+      icon: 'bootstrapTools',
       link: '/tools'
     },
     // 新增开服列表菜单项

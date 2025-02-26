@@ -6,7 +6,8 @@ import { ShortUrlPipe } from "../../pipe/short-url.pipe";
 import { DatePickerComponent } from "../../components/date-picker/date-picker.component";
 import { TruncatePipe } from "../../pipe/truncate.pipe";
 import { TimePickerComponent } from "../../components/time-picker/time-picker.component";
-
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 interface ServerInfo {
   name: string;
   website: string;
@@ -27,6 +28,11 @@ interface ServerInfo {
     DatePickerComponent,
     TruncatePipe,
     TimePickerComponent,
+    NgIcon,
+  ],
+  standalone: true,
+  viewProviders: [
+    provideIcons({...bootstrapIcons }),
   ],
   templateUrl: "./server-list.component.html",
   styleUrls: ["./server-list.component.scss"],

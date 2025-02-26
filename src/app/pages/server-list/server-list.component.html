@@ -40,7 +40,7 @@
                     (click)="toggleFilterPopup()"
                   >
                     <!-- 改为自定义点击事件 -->
-                    <i class="bi bi-funnel"></i>
+                    <ng-icon name="bootstrapFunnel"></ng-icon>
                   </button>
                   <div class="filter-popup" *ngIf="isFilterOpen" #filterPopup>
                     <div class="popover-content p-3 bg-white border rounded"  style="min-width: 320px; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15)">
@@ -121,7 +121,7 @@
                   [(ngModel)]="searchText"
                 />
                 <button class="btn btn-primary rounded-pill" (click)="search()">
-                  <i class="bi bi-search"></i>
+                  <ng-icon name="bootstrapSearch"></ng-icon>
                 </button>
               </div>
             </div>
@@ -134,7 +134,7 @@
   <!-- 原有服务器列表 -->
   <div class="card shadow">
     <div class="card-header bg-primary text-white">
-      <h3 class="mb-0"><i class="bi bi-server me-2"></i>最新开服列表</h3>
+      <h3 class="mb-0"><ng-icon name="bootstrapServer" class="me-2" />最新开服列表</h3>
     </div>
 
     <div class="card-body p-0">
@@ -177,7 +177,7 @@
 
               <!-- 修复4：统一时间格式显示 -->
               <td>
-                <i class="bi bi-clock-history me-2"></i>
+                <ng-icon name="bootstrapClockHistory" class="me-2"></ng-icon>
                 <span class="d-none d-sm-inline">{{
                   server.openTime | date : "yyyy-MM-dd"
                 }}</span>
@@ -222,7 +222,7 @@
                   [href]="'tencent://message/?uin=' + server.qq"
                   class="btn btn-sm btn-outline-dark"
                 >
-                  <i class="bi bi-qq me-1"></i>{{ server.qq }}
+                  <ng-icon name="bootstrapTencentQq" class="me-1"></ng-icon>{{ server.qq }}
                 </a>
               </td>
 
@@ -231,11 +231,11 @@
                 <div class="d-flex gap-2">
                   <button class="btn btn-sm btn-primary flex-grow-1">
                     <span class="d-none d-sm-inline">进入官网</span>
-                    <i class="bi bi-box-arrow-up-right d-sm-none"></i>
+                    <ng-icon name="bootstrapBoxArrowUpRight" class="d-sm-none"></ng-icon>
                   </button>
                   <button class="btn btn-sm btn-warning flex-grow-1">
                     <span class="d-none d-sm-inline">联系客服</span>
-                    <i class="bi bi-person-lines-fill d-sm-none"></i>
+                    <ng-icon name="bootstrapPersonLinesFill" class="d-sm-none"></ng-icon>
                   </button>
                 </div>
               </td>

@@ -31,7 +31,7 @@
             *ngFor="let menu of menus" 
             [routerLink]="menu.link"
             routerLinkActive="active-menu">
-            <i class="bi {{ menu.icon }} fs-5 text-muted"></i>
+            <ng-icon [name]="menu.icon" class="fs-5 text-muted"></ng-icon>
             <span class="fw-medium">{{ menu.title }}</span>
           </a>
         </div>
@@ -74,14 +74,14 @@
           <h6 class="fw-medium mb-3">客户支持</h6>
           <ul class="list-unstyled mb-0">
             <li class="d-flex align-items-center gap-2 mb-3">
-              <i class="bi bi-headset fs-5 text-primary"></i>
+              <ng-icon name="bootstrapTelephoneFill" class="fs-5 text-primary"></ng-icon>
               <div>
                 <div>7x24 小时客服</div>
                 <a href="tel:400-123-4567" class="text-muted small">400-123-4567</a>
               </div>
             </li>
             <li class="d-flex align-items-center gap-2">
-              <i class="bi bi-envelope fs-5 text-primary"></i>
+              <ng-icon name="bootstrapEnvelope" class="fs-5 text-primary"></ng-icon>
               <div>
                 <div>商务合作</div>
                 <a href="mailto:business@cq.com" class="text-muted small"> business&#64;qq.com </a>
@@ -95,7 +95,7 @@
           <div class="bg-light rounded-3 p-4 text-center h-100">
             <h6 class="fw-medium mb-3">账户服务</h6>
             <button class="btn btn-success w-100 mb-2 shadow-sm">
-              <i class="bi bi-wallet2 me-2"></i>立即充值
+              <ng-icon name="bootstrapWallet2" class="me-2"></ng-icon> 立即充值
             </button>
             <div class="text-muted small">当前充值优惠：充1000送200</div>
           </div>
