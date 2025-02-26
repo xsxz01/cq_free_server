@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FileSizePipe } from "../../pipe/file-size.pipe";
 
 @Component({
   selector: 'app-tools',
-  imports: [CommonModule, RouterModule, FileSizePipe],
+  imports: [CommonModule, RouterModule],
   templateUrl: './tools.component.html',
   styleUrl: './tools.component.css'
 })
