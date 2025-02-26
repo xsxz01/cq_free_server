@@ -1,0 +1,116 @@
+.hover-scale {
+  transition: all 0.2s ease;
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  }
+}
+
+.btn-group .btn {
+  border-radius: 8px !important;
+  border-left: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+.z-3 {
+  z-index: 3;
+}
+.position-sticky {
+  position: sticky;
+}
+/* 移除容器原有的vh-100 */
+.container-fluid {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* 确保渐变效果 */
+.bg-gradient {
+  background: linear-gradient(145deg, #4b6cb7 0%, #182848 100%) !important;
+}
+
+/* 提升状态条可见度 */
+.bg-opacity-50 {
+  opacity: 1 !important;
+  background-color: rgba(var(--bs-success-rgb), 0.5) !important;
+}
+
+/* 修复菜单层级 */
+.dropdown-menu {
+  z-index: 1000 !important;
+  position: absolute !important;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%) !important;
+}
+
+.hover-shadow-xl {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(78, 108, 183, 0.15) !important;
+  }
+}
+
+.mat-menu-item {
+  transition: all 0.2s ease;
+  &:hover {
+    background: rgba(78, 108, 183, 0.05) !important;
+  }
+}
+
+.dropdown-menu {
+  border-radius: 12px;
+  min-width: 280px;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(45deg, #3b5182, #4b6cb7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hover-shadow-lg {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+}
+
+.bg-opacity-15 {
+  background-color: rgba(var(--bs-primary-rgb), 0.15);
+}
+
+.fs-9 {
+  font-size: 0.65rem;
+}
+
+.custom-menu {
+  background: #ffffff !important; // 添加背景色
+  border: 1px solid #f0f0f0 !important; // 添加边框
+  border-radius: 12px !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12) !important;
+  padding: 8px 0;
+  min-width: 280px;
+
+  // 菜单项样式增强
+  .mat-menu-item {
+    height: auto !important;
+    padding: 0 !important;
+    line-height: normal !important;
+    background: transparent !important;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(78, 108, 183, 0.05) !important;
+    }
+
+    // 修复分割线样式
+    + mat-divider {
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+  }
+}

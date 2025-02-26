@@ -1,1 +1,190 @@
-<p>local works!</p>
+<div class="container-fluid vh-100 d-flex flex-column">
+  <!-- 工具栏 -->
+  <div class="card shadow-sm mb-3 border-0 position-sticky top-0 z-3 bg-white">
+    <div
+      class="card-body d-flex justify-content-between align-items-center py-2 px-4"
+    >
+      <div class="d-flex gap-3">
+        <!-- 左侧按钮组 -->
+        <div class="btn-group shadow-sm gap-2">
+          <!-- 添加按钮间距 -->
+          <button
+            class="btn btn-primary d-flex align-items-center gap-2 px-4"
+            style="
+              background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            "
+          >
+            <i class="bi bi-lightning-charge fs-5"></i>
+            <span>快速部署</span>
+          </button>
+          <button
+            class="btn btn-success d-flex align-items-center gap-2 hover-scale px-4"
+          >
+            <i class="bi bi-play-fill fs-5"></i>
+            <span>启动</span>
+          </button>
+          <button
+            class="btn btn-danger d-flex align-items-center gap-2 hover-scale px-4"
+          >
+            <i class="bi bi-stop-fill fs-5"></i>
+            <span>停止</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 右侧搜索框 -->
+      <div class="input-group shadow-sm rounded-pill" style="width: 400px">
+        <span class="input-group-text bg-transparent border-0 ps-4">
+          <i class="bi bi-search text-muted"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control rounded-pill border-0 bg-light"
+          placeholder="输入版本名称搜索"
+          style="height: 42px"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- 版本列表 -->
+  <div class="row g-3 flex-grow-1 overflow-auto mt-2" style="padding-top: 70px">
+    <!-- 版本列表项 -->
+    <div class="col-md-3" *ngFor="let item of versions">
+        <!-- 菜单模板 -->
+    <mat-menu #serverMenu="matMenu" class="custom-menu">
+        <button mat-menu-item (click)="start(item)">
+          <div class="d-flex align-items-center gap-3 px-3 py-2">
+            <i class="bi bi-play-circle-fill fs-5 text-success"></i>
+            <div>
+              <div class="fw-medium">启动服务</div>
+              <small class="text-muted">立即启动服务器进程</small>
+            </div>
+          </div>
+        </button>
+        <button mat-menu-item (click)="stop(item)">
+          <div class="d-flex align-items-center gap-3 px-3 py-2">
+            <i class="bi bi-stop-circle-fill fs-5 text-danger"></i>
+            <div>
+              <div class="fw-medium">停止服务</div>
+              <small class="text-muted">安全关闭服务器</small>
+            </div>
+          </div>
+        </button>
+        <mat-divider class="my-2"></mat-divider>
+        <button mat-menu-item>
+          <div class="d-flex align-items-center gap-3 px-3 py-2">
+            <i class="bi bi-gear-fill fs-5 text-primary"></i>
+            <div>高级配置</div>
+          </div>
+        </button>
+        <button mat-menu-item>
+          <div class="d-flex align-items-center gap-3 px-3 py-2">
+            <i class="bi bi-download fs-5 text-info"></i>
+            <div>生成客户端</div>
+          </div>
+        </button>
+        <mat-divider class="my-2"></mat-divider>
+        <button mat-menu-item class="text-danger">
+          <div class="d-flex align-items-center gap-3 px-3 py-2">
+            <i class="bi bi-exclamation-octagon-fill fs-5"></i>
+            <div>危险操作</div>
+          </div>
+        </button>
+      </mat-menu>
+      <div
+        class="card h-100 border-0 shadow-lg hover-shadow-xl transition-all overflow-hidden"
+        style="
+          border-radius: 16px;
+          background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+        "
+      >
+        <!-- 状态指示条 -->
+        <div
+          class="position-absolute top-0 start-0 end-0 h-2 bg-opacity-50"
+          [class.bg-success]="item.status === 'running'"
+          [class.bg-secondary]="item.status === 'stopped'"
+        ></div>
+
+        <div class="card-body pb-3 pt-4">
+          <!-- 头部区域 -->
+          <div class="d-flex align-items-center mb-4">
+            <!-- 图标容器 -->
+            <div class="bg-gradient-primary p-3 rounded-4 me-3 shadow-sm">
+              <i class="bi bi-cpu fs-2 text-white"></i>
+            </div>
+            <div>
+              <h5 class="mb-1 fw-bold text-primary">{{ item.name }}</h5>
+              <small class="text-muted small opacity-75"
+                >版本 {{ item.version }}</small
+              >
+            </div>
+          </div>
+
+          <!-- 状态指示器 -->
+          <div
+            class="d-flex justify-content-between align-items-center mb-4 px-2"
+          >
+            <span
+              class="badge bg-opacity-10 py-2 px-3 rounded-pill"
+              [class.text-success]="item.status === 'running'"
+              [class.bg-success]="item.status === 'running'"
+              [class.text-secondary]="item.status === 'stopped'"
+              [class.bg-secondary]="item.status === 'stopped'"
+            >
+              <i class="bi bi-circle-fill me-2 fs-9"></i>
+              {{ item.status === "running" ? "运行中" : "已停止" }}
+            </span>
+            <div class="text-muted small">
+              <i class="bi bi-clock-history me-1"></i>最后更新: 2小时前
+            </div>
+          </div>
+
+          <!-- 操作菜单 -->
+          <div class="position-relative">
+            <button
+              mat-icon-button
+              [matMenuTriggerFor]="serverMenu"
+              class="w-100 hover-scale"
+              style="
+                border-radius: 12px;
+                padding: 8px;
+                border: 1px solid #dee2e6;
+              "
+            >
+              <div
+                class="d-flex justify-content-center align-items-center gap-2"
+              >
+                <i class="bi bi-gear fs-5 text-primary"></i>
+                <span class="small">服务器操作</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分页 -->
+    <div class="card shadow-sm">
+      <div class="card-body d-flex justify-content-center">
+        <nav>
+          <ul class="pagination mb-0">
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" (click)="prevPage()">上一页</a>
+            </li>
+            <li
+              class="page-item"
+              *ngFor="let p of pages"
+              [class.active]="p === currentPage"
+            >
+              <a class="page-link" (click)="gotoPage(p)">{{ p }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" (click)="nextPage()">下一页</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

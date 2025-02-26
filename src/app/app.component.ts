@@ -6,14 +6,14 @@ import { SidebarMenuComponent } from "./components/sidebar-menu/sidebar-menu.com
 // 导入Bootstrap的CSS和JS文件
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { SidebarService } from "./service/sidebar.service";
-import { AsyncPipe } from "@angular/common";
+import { AsyncPipe, CommonModule } from "@angular/common";
 
 @Component({
   standalone: true,
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
-  imports: [RouterModule, HeaderComponent, SidebarMenuComponent, AsyncPipe],
+  imports: [RouterModule, CommonModule, HeaderComponent, SidebarMenuComponent, AsyncPipe],
   providers: [SidebarService],
 })
 export class AppComponent {
