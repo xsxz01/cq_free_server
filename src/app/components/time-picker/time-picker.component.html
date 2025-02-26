@@ -1,0 +1,38 @@
+<div class="time-picker">
+  <!-- 输入框触发 -->
+  <input
+    type="text"
+    class="form-control time-input"
+    [value]="formatTime()"
+    readonly
+    (click)="togglePicker()"
+    placeholder="选择时间"
+  />
+
+  <!-- 时间选择弹窗 -->
+  <div class="time-picker-popover" *ngIf="showPicker">
+    <div class="time-display">
+      <!-- 小时选择 -->
+      <div class="time-control">
+        <button class="btn btn-light" (click)="adjustHour(true)">↑</button>
+        <span class="time-number">{{ padNumber(selectedHour) }}</span>
+        <button class="btn btn-light" (click)="adjustHour(false)">↓</button>
+      </div>
+
+      <div class="time-colon">:</div>
+
+      <!-- 分钟选择 -->
+      <div class="time-control">
+        <button class="btn btn-light" (click)="adjustMinute(true)">↑</button>
+        <span class="time-number">{{ padNumber(selectedMinute) }}</span>
+        <button class="btn btn-light" (click)="adjustMinute(false)">↓</button>
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="time-actions">
+      <button class="btn btn-secondary" (click)="cancel()">取消</button>
+      <button class="btn btn-primary" (click)="confirm()">确认</button>
+    </div>
+  </div>
+</div>

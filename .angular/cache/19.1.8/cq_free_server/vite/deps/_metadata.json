@@ -1,49 +1,55 @@
 {
-  "hash": "4a577e9e",
-  "configHash": "3f10da3a",
+  "hash": "8eedf4dc",
+  "configHash": "4fc82b91",
   "lockfileHash": "a00e7ef3",
-  "browserHash": "04e435ed",
+  "browserHash": "e9869b61",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/.pnpm/@angular+common@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0__rxjs@7.8.2/node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "a7e08118",
+      "fileHash": "cb8c42a6",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/.pnpm/@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0/node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "37b6fa59",
+      "fileHash": "5b47dc27",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/.pnpm/@angular+platform-browser@19.1.7_@angular+animations@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_z_efioondw3vqcx4i57auqxzxtnm/node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "301ebb48",
+      "fileHash": "4bc51a8a",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/.pnpm/@angular+router@19.1.7_@angular+common@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0__pohf5ohyqi2cjiuyreo67c4j4a/node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "efb79e9b",
+      "fileHash": "11825719",
       "needsInterop": false
     },
     "@tauri-apps/api/window": {
       "src": "../../../../../../node_modules/.pnpm/@tauri-apps+api@2.2.0/node_modules/@tauri-apps/api/window.js",
       "file": "@tauri-apps_api_window.js",
-      "fileHash": "d8b33ef3",
+      "fileHash": "fa876342",
       "needsInterop": false
     },
     "bootstrap/dist/js/bootstrap.bundle.min.js": {
       "src": "../../../../../../node_modules/.pnpm/bootstrap@5.3.3_@popperjs+core@2.11.8/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js",
       "file": "bootstrap_dist_js_bootstrap__bundle__min__js.js",
-      "fileHash": "1ea8c32c",
+      "fileHash": "938d7551",
       "needsInterop": true
     },
     "rxjs": {
       "src": "../../../../../../node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "12ac8bb0",
+      "fileHash": "a7e2a059",
+      "needsInterop": false
+    },
+    "@angular/forms": {
+      "src": "../../../../../../node_modules/.pnpm/@angular+forms@19.1.7_@angular+common@19.1.7_@angular+core@19.1.7_rxjs@7.8.2_zone.js@0.15.0___e2afit36zrq7jont62tkj6g2iu/node_modules/@angular/forms/fesm2022/forms.mjs",
+      "file": "@angular_forms.js",
+      "fileHash": "81ac0751",
       "needsInterop": false
     }
   },

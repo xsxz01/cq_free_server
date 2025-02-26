@@ -1,0 +1,50 @@
+.time-picker {
+  position: relative;
+  display: inline-block;
+
+  &-popover {
+    position: absolute;
+    z-index: 1050;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    padding: 1rem;
+    margin-top: 0.5rem;
+    width: 220px;
+  }
+
+  .time-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .time-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    button {
+      padding: 0.25rem 0.75rem;
+    }
+
+    .time-number {
+      font-size: 1.5rem;
+      font-weight: 500;
+      margin: 0.5rem 0;
+    }
+  }
+
+  .time-actions {
+    display: flex;
+    justify-content: center;  // 修改为居中
+    gap: 1rem;  // 添加按钮间距
+    margin-top: 1rem;
+  }
+}
+

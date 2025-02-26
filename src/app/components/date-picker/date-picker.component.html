@@ -1,0 +1,68 @@
+<!-- 输入框部分 -->
+<input
+  type="text"
+  class="form-control date-input rounded-3"
+  [value]="selectedDate | date : 'yyyy-MM-dd'"
+  readonly
+  (click)="toggleCalendar()"
+  placeholder="选择日期"
+  style="
+    padding: 0.75rem 1.25rem;
+    border-color: #e0e0e0;
+    transition: all 0.3s ease;
+  "
+/>
+
+<!-- 日历弹窗部分 -->
+<div class="calendar-popover" *ngIf="showCalendar">
+  <!-- 月份导航 -->
+  <div class="calendar-header d-flex justify-content-between align-items-center mb-3 px-2">
+    <button class="btn btn-sm btn-light rounded-circle" 
+            (click)="prevMonth()" 
+            style="width:32px;height:32px">
+      ‹  <!-- 更清晰的左箭头 -->
+    </button>
+    <span class="fw-bold text-primary mx-2">{{ currentMonth }}</span>  <!-- 添加水平间距 -->
+    <button class="btn btn-sm btn-light rounded-circle" 
+            (click)="nextMonth()" 
+            style="width:32px;height:32px">
+      ›  <!-- 更清晰的右箭头 -->
+    </button>
+  </div>
+
+  <!-- 星期标题 -->
+  <div class="calendar-weekdays d-grid gap-2 mb-3 px-2">
+    <span class="weekday-label text-uppercase small" 
+          *ngFor="let day of weekdayLabels">
+      {{ day }}
+    </span>
+  </div>
+
+  <!-- 日期网格 -->
+  <div class="calendar-grid d-grid gap-1 px-3">
+    <!-- 调整日期单元格大小 -->
+    <div
+      class="day-cell"
+      *ngFor="let date of days"
+      style="min-width: 40px; height: 40px"
+    >
+      <div class="day-content">
+        {{ date.getDate() }}
+        <div class="selected-indicator"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部操作 -->
+  <div class="calendar-footer mt-3 border-top pt-2 px-2">
+    <div class="d-flex justify-content-between align-items-center">  <!-- 改用flex布局 -->
+      <button class="btn btn-link text-primary p-0" 
+              (click)="selectToday()">今天</button>
+      <div>
+        <button class="btn btn-sm btn-light me-2" 
+                (click)="cancel()">取消</button>
+        <button class="btn btn-sm btn-primary" 
+                (click)="confirm()">确定</button>
+      </div>
+    </div>
+  </div>

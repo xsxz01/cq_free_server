@@ -1,0 +1,143 @@
+.table-hover tbody tr {
+  transition: all 0.3s ease;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  transform: translateX(5px);
+}
+
+.card-header {
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+/* 优先级样式 */
+tr[data-priority="1"] {
+  background-color: #fff5f5;
+  border-left: 3px solid #ff4444;
+}
+
+tr[data-priority="2"] {
+  background-color: #fff9e6;
+  border-left: 3px solid #ffd700;
+}
+
+tr[data-priority="3"] {
+  background-color: #f0f8ff;
+  border-left: 3px solid #00a8ff;
+}
+
+/* 保持原有样式... */
+.badge {
+  font-size: 13px;
+  border-radius: 15px;
+  padding: 6px 12px;
+  white-space: normal;
+  text-align: left;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+}
+
+td {
+  vertical-align: middle !important;
+}
+.date-picker {
+  position: relative;
+}
+
+.calendar-popover {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  width: 280px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day {
+  padding: 8px;
+  text-align: center;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.day:hover {
+  background: #f8f9fa;
+}
+
+.day.active {
+  background: #0d6efd;
+  color: white;
+}
+
+.date-input,
+.time-input {
+  max-width: 120px;
+  border-radius: 0.5rem !important;
+}
+.time-picker-popover {
+  position: absolute;
+  background: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  width: 220px;
+}
+
+.time-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.time-control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.time-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.5rem 0;
+}
+.date-time-group {
+  .date-input-wrapper,
+  .time-input-wrapper {
+    flex: 1;
+    max-width: 180px;
+
+    /* 统一输入框样式 */
+    .form-control {
+      padding: 0.5rem 1.75rem 0.5rem 1rem;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.2s ease;
+
+      &:hover {
+        border-color: #bdbdbd;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    /* 弹窗定位优化 */
+    .calendar-popover,
+    .time-picker-popover {
+      top: calc(100% + 0.5rem) !important;
+      left: 0 !important;
+      z-index: 1000;
+    }
+  }
+}

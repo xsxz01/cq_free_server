@@ -1,47 +1,232 @@
 <div class="container-fluid py-4">
+  <!-- 新增筛选栏 -->
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <!-- 版本特色标签筛选 -->
+        <div class="col-12">
+          <div class="d-flex flex-wrap gap-2">
+            <button
+              *ngFor="let tag of tags"
+              class="btn btn-sm btn-outline-secondary rounded-pill"
+              [class.active]="selectedTags.has(tag)"
+              (click)="toggleTag(tag)"
+            >
+              {{ tag }}
+            </button>
+          </div>
+        </div>
+
+        <!-- 时间筛选 + 搜索 -->
+        <div class="col-12">
+          <div class="row g-2">
+            <!-- 时间筛选 -->
+            <div class="col-md-8">
+              <div class="d-flex flex-wrap gap-2">
+                <div class="btn-group">
+                  <button
+                    type="button"
+                    class="btn btn-light rounded-pill"
+                    *ngFor="let time of timeOptions"
+                    [class.active]="selectedTime === time.value"
+                    (click)="selectTime(time.value)"
+                  >
+                    {{ time.label }}
+                  </button>
+                </div>
+                <div class="dropdown">
+                  <button
+                    class="btn btn-light rounded-pill"
+                    data-bs-toggle="dropdown"
+                  >
+                    <i class="bi bi-funnel"></i>
+                  </button>
+                  <div class="dropdown-menu p-3" style="min-width: 320px">
+                    <div class="row g-2">
+                      <!-- 开始时间 -->
+                      <div class="col-12 mb-3">
+                        <label class="form-label text-muted small mb-2"
+                          >开始时间</label
+                        >
+                        <div class="date-time-group">
+                          <div class="d-flex align-items-center gap-2">
+                            <!-- 日期选择器组件 -->
+                            <app-date-picker
+                              [selectedDate]="startDate"
+                              (dateChanged)="onStartDateChanged($event)"
+                              class="date-input-wrapper"
+                            >
+                            </app-date-picker>
+
+                            <!-- 时间选择器组件 -->
+                            <app-time-picker
+                              [selectedTime]="startTime"
+                              (timeChanged)="onStartTimeChanged($event)"
+                              class="time-input-wrapper"
+                            >
+                            </app-time-picker>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 结束时间 -->
+                      <div class="col-12 mb-3">
+                        <label class="form-label text-muted small mb-2"
+                          >结束时间</label
+                        >
+                        <div class="date-time-group">
+                          <div class="d-flex align-items-center gap-2">
+                            <!-- 日期选择器组件 -->
+                            <app-date-picker
+                              [selectedDate]="endDate"
+                              (dateChanged)="onEndDateChanged($event)"
+                              class="date-input-wrapper"
+                            >
+                            </app-date-picker>
+
+                            <!-- 时间选择器组件 -->
+                            <app-time-picker
+                              [selectedTime]="endTime"
+                              (timeChanged)="onEndTimeChanged($event)"
+                              class="time-input-wrapper"
+                            >
+                            </app-time-picker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 名称搜索 -->
+            <div class="col-md-4">
+              <div class="input-group gap-2">
+                <input
+                  type="text"
+                  class="form-control rounded-pill"
+                  placeholder="搜索服务器名称"
+                  [(ngModel)]="searchText"
+                />
+                <button class="btn btn-primary rounded-pill" (click)="search()">
+                  <i class="bi bi-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 原有服务器列表 -->
   <div class="card shadow">
     <div class="card-header bg-primary text-white">
       <h3 class="mb-0"><i class="bi bi-server me-2"></i>最新开服列表</h3>
     </div>
-    
+
     <div class="card-body p-0">
       <div class="table-responsive">
+        <!-- 修复1：为表格列添加响应式处理 -->
         <table class="table table-hover align-middle mb-0">
           <thead class="table-light">
             <tr>
-              <th>服务器名</th>
-              <th>官网</th>
-              <th>开放时间</th>
-              <th>地区线路</th>
-              <th>版本介绍</th>
-              <th>客服QQ</th>
-              <th>操作</th>
+              <th scope="col" class="d-none d-md-table-cell">服务器名</th>
+              <th scope="col" class="d-none d-lg-table-cell">官网</th>
+              <th scope="col">开服时间</th>
+              <th scope="col">地区线路</th>
+              <th scope="col" class="d-none d-sm-table-cell">版本特色</th>
+              <th scope="col" class="d-none d-lg-table-cell">客服QQ</th>
+              <th scope="col">操作</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let server of serverList" [attr.data-priority]="server.priority">
-              <td class="fw-bold text-danger">{{server.name}}</td>
-              <td>
-                <a [href]="server.website" target="_blank" class="text-decoration-none">
-                  {{server.website | shortUrl}}
+            <tr
+              *ngFor="let server of serverList"
+              [attr.data-priority]="server.priority"
+            >
+              <!-- 修复2：添加移动端优化 -->
+              <td class="fw-bold text-danger">
+                <div class="d-md-none small">服务器名：</div>
+                {{ server.name }}
+              </td>
+
+              <!-- 修复3：添加链接安全属性 -->
+              <td class="d-none d-lg-table-cell">
+                <a
+                  [href]="server.website"
+                  target="_blank"
+                  class="text-decoration-none"
+                  rel="noopener noreferrer"
+                >
+                  {{ server.website | shortUrl }}
                 </a>
               </td>
+
+              <!-- 修复4：统一时间格式显示 -->
               <td>
                 <i class="bi bi-clock-history me-2"></i>
-                {{server.openTime | date: 'yyyy-MM-dd HH:mm'}}
+                <span class="d-none d-sm-inline">{{
+                  server.openTime | date : "yyyy-MM-dd"
+                }}</span>
+                <span class="d-sm-none">{{
+                  server.openTime | date : "MM-dd"
+                }}</span>
+                <span class="text-muted d-block d-sm-inline">
+                  {{ server.openTime | date : "HH:mm" }}</span
+                >
               </td>
+
+              <!-- 修复5：优化地区线路显示 -->
               <td>
-                <span class="badge bg-success">{{server.region}}</span>
+                <span class="badge bg-success">{{ server.region }}</span>
+                <div class="d-md-none small mt-1">{{ server.line }}线路</div>
               </td>
-              <td class="text-truncate" style="max-width: 200px;">{{server.version}}</td>
-              <td>
-                <button class="btn btn-sm btn-outline-dark">
-                  <i class="bi bi-qq me-1"></i>{{server.qq}}
-                </button>
+
+              <!-- 修复6：限制标签数量并添加tooltip -->
+              <td class="d-none d-sm-table-cell">
+                <!-- 添加空状态提示 -->
+                <ng-container
+                  *ngIf="(server.version || '').split('/').length === 0"
+                >
+                  <span class="text-muted small">无版本标签</span>
+                </ng-container>
+
+                <!-- 添加安全导航操作符 -->
+                <span
+                  class="badge bg-info me-2 mb-2"
+                  *ngFor="
+                    let tag of (server.version || '').split('/').slice(0, 3)
+                  "
+                  [title]="tag"
+                >
+                  {{ tag | truncate : 6 }}
+                </span>
               </td>
+
+              <!-- 修复7：添加QQ链接协议 -->
+              <td class="d-none d-lg-table-cell">
+                <a
+                  [href]="'tencent://message/?uin=' + server.qq"
+                  class="btn btn-sm btn-outline-dark"
+                >
+                  <i class="bi bi-qq me-1"></i>{{ server.qq }}
+                </a>
+              </td>
+
+              <!-- 修复8：优化按钮布局 -->
               <td>
-                <button class="btn btn-sm btn-primary me-2">进入官网</button>
-                <button class="btn btn-sm btn-warning">联系客服</button>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-primary flex-grow-1">
+                    <span class="d-none d-sm-inline">进入官网</span>
+                    <i class="bi bi-box-arrow-up-right d-sm-none"></i>
+                  </button>
+                  <button class="btn btn-sm btn-warning flex-grow-1">
+                    <span class="d-none d-sm-inline">联系客服</span>
+                    <i class="bi bi-person-lines-fill d-sm-none"></i>
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
