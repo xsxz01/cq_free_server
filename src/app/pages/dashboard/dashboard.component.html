@@ -1,20 +1,46 @@
 <div class="container-fluid vh-100 d-flex flex-column gap-4 p-4">
   <!-- 顶部信息栏 -->
   <div class="row">
-    <div class="col-12 bg-white rounded-4 p-4 shadow-sm">
-      <div class="d-flex justify-content-between align-items-center">
+    <div class="col-12 rounded-4 p-5 shadow-lg" style="
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border: 1px solid rgba(255,255,255,0.15);
+    min-height: 160px;
+  ">
+      <div class="d-flex justify-content-between align-items-center text-white h-100">
         <!-- 用户问候 -->
         <div class="d-flex flex-column gap-2">
-          <h2 class="mb-0 fw-semibold text-dark">下午好，刘先生 👋</h2>
-          <span class="text-muted">当前状态：<span class="text-success">已认证</span></span>
+          <div class="d-flex align-items-center gap-3">
+            <ng-icon name="bootstrapRocket" class="fs-3 text-warning"></ng-icon>
+            <h2 class="mb-0 fw-bold lh-1" style="text-shadow: 0 2px 4px rgba(0,0,0,0.1)">
+              下午好，刘先生 <span class="wave-emoji">👋</span>
+            </h2>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge rounded-pill bg-white bg-opacity-10 px-3 py-2 d-flex align-items-center">
+              <ng-icon name="bootstrapShieldCheck" class="me-1 fs-6 text-success"></ng-icon>
+              <span class="fw-medium text-nowrap">已认证用户</span>
+            </span>
+          </div>
         </div>
         
         <!-- 用户余额 -->
         <div class="d-flex flex-column text-end">
-          <span class="text-muted">账户余额</span>
-          <div class="d-flex align-baseline gap-2">
-            <span class="h3 mb-0 fw-bold text-primary">¥ 12,450.00</span>
-            <span class="text-success">+2.3%</span>
+          <div class="d-flex align-items-center gap-2 justify-content-end mb-3">
+            <span class="text-white-50 fs-6 d-none d-md-inline">账户余额</span>
+            <ng-icon name="bootstrapGraphUp" class="fs-4 text-warning"></ng-icon>
+          </div>
+          <div class="position-relative">
+            <div class="d-flex align-items-baseline gap-2">
+              <span class="display-3 fw-bold text-white lh-sm">
+                <sup class="fs-4 opacity-75">¥</sup>12,450
+              </span>
+              <span class="fs-4 opacity-75 align-self-end">.00</span>
+            </div>
+            <span class="badge bg-white bg-opacity-25 rounded-pill px-3 py-2 
+                      position-absolute top-0 end-0 translate-middle"
+                  style="transform: translate(25%, -85%)">
+              +2.3% <ng-icon name="bootstrapArrowUp" class="ms-2"></ng-icon>
+            </span>
           </div>
         </div>
       </div>
