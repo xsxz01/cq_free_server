@@ -1,0 +1,49 @@
+<div class="container py-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+      <button class="btn btn-light me-3" (click)="navigateBack()">
+        <ng-icon name="bootstrapArrowLeft" class="me-1"></ng-icon>
+        返回商品列表
+      </button>
+      <h2 class="mb-0">{{ product.name }}</h2>
+    </div>
+    
+    <div class="card-body">
+      <div class="row g-4">
+        <!-- 商品图片 -->
+        <div class="col-md-6">
+          <img [src]="product?.image" 
+               class="img-fluid rounded-3"
+               alt="商品主图"
+               style="max-height: 500px; object-fit: cover">
+        </div>
+        
+        <!-- 商品详情 -->
+        <div class="col-md-6">
+          <div class="d-flex flex-column h-100">
+            <div class="mb-4">
+              <h3 class="text-danger fw-bold">¥{{ product?.price }}</h3>
+              <div class="d-grid">
+                <button class="btn btn-primary btn-lg">
+                  <ng-icon name="bootstrapCartCheck" class="me-2"></ng-icon>
+                  立即购买
+                </button>
+              </div>
+            </div>
+
+            <div class="border-top pt-4">
+              <h4 class="mb-3">商品详情</h4>
+              <p class="text-secondary">{{ product?.description }}</p>
+              <ul class="list-group list-group-flush">
+                <li *ngFor="let detail of product?.details" 
+                    class="list-group-item bg-light">
+                  {{ detail }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

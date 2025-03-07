@@ -1,0 +1,26 @@
+<div class="card shadow-sm" [@fadeInOut]>
+  <div class="card-header bg-primary text-white d-flex justify-content-between">
+    <h4 class="mb-0">
+      <ng-icon name="bootstrapTags" class="me-2"></ng-icon>
+      {{ currentCategory?.name }}
+    </h4>
+  </div>
+  <div class="card-body">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      <div class="col" *ngFor="let product of filteredProducts">
+        <div class="card h-100 hover-scale" [routerLink]="['/product', product.id]">
+          <img [src]="product.image" class="card-img-top" alt="商品图片">
+          <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <div class="d-flex justify-content-between align-items-center mt-3">
+              <h4 class="text-danger">¥{{ product.price }}</h4>
+              <button class="btn btn-primary">
+                <ng-icon name="bootstrapCart" class="me-1"></ng-icon>购买
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

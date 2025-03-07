@@ -1,0 +1,142 @@
+.hover-shadow-lg {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-shadow-lg:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.display-4 {
+  font-size: 2.5rem;
+}
+
+.list-unstyled li {
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* 新增样式 */
+.hover-scale {
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+.hover-scale:hover {
+  transform: translateY(-5px);
+}
+
+.card-header h5 {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+.dropdown-menu {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  min-width: 250px;
+  padding: 0.5rem;
+}
+
+.dropdown-item {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: #f8f9fa;
+  transform: translateX(5px);
+}
+
+.btn-outline-primary {
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background: rgba(13, 110, 253, 0.1);
+}
+.hover-scale:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.platform-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.ebook-card {
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+.ebook-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+.ebook-card img {
+  height: 150px;
+  object-fit: cover;
+}
+
+.list-group-item-action {
+  transition: all 0.2s ease;
+}
+.list-group-item-action:hover {
+  background-color: #f8f9fa;
+}
+
+.nav-pills .nav-link {
+  border-radius: 20px;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+/* 新增导航样式 */
+.category-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 400px;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: none;
+}
+
+.category-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  display: block;
+}
+
+.menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #eee;
+}
+
+.sub-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  color: #333;
+  text-decoration: none;
+}
+
+.sub-item:hover {
+  background: #f8f9fa;
+  transform: translateX(5px);
+}
+
+.btn-primary {
+  font-size: 1.1rem;
+  border-radius: 10px;
+  min-width: 180px;
+}

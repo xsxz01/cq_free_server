@@ -1,0 +1,12 @@
+<div class="container-fluid py-4">
+  <div class="d-flex justify-content-between mb-4">
+    <button class="btn btn-outline-secondary" (click)="goBack()">
+      <ng-icon name="bootstrapArrowLeft" class="me-1"></ng-icon>返回
+    </button>
+    <button class="btn btn-danger" (click)="close()">
+      <ng-icon name="bootstrapX" class="me-1"></ng-icon>关闭
+    </button>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>

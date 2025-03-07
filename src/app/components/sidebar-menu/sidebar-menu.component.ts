@@ -76,8 +76,13 @@ export class SidebarMenuComponent implements OnInit {
       link: '/tools'
     },
     {
+      title: '权益商城',
+      icon: 'bootstrapCart4',
+      link: '/benefit-mall'
+    },
+    {
       title: '在线服务',
-      icon: 'bootstrapHeadset', // 使用Bootstrap的客服图标
+      icon: 'bootstrapHeadset',
       link: '/online-service'
     },
     // 新增开服列表菜单项

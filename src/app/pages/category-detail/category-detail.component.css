@@ -1,0 +1,10 @@
+/* 保持与主商城一致的操作按钮样式 */
+.btn-outline-secondary:hover {
+  background-color: rgba(108, 117, 125, 0.1);
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+}

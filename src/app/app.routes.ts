@@ -7,6 +7,8 @@ import { LaunchersComponent } from "./pages/launchers/launchers.component";
 import { ToolsComponent } from "./pages/tools/tools.component";
 import { ServerListComponent } from './pages/server-list/server-list.component';
 import { OnlineServiceComponent } from './pages/online-service/online-service.component';
+import { CategoryDetailComponent } from "./pages/category-detail/category-detail.component";
+import { CategoryProductsComponent } from "./pages/category-products/category-products.component";
 
 const routes: Routes = [
   {
@@ -24,34 +26,53 @@ const routes: Routes = [
     redirectTo: "dashboard",
     pathMatch: "full",
   },
-  { 
-    path: "explore", 
+  {
+    path: "explore",
     component: ExploreComponent,
-    title: "探索版本" 
+    title: "探索版本"
   },
-  { 
-    path: "local", 
+  {
+    path: "local",
     component: LocalComponent,
-    title: "本地版本" 
+    title: "本地版本"
   },
-  { 
-    path: "launchers", 
+  {
+    path: "launchers",
     component: LaunchersComponent,
-    title: "免费列表" 
+    title: "免费列表"
   },
-  { 
-    path: "tools", 
+  {
+    path: "tools",
     component: ToolsComponent,
-    title: "常用工具" 
+    title: "常用工具"
   },
-  { 
+  {
     path: 'server-list',
     title: '开服列表',
-    component: ServerListComponent 
+    component: ServerListComponent
   },
   {
     path: 'online-service',
     loadComponent: () => import('./pages/online-service/online-service.component').then(m => m.OnlineServiceComponent)
+  },
+  {
+    path: 'benefit-mall',
+    loadComponent: () => import('./pages/benefit-mall/benefit-mall.component').then(m => m.BenefitMallComponent)
+  },
+  {
+    path: 'category',
+    component: CategoryDetailComponent,
+    children: [
+      { 
+        path: ':subId',
+        component: CategoryProductsComponent
+      }
+    ]
+  },
+  {
+    path: 'product/:id',
+    loadComponent: () => import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
+    data: { animation: 'product-detail' }
   }
 ];
 
