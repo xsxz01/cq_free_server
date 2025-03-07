@@ -27,9 +27,18 @@
               "src/assets"
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "./node_modules/bootstrap/dist/css/bootstrap.min.css"
-            ]
+              "src/styles.scss",
+              "@angular/material/prebuilt-themes/azure-blue.css"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules"
+              ]
+            },
+            "allowedCommonJsDependencies": [
+              "bootstrap"
+            ],
+            "inlineStyleLanguage": "scss"
           },
           "configurations": {
             "production": {

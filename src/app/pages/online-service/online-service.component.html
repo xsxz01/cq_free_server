@@ -1,0 +1,132 @@
+<div class="online-service-container container-fluid py-4">
+  <!-- 顶部数据统计 -->
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="dashboard-card p-4 rounded-4 shadow-sm bg-white">
+        <h4 class="mb-4 text-primary"><ng-icon name="bootstrapGraphUp" class="me-2"></ng-icon>今日交易看板</h4>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="metric-card p-3 border-start border-4 border-success">
+              <div class="text-muted small">总销售额</div>
+              <div class="h3 mt-1">¥12,450</div>
+              <div class="text-success small mt-1">
+                <ng-icon name="bootstrapArrowUpRight" class="me-1"></ng-icon>+14.2%
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="metric-card p-3 border-start border-4 border-primary">
+              <div class="text-muted small">完成订单</div>
+              <div class="h3 mt-1">284 单</div>
+              <div class="text-primary small mt-1">
+                <ng-icon name="bootstrapClockHistory" class="me-1"></ng-icon>实时更新
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 服务分类导航 -->
+  <div class="row g-4 mb-4">
+    <div class="col-12">
+      <div class="d-flex gap-3 overflow-auto pb-2">
+        <button class="btn btn-lg btn-outline-primary rounded-pill px-4 d-flex align-items-center nowrap">
+          <ng-icon name="bootstrapCpu" class="me-2"></ng-icon>计算服务
+        </button>
+        <button class="btn btn-lg btn-light rounded-pill px-4 d-flex align-items-center nowrap">
+          <ng-icon name="bootstrapDatabase" class="me-2"></ng-icon>存储服务
+        </button>
+        <button class="btn btn-lg btn-light rounded-pill px-4 d-flex align-items-center nowrap">
+          <ng-icon name="bootstrapGlobe2" class="me-2"></ng-icon>网络服务
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 服务商品列表 -->
+  <div class="row g-4">
+    <!-- 商城服务 -->
+    <div class="col-xxl-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 py-3">
+          <h5 class="mb-0"><ng-icon name="bootstrapCart4" class="me-2"></ng-icon>标准服务商城</h5>
+        </div>
+        <div class="card-body pt-0">
+          <div class="row g-3">
+            <div class="col-md-6" *ngFor="let item of [1,2,3,4]">
+              <div class="service-card p-3 rounded-3 border-hover-primary">
+                <div class="d-flex gap-3">
+                  <div class="icon-wrapper bg-primary bg-opacity-10 p-2 rounded-2">
+                    <ng-icon name="bootstrapCloud" class="fs-4 text-primary"></ng-icon>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">高性能云服务器</h6>
+                    <div class="text-muted small">2核4G | 50GB SSD | 5Mbps带宽</div>
+                    <div class="mt-2 d-flex justify-content-between align-items-center">
+                      <div class="h5 text-accent mb-0">¥89<span class="text-muted small">/月</span></div>
+                      <button class="btn btn-sm btn-primary rounded-pill px-3">
+                        <ng-icon name="bootstrapPlusLg" class="me-1"></ng-icon>立即购买
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 自定义服务 -->
+    <div class="col-xxl-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-0 py-3">
+          <h5 class="mb-0"><ng-icon name="bootstrapGear" class="me-2"></ng-icon>自定义服务</h5>
+        </div>
+        <div class="card-body pt-0">
+          <div class="custom-config-card p-3 rounded-3 bg-light border-dashed">
+            <div class="text-center py-4">
+              <ng-icon name="bootstrapMagic" class="fs-1 text-muted mb-3"></ng-icon>
+              <h5 class="mb-2">定制专属服务</h5>
+              <p class="text-muted small mb-3">根据您的业务需求定制服务器配置</p>
+              <button class="btn btn-primary rounded-pill px-4">
+                <ng-icon name="bootstrapSliders" class="me-2"></ng-icon>开始配置
+              </button>
+            </div>
+          </div>
+          
+          <!-- 配置预设 -->
+          <div class="mt-3">
+            <div class="preset-item p-2 rounded-2 d-flex align-items-center gap-2">
+              <ng-icon name="bootstrapSave" class="text-success"></ng-icon>
+              <div class="flex-grow-1">
+                <div>游戏服务器预设</div>
+                <small class="text-muted">4核8G | 100GB NVMe</small>
+              </div>
+              <button class="btn btn-link text-primary p-0">加载</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 促销横幅 -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="promo-banner bg-gradient-primary p-4 rounded-4 text-white">
+        <div class="d-flex align-items-center justify-content-between">
+          <div>
+            <h4 class="mb-1">限时特惠！</h4>
+            <p class="mb-0">新用户首单立享5折优惠</p>
+          </div>
+          <button class="btn btn-light rounded-pill px-4">
+            立即查看 <ng-icon name="bootstrapArrowRight" class="ms-2"></ng-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
