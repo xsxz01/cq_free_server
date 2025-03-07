@@ -7,7 +7,7 @@ import { FormsModule } from "@angular/forms";
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: "./time-picker.component.html",
-  styleUrls: ["./time-picker.component.scss"],
+  styleUrls: ["./time-picker.component.css"],
 })
 export class TimePickerComponent {
   @Input() selectedHour = 0;

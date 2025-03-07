@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './date-picker.component.html',
-  styleUrls: ['./date-picker.component.scss']
+  styleUrls: ['./date-picker.component.css']
 })
 export class DatePickerComponent {
   // 输入属性

@@ -42,6 +42,7 @@ tr[data-priority="3"] {
 td {
   vertical-align: middle !important;
 }
+
 .date-picker {
   position: relative;
 }
@@ -85,6 +86,7 @@ td {
   max-width: 120px;
   border-radius: 0.5rem !important;
 }
+
 .time-picker-popover {
   position: absolute;
   background: white;
@@ -113,42 +115,37 @@ td {
   font-weight: bold;
   margin: 0.5rem 0;
 }
-.date-time-group {
-  .date-input-wrapper,
-  .time-input-wrapper {
-    flex: 1;
-    max-width: 180px;
 
-    /* 统一输入框样式 */
-    .form-control {
-      padding: 0.5rem 1.75rem 0.5rem 1rem;
-      border-radius: 8px;
-      border: 1px solid #e0e0e0;
-      transition: all 0.2s ease;
+.date-time-group .date-input-wrapper .form-control,
+.date-time-group .time-input-wrapper .form-control {
+  padding: 0.5rem 1.75rem 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  transition: all 0.2s ease;
+}
 
-      &:hover {
-        border-color: #bdbdbd;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      }
-    }
+.date-time-group .date-input-wrapper .form-control:hover,
+.date-time-group .time-input-wrapper .form-control:hover {
+  border-color: #bdbdbd;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
 
-    /* 弹窗定位优化 */
-    .calendar-popover,
-    .time-picker-popover {
-      top: calc(100% + 0.5rem) !important;
-      left: 0 !important;
-      z-index: 1000;
-    }
-  }
+.date-time-group .date-input-wrapper .calendar-popover,
+.date-time-group .date-input-wrapper .time-picker-popover,
+.date-time-group .time-input-wrapper .calendar-popover,
+.date-time-group .time-input-wrapper .time-picker-popover {
+  top: calc(100% + 0.5rem) !important;
+  left: 0 !important;
+  z-index: 1000;
 }
 
 .filter-popup {
   /* 添加弹窗层级保护 */
   position: absolute;
-  z-index: 1050;  // 高于datepicker的z-index
-  
-  .date-picker-container {
-    z-index: 1051 !important;  // 确保日期选择器在弹窗上层
-    position: relative;
-  }
+  z-index: 1050;  /* 高于datepicker的z-index */
+}
+
+.filter-popup .date-picker-container {
+  z-index: 1051 !important;  /* 确保日期选择器在弹窗上层 */
+  position: relative;
 }

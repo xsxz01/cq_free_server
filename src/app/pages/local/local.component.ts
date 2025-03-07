@@ -31,7 +31,7 @@ interface GameVersion {
     provideIcons({...bootstrapIcons }), 
   ],
   templateUrl: "./local.component.html",
-  styleUrls: ["./local.component.scss"],
+  styleUrls: ["./local.component.css"],
 })
 export class LocalComponent {
   @ViewChild('serverMenu') serverMenu!: MatMenu;

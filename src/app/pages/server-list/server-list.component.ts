@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, ViewChild, type ElementRef, Renderer2 } from "@angular/core";
+import { Component, ElementRef, ViewChild, Renderer2 } from "@angular/core";
 import { RouterModule } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { ShortUrlPipe } from "../../pipe/short-url.pipe";
@@ -35,7 +35,7 @@ interface ServerInfo {
     provideIcons({...bootstrapIcons }),
   ],
   templateUrl: "./server-list.component.html",
-  styleUrls: ["./server-list.component.scss"],
+  styleUrls: ["./server-list.component.css"],
 })
 export class ServerListComponent {
   selectedTags = new Set<string>();
@@ -57,7 +57,7 @@ export class ServerListComponent {
   ];
   isFilterOpen = false;
   private clickListener!: () => void;
-  @ViewChild('filterPopup') filterPopup!: ElementRef;
+  @ViewChild('filterPopup', { read: ElementRef, static: false }) filterPopup!: ElementRef;
   selectedTime?: number;
   startTime: string = "00:00";
   endTime: string = "00:00";
