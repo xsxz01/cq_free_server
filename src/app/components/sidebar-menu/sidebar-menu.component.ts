@@ -75,11 +75,6 @@ export class SidebarMenuComponent implements OnInit {
       icon: 'bootstrapTools',
       link: '/tools'
     },
-    { 
-      title: '在线服务', 
-      icon: 'bootstrapCloud', 
-      link: '/online-service'
-    },
     // 新增开服列表菜单项
   ];
   // 新增菜单激活状态处理

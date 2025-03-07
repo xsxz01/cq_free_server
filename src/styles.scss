@@ -1,19 +1,14 @@
-@import "bootstrap/scss/bootstrap";
-
-// Tailwind配置
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import '~bootstrap-icons/font/bootstrap-icons';
 
 /* 全局页面高度控制 */
-html,
-body {
-  height: 100%;
-  overflow: hidden;
-}
-
-app-root {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+html, body {
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  app-root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
