@@ -1,0 +1,28 @@
+<div class="container-fluid py-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">
+        <ng-icon name="bootstrapHeadset" class="me-2"></ng-icon>
+        在线服务平台
+      </h3>
+    </div>
+    
+    <div class="card-body">
+      <div class="row g-4">
+        <!-- 服务卡片 -->
+        <div class="col-12 col-md-6" *ngFor="let service of services">
+          <div class="card hover-shadow-lg h-100">
+            <div class="card-body text-center">
+              <ng-icon [name]="service.icon" class="display-4 text-primary mb-3"></ng-icon>
+              <h5 class="card-title">{{ service.title }}</h5>
+              <p class="card-text text-muted">{{ service.description }}</p>
+              <a [routerLink]="service.link" class="btn btn-primary rounded-pill">
+                立即使用 <ng-icon name="bootstrapArrowRight" class="ms-2"></ng-icon>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

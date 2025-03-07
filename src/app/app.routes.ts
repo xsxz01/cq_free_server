@@ -6,6 +6,7 @@ import { LocalComponent } from "./pages/local/local.component";
 import { LaunchersComponent } from "./pages/launchers/launchers.component";
 import { ToolsComponent } from "./pages/tools/tools.component";
 import { ServerListComponent } from './pages/server-list/server-list.component';
+import { OnlineServiceComponent } from './pages/online-service/online-service.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,10 @@ const routes: Routes = [
     title: '开服列表',
     component: ServerListComponent 
   },
+  {
+    path: 'online-service',
+    loadComponent: () => import('./pages/online-service/online-service.component').then(m => m.OnlineServiceComponent)
+  }
 ];
 
 export { routes };
