@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, type OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
+import { ConfigService } from '../../core/services/config.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,8 +15,14 @@ import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
     provideIcons({...bootstrapIcons }), 
   ]
 })
-export class DashboardComponent {
-  constructor() { }
+export class DashboardComponent implements OnInit {
+  constructor(
+    private configService: ConfigService
+  ) { }
+  ngOnInit(): void {
+    console.log("[DashboardComponent]: ngOnInit");
+    console.log("读取环境变量，当前API为", this.configService.baseAPI);
+  }
   title = 'dashboard';
 
   // 在Component装饰器下方添加
