@@ -1,0 +1,71 @@
+<div class="h-screen flex items-center justify-center bg-gray-50">
+  <form 
+    (ngSubmit)="onSubmit()" 
+    [formGroup]="registerForm"
+    class="bg-white p-8 rounded-lg shadow-md w-96"
+  >
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">用户注册</h2>
+    
+    <!-- 用户名 -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">用户名</label>
+      <input
+        type="text"
+        formControlName="username"
+        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <!-- 验证提示... -->
+    </div>
+
+    <!-- 邮箱 -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">电子邮箱</label>
+      <input
+        type="email"
+        formControlName="email"
+        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <!-- 验证提示... -->
+    </div>
+
+    <!-- 密码 -->
+    <div class="mb-4">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">密码</label>
+      <input
+        type="password"
+        formControlName="password"
+        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <!-- 验证提示... -->
+    </div>
+
+    <!-- 确认密码 -->
+    <div class="mb-6">
+      <label class="block text-gray-700 text-sm font-semibold mb-2">确认密码</label>
+      <input
+        type="password"
+        formControlName="confirmPassword"
+        class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+      <div 
+        *ngIf="!passwordsMatch() && registerForm.get('confirmPassword')?.touched"
+        class="text-red-500 text-xs mt-1"
+      >
+        两次密码不一致
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+      [disabled]="registerForm.invalid || !passwordsMatch()"
+    >
+      立即注册
+    </button>
+
+    <div class="mt-4 text-center text-sm text-gray-600">
+      已有账号？
+      <a routerLink="/auth/login" class="text-blue-600 hover:underline">去登录</a>
+    </div>
+  </form>
+</div>

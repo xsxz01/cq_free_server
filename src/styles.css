@@ -11,3 +11,16 @@ html, body {
     display: flex;
     flex-direction: column;
   }
+
+/* 在现有Tailwind导入之后添加 */
+.invalid-feedback {
+  @apply text-red-500 text-xs mt-1;
+}
+
+.form-control:invalid {
+  @apply border-red-500 ring-1 ring-red-500;
+}
+
+.btn-primary {
+  @apply bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors;
+}

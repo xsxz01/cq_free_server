@@ -1,20 +1,30 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, type OnInit } from '@angular/core';
 import { SidebarService } from '../../service/sidebar.service';
 import { getCurrentWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
+
+type CustomAuthEvent = CustomEvent<boolean>;
+declare global {
+  interface WindowEventMap {
+    'auth-change': CustomAuthEvent;
+    'logout-request': Event;
+  }
+}
 
 @Component({
   selector: 'app-header',
   standalone: true,
   imports: [NgIcon],
   viewProviders: [
-    provideIcons({...bootstrapIcons }), 
+    provideIcons({ ...bootstrapIcons }),
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  // 是否登录
+  isLoggedIn = false;
   // 窗口标题
   windowTitle = input<string>("我的应用");
   // 保存当前窗口大小
@@ -25,7 +35,16 @@ export class HeaderComponent {
   constructor(public sidebarService: SidebarService) {
     getCurrentWindow().outerSize().then((size) => {
       this.windowSize = size;
-    })
+    });
+  }
+  ngOnInit(): void {
+    // 监听全局认证状态变化
+    window.addEventListener('auth-change', (e: CustomEvent) => {
+      this.isLoggedIn = e.detail;
+    });
+
+    // 初始化时检查本地token
+    this.isLoggedIn = !!localStorage.getItem('auth_token');
   }
 
   /**
@@ -51,7 +70,7 @@ export class HeaderComponent {
     if (this.isMaximized()) {
       // 还原窗口
       if (!this.windowSize) {
-        return; 
+        return;
       }
       await currentWindow.setSize(this.windowSize);
       this.isMaximized.set(false);
@@ -77,5 +96,10 @@ export class HeaderComponent {
    */
   async startDrag(event: MouseEvent) {
     await getCurrentWindow().startDragging();
+  }
+
+  logout() {
+    // 触发注销逻辑
+    window.dispatchEvent(new CustomEvent('logout-request'));
   }
 }

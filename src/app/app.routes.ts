@@ -9,12 +9,23 @@ import { ServerListComponent } from './pages/server-list/server-list.component';
 import { OnlineServiceComponent } from './pages/online-service/online-service.component';
 import { CategoryDetailComponent } from "./pages/category-detail/category-detail.component";
 import { CategoryProductsComponent } from "./pages/category-products/category-products.component";
+import { LoginComponent } from "./pages/auth/login/login.component";
+import { RegisterComponent } from "./pages/auth/register/register.component";
+import { authGuard } from "./core/guards/auth.guard";
 
 const routes: Routes = [
   {
+    path: 'auth',
+    children: [
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent }
+    ]
+  },
+  {
     path: "dashboard",
-    component: DashboardComponent,
+    loadComponent: () => import('./pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
     title: "仪表盘",
+    canActivate: [authGuard]
   },
   {
     path: "data",
@@ -63,7 +74,7 @@ const routes: Routes = [
     path: 'category',
     component: CategoryDetailComponent,
     children: [
-      { 
+      {
         path: ':subId',
         component: CategoryProductsComponent
       }
@@ -74,6 +85,7 @@ const routes: Routes = [
     loadComponent: () => import('./pages/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
     data: { animation: 'product-detail' }
   }
+
 ];
 
 export { routes };

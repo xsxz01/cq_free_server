@@ -10,6 +10,7 @@ import { AsyncPipe, CommonModule } from "@angular/common";
 import { Effect, getCurrentWindow } from "@tauri-apps/api/window";
 import * as bootstrapIcons from "@ng-icons/bootstrap-icons";  // 修改导入方式
 import { NgIcon, provideIcons } from '@ng-icons/core';
+import { AuthService } from './service/auth.service';
 
 
 @Component({
@@ -33,7 +34,9 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 export class AppComponent implements OnInit {
   // 应用标题
   title = "传奇版本库";
-  constructor(public sidebarService: SidebarService) { }
+  constructor(public sidebarService: SidebarService, public auth: AuthService) { 
+    auth.initializeAuthState();
+  }
   ngOnInit(): void {
     // 设置窗口云母效果
     this.setMicaEffect();
