@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   register(userData: User) {
-    return this.api.post(`auth/register`, userData);
+    return this.api.post(`auth/register?validateCode=${userData.captcha}`, userData);
   }
 
   get currentToken() {

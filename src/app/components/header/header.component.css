@@ -64,3 +64,167 @@
 .bi:hover {
   opacity: 0.8;
 }
+
+.dropdown-toggle::after {
+  vertical-align: 0.255em; /* 调整下拉箭头对齐 */
+}
+.btn-link.p-0.dropdown-toggle {
+  line-height: 1; /* 修复按钮行高问题 */
+}
+
+/* 用户菜单样式 */
+.user-menu-container {
+  position: relative;
+  z-index: 1000;
+}
+
+.user-avatar-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.menu-indicator {
+  position: absolute;
+  right: -4px;      /* 减少右侧偏移 */
+  bottom: -4px;     /* 统一底部偏移 */
+  background: #2563eb;  /* 使用更深的蓝色 */
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  font-size: 1.1em;  /* 微调字号 */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid white;
+  color: white !important;
+  z-index: 10;
+  min-width: 28px;   /* 增大最小尺寸 */
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center center;  /* 新增旋转中心定义 */
+}
+
+/* 合并重复的悬停效果 */
+.user-avatar-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 简化悬停动画 */
+.user-avatar-btn:hover .menu-indicator {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+}
+
+.user-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 12px);
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.user-menu.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.menu-items {
+  padding: 12px 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  color: #2d3436;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background: rgba(41, 98, 255, 0.05);
+}
+
+.menu-icon {
+  font-size: 1.2em;
+  color: #2962ff;
+  margin-right: 15px;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-divider {
+  height: 1px;
+  background: rgba(0,0,0,0.08);
+  margin: 8px 20px;
+}
+
+.badge-new {
+  margin-left: auto;
+  background: #00c853;
+  color: white;
+  font-size: 0.75em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px 12px 0 0;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-right: 0; /* 移除原有右边距 */
+}
+
+.user-details {
+  flex: 1;
+  line-height: 1.4;  /* 增加行高 */
+}
+
+.username {
+  font-weight: 600;
+  color: #2d3436;
+  font-size: 16px;  /* 明确字号 */
+  margin-bottom: 4px;  /* 增加与邮箱的间距 */
+}
+
+/* 新增欢迎文字样式 */
+.text-muted.me-3.d-none.d-md-block {
+  font-size: 14px;
+  color: #4a5568 !important;  /* 加深颜色 */
+  font-weight: 500;
+  margin-right: 1rem !important;
+}
+
+/* .user-menu.show .menu-indicator {
+  transform: rotate(180deg) scale(1.1) !important;
+  transform-origin: center center; 
+} */
+
+.logout-item, .logout-item .menu-icon {
+  color: #ff4444 !important;
+}
+
+.menu-indicator.rotate-180 {
+  transform: rotate(180deg) scale(1.1) !important;
+}

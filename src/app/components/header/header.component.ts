@@ -1,9 +1,12 @@
-import { Component, input, signal, type OnInit } from '@angular/core';
+import { Component, input, signal, ViewChild, type AfterViewInit, ElementRef, type OnDestroy, type OnInit, HostListener } from '@angular/core';
 import { SidebarService } from '../../service/sidebar.service';
 import { getCurrentWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
 import { AuthService } from '../../service/auth.service';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { filter, fromEvent, Subject, takeUntil } from 'rxjs';
 
 type CustomAuthEvent = CustomEvent<boolean>;
 declare global {
@@ -16,16 +19,26 @@ declare global {
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [NgIcon],
+  imports: [NgIcon, CommonModule, RouterModule],
   viewProviders: [
     provideIcons({ ...bootstrapIcons }),
   ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, AfterViewInit, OnDestroy  {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.userMenuTrigger.nativeElement.contains(event.target)) {
+      this.isMenuOpen = false;
+    }
+  }
   // 是否登录
   isLoggedIn = false;
+  // 点击外部关闭菜单
+  @ViewChild('userMenuTrigger') userMenuTrigger!: ElementRef;
+  // 是否打开菜单
+  isMenuOpen = false;
   // 窗口标题
   windowTitle = input<string>("我的应用");
   // 保存当前窗口大小
@@ -33,12 +46,30 @@ export class HeaderComponent implements OnInit {
   // 保存窗口是否最大化
   private isMaximized = signal(false);
 
+  private destroy$ = new Subject<void>();
+
   constructor(
     private sidebarService: SidebarService,
     private authService: AuthService,
-  ){
+    private el: ElementRef
+  ) {
     getCurrentWindow().outerSize().then((size) => {
       this.windowSize = size;
+    });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+  ngAfterViewInit(): void {
+    fromEvent(document, 'click').pipe(
+      filter(event => 
+        !this.userMenuTrigger.nativeElement.contains(event.target) &&
+        !this.el.nativeElement.querySelector('.user-menu')?.contains(event.target)
+      ),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      this.isMenuOpen = false;
     });
   }
   ngOnInit(): void {
@@ -47,12 +78,19 @@ export class HeaderComponent implements OnInit {
       this.isLoggedIn = e.detail;
       // token已清除，刷新页面
       if (!this.isLoggedIn) {
-        window.location.reload(); 
+        window.location.reload();
       }
     });
 
     // 初始化时检查本地token
     this.isLoggedIn = !!localStorage.getItem('auth_token');
+  }
+
+  /**
+   * 用户菜单是否打开
+   */
+  toggleUserMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
   }
 
   /**

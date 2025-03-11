@@ -91,13 +91,13 @@ export class LoginComponent implements OnInit {
     // 处理response，判断code是否为0，如果不等于0则显示错误信息
     if (response.code !== 0) {
       this.isLoading = false;
-      await this.alertService.error(response.msg, "center");
+      await this.alertService.error(response.msg);
       return;  
     }
     // 设置token
     this.auth.setToken(response.token);
     // 处理登录成功后的逻辑
-    await this.alertService.success(response.msg, "center");
+    await this.alertService.success(response.msg);
     // 跳转到dashboard
     await this.router.navigate(['/dashboard']);
   }

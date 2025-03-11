@@ -1,54 +1,35 @@
 <div>
   <!-- 头部 -->
-  <div
-    class="window-control-bar d-flex justify-content-between align-items-center px-3 user-select-none"
-  >
+  <div class="window-control-bar d-flex justify-content-between align-items-center px-3 user-select-none">
     <!-- 左侧区域 -->
     <div class="d-flex align-items-center gap-2">
-      <ng-icon
-        name="bootstrapWindows"
-        class="fs-5 text-primary" />
+      <ng-icon name="bootstrapWindows" class="fs-5 text-primary" />
       <span class="fw-bold text-dark" [textContent]="windowTitle()">我的应用</span>
     </div>
     <!-- 中间区域用于检测鼠标拖动 -->
-    <div 
-      class="flex-grow-1 h-100 drag-region"
-      (mousedown)="startDrag($event)"
+    <div class="flex-grow-1 h-100 drag-region" (mousedown)="startDrag($event)"
       style="cursor: move; -webkit-app-region: drag">
     </div>
     <!-- 右侧控制按钮 -->
     <div class="d-flex">
       <a class="btn btn-window-control" title="最小化" (click)="onMinimize()">
-        <ng-icon
-          name="bootstrapDashLg"
-          class="fs-5" />
+        <ng-icon name="bootstrapDashLg" class="fs-5" />
       </a>
       <a class="btn btn-window-control" title="最大化" (click)="onMaximize()">
-        <ng-icon
-          name="bootstrapFullscreen"
-          class="fs-5" />
+        <ng-icon name="bootstrapFullscreen" class="fs-5" />
       </a>
       <a class="btn btn-window-control btn-close" title="关闭" (click)="onClose()">
-        <ng-icon
-          name="bootstrapXLg"
-          class="fs-5" />
+        <ng-icon name="bootstrapXLg" class="fs-5" />
       </a>
     </div>
 
   </div>
-  <nav
-    class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom"
-  >
+  <nav class="navbar navbar-expand navbar-light bg-white shadow-sm border-bottom">
     <div class="container-fluid">
       <!-- 左侧菜单切换按钮 -->
-      <button
-        class="navbar-brand fw-bold text-blue-800 btn btn-link transition-all"
-        (click)="toggleSidebar()"
-      >
+      <button class="navbar-brand fw-bold text-blue-800 btn btn-link transition-all" (click)="toggleSidebar()">
         <div class="d-flex align-items-center gap-2">
-          <ng-icon
-            name="bootstrapList"
-            class="text-blue-600 transition-all" />
+          <ng-icon name="bootstrapList" class="text-blue-600 transition-all" />
           <span>菜单</span>
         </div>
       </button>
@@ -57,52 +38,55 @@
 
       <!-- 右侧用户菜单 -->
       <div class="d-flex align-items-center">
-        <small class="text-muted me-3 d-none d-md-block"
-          >欢迎回来，管理员</small
-        >
-        <!-- 添加欢迎语 -->
-        <div class="dropdown">
-          <button
-            class="btn btn-link p-0 dropdown-toggle d-flex align-items-center"
-            type="button"
-            data-bs-toggle="dropdown"
-          >
-            <img
-              src="assets/tauri.svg"
-              class="rounded-circle border-3 border-blue-100 transition-all"
-              width="40"
-              height="40"
-              alt="用户头像"
-            />
-          </button>
-          <ul
-            class="dropdown-menu dropdown-menu-end mt-2 shadow border-blue-50"
-            style="min-width: 12rem; max-width: 90vw;"
-          >
-            <!-- 浅蓝边框菜单 -->
-            <li>
-              <a class="dropdown-item text-blue-800 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2" href="#">
-                <ng-icon
-                  name="bootstrapPersonCircle"
-                  class="text-blue-600 transition-all fs-6" />个人中心
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item text-blue-800 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2" href="#">
-                <ng-icon
-                  name="bootstrapGear"
-                  class="text-blue-600 transition-all fs-6" />系统设置
-              </a>
-            </li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-              <a class="dropdown-item text-blue-500 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2 hover:bg-blue-50" href="#" (click)="$event.preventDefault(); $event.stopPropagation();logout()">
-                <ng-icon
-                  name="bootstrapBoxArrowRight"
-                  class="text-blue-600 transition-all fs-6" />退出登录
-              </a>
-            </li>
-          </ul>
+        <div *ngIf="isLoggedIn" class="d-flex align-items-center gap-3">
+          <small class="text-muted me-3 d-none d-md-block">欢迎回来，管理员</small>
+          <!-- 现代化用户菜单 -->
+          <div class="user-menu-container position-relative">
+            <button class="user-avatar-btn" (click)="toggleUserMenu(); $event.stopPropagation()" #userMenuTrigger>
+              <img src="assets/tauri.svg" class="rounded-circle border-3 border-blue-100 object-fit-cover"
+                style="width: 40px; height: 40px; margin-right: 8px" alt="用户头像" />
+              <ng-icon name="bootstrapChevronDown" class="menu-indicator text-blue-600 transition-all"  [class.rotate-170]="isMenuOpen"/>
+            </button>
+
+            <!-- 下拉菜单内容 -->
+            <div class="user-menu shadow-lg" [class.show]="isMenuOpen">
+              <!-- 用户信息 -->
+              <div class="user-info">
+                <img src="assets/tauri.svg" class="user-avatar" alt="用户头像" />
+                <div class="user-details">
+                  <div class="username">管理员</div>
+                  <div class="email">admin&#64;example.com</div>
+                </div>
+              </div>
+
+              <!-- 菜单项 -->
+              <div class="menu-items">
+                <a class="menu-item" href="#">
+                  <ng-icon name="bootstrapPersonCircle" class="menu-icon" />
+                  <span>个人中心</span>
+                </a>
+                <a class="menu-item" href="#">
+                  <ng-icon name="bootstrapGear" class="menu-icon" />
+                  <span>系统设置</span>
+                  <span class="badge-new">NEW</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a class="menu-item logout-item" href="#" (click)="logout()">
+                  <ng-icon name="bootstrapBoxArrowRight" class="menu-icon" />
+                  <span>退出登录</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 未登录状态 -->
+        <div *ngIf="!isLoggedIn" class="d-flex gap-3">
+          <a routerLink="/auth/login" class="btn btn-link px-3 text-decoration-none">
+            登录
+          </a>
+          <a routerLink="/auth/register" class="btn btn-primary px-3 rounded-pill">
+            注册
+          </a>
         </div>
       </div>
     </div>

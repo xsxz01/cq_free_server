@@ -9,6 +9,6 @@ export interface User {
     username: string;
     password: string;
     email: string;
-    /** 与server-list组件中的时间格式保持一致 */
+    captcha?: string;
     createdAt?: string; // ISO 8601格式
 }
