@@ -9,7 +9,7 @@ import { SidebarService } from "./service/sidebar.service";
 import { AsyncPipe, CommonModule } from "@angular/common";
 import { Effect, getCurrentWindow } from "@tauri-apps/api/window";
 import * as bootstrapIcons from "@ng-icons/bootstrap-icons";  // 修改导入方式
-import { NgIcon, provideIcons } from '@ng-icons/core';
+import { provideIcons } from '@ng-icons/core';
 import { AuthService } from './service/auth.service';
 
 

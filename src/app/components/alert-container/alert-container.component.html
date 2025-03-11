@@ -1,0 +1,11 @@
+<ng-container *ngIf="currentAlert">
+  <div class="alert-box {{alertClass}}" [ngClass]="currentAlert.type">
+    <ng-icon [name]="icon" class="alert-icon"></ng-icon>
+    <span>{{ currentAlert.message }}</span>
+    <ng-icon 
+      name="bootstrapX" 
+      class="close-btn" 
+      (click)="service.close()"
+    ></ng-icon>
+  </div>
+</ng-container>

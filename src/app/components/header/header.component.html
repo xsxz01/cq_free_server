@@ -96,7 +96,7 @@
             </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item text-blue-500 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2 hover:bg-blue-50" href="#">
+              <a class="dropdown-item text-blue-500 hover:bg-blue-50 d-flex align-items-center gap-2 px-3 py-2 hover:bg-blue-50" href="#" (click)="$event.preventDefault(); $event.stopPropagation();logout()">
                 <ng-icon
                   name="bootstrapBoxArrowRight"
                   class="text-blue-600 transition-all fs-6" />退出登录

@@ -3,6 +3,7 @@ import { SidebarService } from '../../service/sidebar.service';
 import { getCurrentWindow, PhysicalSize } from "@tauri-apps/api/window";
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import * as bootstrapIcons from '@ng-icons/bootstrap-icons';
+import { AuthService } from '../../service/auth.service';
 
 type CustomAuthEvent = CustomEvent<boolean>;
 declare global {
@@ -32,7 +33,10 @@ export class HeaderComponent implements OnInit {
   // 保存窗口是否最大化
   private isMaximized = signal(false);
 
-  constructor(public sidebarService: SidebarService) {
+  constructor(
+    private sidebarService: SidebarService,
+    private authService: AuthService,
+  ){
     getCurrentWindow().outerSize().then((size) => {
       this.windowSize = size;
     });
@@ -41,6 +45,10 @@ export class HeaderComponent implements OnInit {
     // 监听全局认证状态变化
     window.addEventListener('auth-change', (e: CustomEvent) => {
       this.isLoggedIn = e.detail;
+      // token已清除，刷新页面
+      if (!this.isLoggedIn) {
+        window.location.reload(); 
+      }
     });
 
     // 初始化时检查本地token
